@@ -9,7 +9,7 @@ function App() {
   return (
     <>
      <div className='bg-red-700 text-4xl text-center'>Workport</div>
-     <div className="bg-blue-700 text-4xl text-center">Jay Shree Karishna</div>
+     <div className="bg-green-700 text-4xl text-center">Jay Shree Karishna</div>
     </>
   )
 }
