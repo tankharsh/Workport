@@ -8,10 +8,12 @@ import Myshop from './pages/sp_pages/Myshop';
 import Orders from './pages/sp_pages/Orders';
 import Feedback from './pages/sp_pages/Feedback'
 
+
 function App() {
   
   return (
     <>
+
     <Router>
       <Routes>
         <Route path="/" element={<Dashboard />} />
@@ -21,6 +23,9 @@ function App() {
         <Route path='/feedback' element={<Feedback />}/>
       </Routes>
     </Router>
+
+    <Layout />
+
     </>
   )
 }
