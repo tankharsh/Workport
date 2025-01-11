@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Dashboard from './pages/sp_pages/Dashboard'
+import Layout from './pages/user_pages/Layout'
 
 
 function App() {
@@ -10,7 +9,8 @@ function App() {
 
   return (
     <>
-      <Dashboard />
+    <Layout />
+      {/* <Dashboard /> */}
     </>
   )
 }

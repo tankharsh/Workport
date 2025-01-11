@@ -1,5 +1,5 @@
 import React from 'react'
-import Sidebar from '../../components/serviceProvider/sp_components/Sidebar';
+import Sidebar from '../../components/sp_components/Sidebar';
 
 
 const Dashboard = () => {
