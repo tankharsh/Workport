@@ -2,3 +2,24 @@ harshad1
 
 hii helo helo helo
 i am milan 
+
+color palette code : 
+
+192B3C
+6499C2
+99CAD8
+CFEDEC
+DEE5E2
+
+
+
+// routes
+<Router>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path='/profile' element={<Profile/>}/>
+        <Route path='/myshop' element={<Myshop/>}/>
+        <Route path='/order' element={<Orders/>}/>
+        <Route path='/feedback' element={<Feedback />}/>
+      </Routes>
+</Router>

@@ -6,24 +6,36 @@ import { BsShop } from "react-icons/bs";
 import { FaCartShopping } from "react-icons/fa6";
 import { MdFeedback } from "react-icons/md";
 import { HiOutlineLogout } from "react-icons/hi";
+import { NavLink } from "react-router-dom";
+import { FaAlignRight } from "react-icons/fa";
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
+        document.body.style.overflow = isOpen ? "auto" : "hidden"; 
     };
 
     return (
-        <div className="flex font-[Roboto, sans-serif]">
+        <div className="relative font-[Roboto, sans-serif]">
+            {/* overlay  */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+                    onClick={toggleSidebar} 
+                ></div>
+            )}
+
             {/* Sidebar */}
             <div
-                className={`fixed inset-y-0 left-0 bg-[#2C43A0] text-white w-64 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
-                    } transition-transform duration-300 ease-in-out lg:translate-x-0`}
+                className={`fixed inset-y-0 left-0 bg-[#192B3C] text-white w-64 transform ${
+                    isOpen ? "translate-x-0" : "-translate-x-full"
+                } transition-transform duration-300 ease-in-out z-50 lg:translate-x-0 lg:block`}
             >
                 {/* Sidebar Header */}
                 <div className="flex items-center justify-between p-4">
-                    <span className="font-bold px-8 text-3xl">WorkPort</span>
+                    <span className="font-bold text-4xl">WorkPort</span>
                     {/* Close Button */}
                     <button
                         onClick={toggleSidebar}
@@ -33,46 +45,85 @@ const Sidebar = () => {
                     </button>
                 </div>
                 {/* Sidebar Links */}
-                    {/* <span className="block px-14 text-xl font-bold">Shop Name</span> */}
                 <nav className="mt-3">
-                    <a href="/" className="block px-4 py-2 hover:bg-purple-700">
-                        <span className="flex px-2 gap-3 justify-start items-center"><TbHomeFilled className="text-2xl" /> Dashborad</span>
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "block px-4 py-2 bg-[#6499C2] text-white"
+                                : "block px-4 py-2 hover:bg-[#6499C2] text-white"
+                        }
+                    >
+                        <span className="flex px-2 gap-3 justify-start items-center">
+                            <TbHomeFilled className="text-2xl" /> Dashboard
+                        </span>
+                    </NavLink>
+                    <a href="#" className="block px-4 py-2 mt-3 hover:bg-[#6499C2]">
+                        <span className="flex px-2 gap-3 justify-start items-center">
+                            <GrServices className="text-2xl" /> Add Service
+                        </span>
                     </a>
-                    <a href="#" className="block px-4 py-2 mt-3 hover:bg-purple-700">
-                        <span className="flex px-2 gap-3 justify-start items-center"><GrServices className="text-2xl" /> Add Service</span>
-                    </a>
-                    <a href="#" className="block px-4 py-2 mt-3 hover:bg-purple-700">
-                        <span className="flex px-2 gap-3 justify-start items-center"><BsPersonWorkspace className="text-2xl" /> Profile</span>
-                    </a>
-                    <a href="#" className="block px-4 py-2 mt-3 hover:bg-purple-700">
-                        <span className="flex px-2 gap-3 justify-start items-center"><BsShop className="text-2xl" /> My Shop</span>
-                    </a>
-                    <a href="#" className="block px-4 py-2 mt-3 hover:bg-purple-700">
-                        <span className="flex px-2 gap-3 justify-start items-center"><FaCartShopping className="text-2xl" /> Orders</span>
-                    </a>
-                    <a href="#" className="block px-4 py-2 mt-3 hover:bg-purple-700">
-                        <span className="flex px-2 gap-3 justify-start items-center"><MdFeedback className="text-2xl" /> Feedback</span>
-                    </a>
+                    <NavLink
+                        to="/profile"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "block px-4 py-2 mt-3 bg-[#6499C2] text-white"
+                                : "block px-4 py-2 mt-3 hover:bg-[#6499C2] text-white"
+                        }
+                    >
+                        <span className="flex px-2 gap-3 justify-start items-center">
+                            <BsPersonWorkspace className="text-2xl" /> Profile
+                        </span>
+                    </NavLink>
+                    <NavLink
+                        to="/myshop"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "block px-4 py-2 mt-3 bg-[#6499C2] text-white"
+                                : "block px-4 py-2 mt-3 hover:bg-[#6499C2] text-white"
+                        }
+                    >
+                        <span className="flex px-2 gap-3 justify-start items-center">
+                            <BsShop className="text-2xl" /> My Shop
+                        </span>
+                    </NavLink>
+                    <NavLink
+                        to="/order"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "block px-4 py-2 mt-3 bg-[#6499C2] text-white"
+                                : "block px-4 py-2 mt-3 hover:bg-[#6499C2] text-white"
+                        }
+                    >
+                        <span className="flex px-2 gap-3 justify-start items-center">
+                            <FaCartShopping className="text-2xl" /> Orders
+                        </span>
+                    </NavLink>
+                    <NavLink to="/feedback" className="block px-4 py-2 mt-3 hover:bg-[#6499C2]">
+                        <span className="flex px-2 gap-3 justify-start items-center">
+                            <MdFeedback className="text-2xl" /> Feedback
+                        </span>
+                    </NavLink>
                     <a href="#" className="block px-4 py-2 mt-3 hover:bg-red-700">
-                        <span className="flex px-2 gap-3 justify-start items-center"><HiOutlineLogout className="text-2xl" /> Logout</span>
+                        <span className="flex px-2 gap-3 justify-start items-center">
+                            <HiOutlineLogout className="text-2xl" /> Logout
+                        </span>
                     </a>
                 </nav>
             </div>
 
             {/* Navbar */}
             <div className="flex flex-1 flex-col">
-                <header className="flex items-center justify-between bg-[#2C43A0] text-white p-4">
+                <header className="fixed w-full top-0 z-50 flex items-center justify-between bg-[#192B3C] text-white p-4 shadow-md">
                     {/* Sidebar Toggle Button */}
                     <button
                         onClick={toggleSidebar}
                         className="text-2xl focus:outline-none lg:hidden"
                     >
-                        ☰
+                        <FaAlignRight />
                     </button>
+                    {/* Brand Name */}
                     <span className="font-bold text-lg">WorkPort</span>
-                    <nav className="hidden lg:flex gap-6 items-center">
-
-                    </nav>
                 </header>
             </div>
         </div>
