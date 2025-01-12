@@ -1,0 +1,24 @@
+// User Schema
+    user name
+    user email
+    user contact No
+    user password
+    user Address 
+        - houseno./Building name
+        - Road name / Area / Colony
+        - Pincode
+        - City
+
+// Service Provider Schema
+    service pro name 
+    service pro email
+    service pro contact number 
+    service pro shop name
+    service pro Shop Image
+    service pro Banner Image  
+    service pro category
+    service pro address
+        - houseno./Building name
+        - Road name / Area / Colony
+        - Pincode
+        - City
