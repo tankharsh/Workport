@@ -15,7 +15,10 @@ function App() {
     <>
     <Router>
       <Routes>
-        <Route path="/" element={<Layout />} />
+
+
+      <Route path="/" element={<Layout />} />
+
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/myshop' element={<Myshop/>}/>
