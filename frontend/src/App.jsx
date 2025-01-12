@@ -16,7 +16,8 @@ function App() {
 
     <Router>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<Layout />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/myshop' element={<Myshop/>}/>
         <Route path='/order' element={<Orders/>}/>
@@ -24,7 +25,7 @@ function App() {
       </Routes>
     </Router>
 
-    <Layout />
+    
 
     </>
   )
