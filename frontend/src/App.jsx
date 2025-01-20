@@ -10,24 +10,21 @@ import Feedback from './pages/sp_pages/Feedback'
 
 
 function App() {
-  
+
   return (
     <>
-    <Router>
-      <Routes>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Layout />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/myshop' element={<Myshop />} />
+          <Route path='/order' element={<Orders />} />
+          <Route path='/feedback' element={<Feedback />} />
+        </Routes>
+      </Router>
 
 
-      <Route path="/" element={<Layout />} />
-
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path='/profile' element={<Profile/>}/>
-        <Route path='/myshop' element={<Myshop/>}/>
-        <Route path='/order' element={<Orders/>}/>
-        <Route path='/feedback' element={<Feedback />}/>
-      </Routes>
-    </Router>
-
-    
 
     </>
   )
