@@ -137,157 +137,174 @@ const Layout = () => {
             </div>
           </div>
 
-      {/* Cards Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(6)].map((_, index) => (
-          <div
-            key={index}
-            className="h-48 bg-gray-300 rounded-lg shadow-md flex items-center justify-center"
-          >
-            Card {index + 1}
+          {/* Cards Section */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 ">
+            {catImage.map((catImage, index) => (
+              <div
+                key={index}
+                className="relative h-56 flex-wrap w-[100%] flex items-center justify-center hover:scale-105 cursor-pointer"
+              >
+                <img src={catImage.catImage} alt={`Slide ${index + 1}`} className='bg-cover p-2 h-48 w-[100%] rounded-xl' />
+                <span className='text-black font-semibold text-xl font-[lato]'>{catImage.catName}</span>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-    </div>
 
 
       {/* Recently addded */}
       <div className='recentlt added pt-12'>
 
-    <h2 className="text-center text-2xl font-bold mb-4 flex flex-col items-center bg-white w-[18%] ml-[41%]  ">
-        Recently added
-        <div className="w-16 h-1 bg-blue-500 mt-2 absolute mt-[18px] z-[-1] w-[96%]"></div>
-      </h2>
+        <h2 className="text-center text-2xl font-bold mb-4 flex flex-col items-center bg-white w-[18%] ml-[41%]  ">
+          Recently added
+          <div className="h-1 bg-blue-500 absolute mt-5 z-[-1] w-[96%]"></div>
+        </h2>
 
-      <div className="bg-gray-200 py-8 px-4 mt-10">
-      {/* <h2 className="text-center text-xl font-bold mb-6">Recently Added</h2> */}
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-6xl mx-auto">
-        {/* Card 1 */}
-        <div className="bg-gray-400 h-40 rounded shadow-md"></div>
+        <div className="bg-[#6499C2] py-8 px-4 mt-10">
+          {/* <h2 className="text-center text-xl font-bold mb-6">Recently Added</h2> */}
 
-        {/* Card 2 */}
-        <div className="bg-gray-400 h-40 rounded shadow-md"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-7xl mx-auto">
+            {/* Card 1 */}
+            <div className="bg-gray-100 h-40 rounded shadow-md"></div>
 
-        {/* Card 3 */}
-        <div className="bg-gray-400 h-40 rounded shadow-md"></div>
+            {/* Card 2 */}
+            <div className="bg-gray-100 h-40 rounded shadow-md"></div>
 
-        {/* Card 4 */}
-        <div className="bg-gray-400 h-40 rounded shadow-md"></div>
+            {/* Card 3 */}
+            <div className="bg-gray-100 h-40 rounded shadow-md"></div>
 
-        {/* Card 5 */}
-        <div className="bg-gray-400 h-40 rounded shadow-md"></div>
+            {/* Card 4 */}
+            <div className="bg-gray-100 h-40 rounded shadow-md"></div>
 
-        {/* Card 6 */}
-        <div className="bg-gray-400 h-40 rounded shadow-md"></div>
+            {/* Card 5 */}
+            <div className="bg-gray-100 h-40 rounded shadow-md"></div>
+
+            {/* Card 6 */}
+            <div className="bg-gray-100 h-40 rounded shadow-md"></div>
+
+          </div>
+        </div>
       </div>
-    </div>
 
+      {/* About Us */}
+      <div
+        id='about'
+        ref={sectionRef}
+        className="relative w-full h-[80%] mt-5 bg-fixed bg-cover bg-center flex items-center font-[Open-Sans]"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')`,
+        }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-    </div>
+        <div className="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between relative z-10">
+          {/* Left Side: About Content */}
+          <div
+            ref={leftContentRef}
+            className="text-white md:w-1/2 space-y-6 text-center md:text-left"
+          >
+            <h2 className="text-4xl md:text-5xl pt-3 font-bold">About Us</h2>
+            <p className="text-lg md:text-xl leading-relaxed">
+              Welcome to our platform! We are dedicated to connecting people
+              through innovative solutions. Our mission is to bring dreams to
+              life, providing unmatched service and support.
+            </p>
+            <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow-lg transition-transform transform hover:scale-105">
+              Learn More
+            </button>
+          </div>
 
+          {/* Right Side: Image */}
+          <div
+            ref={rightImageRef}
+            className="mt-8 md:mt-0 md:w-1/2 flex justify-center"
+          >
+            <img
+              src="https://cdn.pixabay.com/photo/2024/05/20/17/25/construction-8775840_640.png"
+              alt="About Us"
+              className="rounded-lg shadow-lg w-80 md:w-96"
+            />
 
-    {/* About Us */}
-    <div className='about-us pt-12'>
-
-    <h2 className="text-center text-2xl font-bold mb-4 flex flex-col items-center bg-white w-[18%] ml-[41%]  ">
-        About Us
-        <div className="w-16 h-1 bg-blue-500 mt-2 absolute mt-[18px] z-[-1] w-[96%]"></div>
-      </h2>
-      <div className="relative bg-gray-200 h-[100vh] flex justify-center items-center mt-10">
-      {/* Background container */}
-      <div className="absolute inset-0 bg-gray-300"></div>
-
-      {/* Green boxes */}
-      <div className="relative">
-        {/* Top Right Box */}
-        <div className="absolute top-[15vh] right-10 bg-lime-400 h-20 w-20 rounded shadow-lg h-[32vh] w-[13vw] right-[-26.5rem]"></div>
-        
-        {/* Center Box */}
-        <div className="absolute bg-lime-400 h-28 w-28 rounded shadow-lg h-[32vh] w-[13vw] bottom-[-6.5rem]"></div>
-        
-        {/* Bottom Right Box */}
-        <div className="absolute bottom-[4.5rem] right-10 bg-lime-400 h-24 w-24 rounded shadow-lg h-[32vh] w-[13vw] right-[-26.5rem]"></div>
+          </div>
+        </div>
       </div>
-    </div>
-    </div>
 
       {/* other's section  */}
       <Card/>
 
 
 
-    {/* Footer */}
-    <div className="bg-blue-400 min-h-screen flex flex-col mt-10">
-      <div className="flex flex-wrap justify-between p-8">
-        {/* Left Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-white gap-[100px] p-[65px]">
-          <div className="space-y-4">
-            <p className="font-semibold">Home</p>
-            <p className="font-semibold">Help</p>
-            <p className="font-semibold">Store</p>
-            <p className="font-semibold">About</p>
-            <p className="font-semibold">Contact</p>
-            <p className="font-semibold">Services</p>
-            <p className="font-semibold">Blog</p>
-            <p className="font-semibold">FAQ</p>
-          </div>
-          <div className="space-y-4">
-            <p className="font-semibold">Home</p>
-            <p className="font-semibold">Help</p>
-            <p className="font-semibold">Store</p>
-            <p className="font-semibold">About</p>
-            <p className="font-semibold">Contact</p>
-            <p className="font-semibold">Services</p>
-            <p className="font-semibold">Blog</p>
-            <p className="font-semibold">FAQ</p>
-          </div>
-          <div className="space-y-4">
-            <p className="font-semibold">Home</p>
-            <p className="font-semibold">Help</p>
-            <p className="font-semibold">Store</p>
-            <p className="font-semibold">About</p>
-            <p className="font-semibold">Contact</p>
-            <p className="font-semibold">Services</p>
-            <p className="font-semibold">Blog</p>
-            <p className="font-semibold">FAQ</p>
-          </div>
-        </div>
-
-        {/* Right Section - Contact Form */}
-        <div className="w-full md:w-1/2 bg-white p-8 rounded shadow-lg mt-8 md:mt-0 md:ml-8">
-          <h2 className="text-black text-xl font-bold mb-6">Contact</h2>
-          <form className="space-y-4">
-            <input
-              type="text"
-              placeholder="Name"
-              className="w-full p-3 border border-gray-300 rounded"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full p-3 border border-gray-300 rounded"
-            />
-            <textarea
-              placeholder="Your Message"
-              className="w-full p-3 border border-gray-300 rounded h-32"
-            ></textarea>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600"
-            >
-              Submit
-            </button>
-          </form>
-        </div>
-      </div>
-
       {/* Footer */}
-      <footer className="bg-blue-500 text-white text-center py-4 mt-7">
-        &copy; 2025 Your Company. All rights reserved.
-      </footer>
-    </div>
+      <div className="bg-[#192B3C] flex flex-col">
+        <div className="flex flex-wrap justify-between p-8">
+          <div className="w-full md:w-1/2 bg-white p-8 rounded shadow-lg mt-8 md:mt-0 md:ml-8">
+            {/* contact form - right side */}
+            <h2 id='contact' className="text-black text-xl font-bold mb-6">Contact</h2>
+            <form className="space-y-4">
+              <input
+                type="text"
+                placeholder="Name"
+                className="w-full p-3 py-1.5 border border-gray-300 rounded"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full p-3 py-1.5 border border-gray-300 rounded"
+              />
+              <textarea
+                placeholder="Your Message"
+                className="w-full p-3 border border-gray-300 rounded h-24"
+              ></textarea>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-2 px-6 rounded hover:bg-blue-600"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+          {/* Left Section */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-32 text-white p-16">
+            <div className="space-y-4">
+              <p className="font-semibold">Home</p>
+              <p className="font-semibold">Help</p>
+              <p className="font-semibold">Store</p>
+              <p className="font-semibold">About</p>
+              <p className="font-semibold">Contact</p>
+              <p className="font-semibold">Services</p>
+              <p className="font-semibold">Blog</p>
+              <p className="font-semibold">FAQ</p>
+            </div>
+            <div className="space-y-4">
+              <p className="font-semibold">Home</p>
+              <p className="font-semibold">Help</p>
+              <p className="font-semibold">Store</p>
+              <p className="font-semibold">About</p>
+              <p className="font-semibold">Contact</p>
+              <p className="font-semibold">Services</p>
+              <p className="font-semibold">Blog</p>
+              <p className="font-semibold">FAQ</p>
+            </div>
+            <div className="space-y-4">
+              <p className="font-semibold">Home</p>
+              <p className="font-semibold">Help</p>
+              <p className="font-semibold">Store</p>
+              <p className="font-semibold">About</p>
+              <p className="font-semibold">Contact</p>
+              <p className="font-semibold">Services</p>
+              <p className="font-semibold">Blog</p>
+              <p className="font-semibold">FAQ</p>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Footer */}
+        <footer className="bg-[#192B3C] text-white text-center py-4 mt-7">
+          &copy; 2025 Workport. All rights reserved.
+        </footer>
+      </div>
 
     </>
   )

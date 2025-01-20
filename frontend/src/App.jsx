@@ -7,23 +7,26 @@ import Profile from './pages/sp_pages/Profile';
 import Myshop from './pages/sp_pages/Myshop';
 import Orders from './pages/sp_pages/Orders';
 import Feedback from './pages/sp_pages/Feedback'
+import UserLogin from './components/user_components/UserLogin';
+import UserRegistrationFrom from './components/user_components/UserRegistrationFrom';
 
 
 function App() {
 
   return (
     <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Layout />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/myshop' element={<Myshop />} />
-          <Route path='/order' element={<Orders />} />
-          <Route path='/feedback' element={<Feedback />} />
-        </Routes>
-      </Router>
-
+    <Router>
+      <Routes>
+      <Route path="/" element={<Layout />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path='/profile' element={<Profile/>}/>
+        <Route path='/myshop' element={<Myshop/>}/>
+        <Route path='/order' element={<Orders/>}/>
+        <Route path='/feedback' element={<Feedback />}/>
+        <Route path='/user-login' element={<UserLogin />} />
+        <Route path='user-registrationFrom' element={<UserRegistrationFrom />} />
+      </Routes>
+    </Router>
 
 
     </>

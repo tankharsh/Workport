@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -10,12 +9,12 @@ const Navbar = () => {
 
         {/* Navigation Links */}
         <div className="hidden md:flex space-x-8 items-center justify-between">
-          <a href="#home" className="navbar-link ">Home</a>
-          <a href="#services" className="navbar-link ">Services</a>
-          <a href="#about" className="navbar-link ">About</a>
-          <a href="#contact" className="navbar-link ">Contact</a>
-          <button className="navbar-link ">Login</button>
-          <NavLink to='/dashboard' className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-500">Start Selling</NavLink>
+          <a href="#home" className="hover:text-gray-400">Home</a>
+          <a href="#services" className="hover:text-gray-400">Services</a>
+          <a href="#about" className="hover:text-gray-400">About</a>
+          <a href="#contact" className="hover:text-gray-400">Contact</a>
+          <button className="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Login</button>
+          <button className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-500">Start Selling</button>
         </div>
 
         {/* Mobile Menu Button */}
