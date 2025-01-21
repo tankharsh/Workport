@@ -9,6 +9,7 @@ import Orders from './pages/sp_pages/Orders';
 import Feedback from './pages/sp_pages/Feedback'
 import UserLogin from './components/user_components/UserLogin';
 import UserRegistrationFrom from './components/user_components/UserRegistrationFrom';
+import SP_RegistrationForm from './components/sp_components/SP_RegistrationForm';
 
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
         <Route path='/feedback' element={<Feedback />}/>
         <Route path='/user-login' element={<UserLogin />} />
         <Route path='user-registrationFrom' element={<UserRegistrationFrom />} />
+        <Route path='/sp-provider' element={<SP_RegistrationForm />} />
+        
       </Routes>
     </Router>
 

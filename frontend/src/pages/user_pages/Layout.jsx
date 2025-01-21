@@ -120,7 +120,7 @@ const Layout = () => {
       {/* Top Categories Heading */}
       <h2 className="text-center text-2xl font-bold mb-4 flex flex-col items-center bg-white w-[18%] ml-[41%]  ">
         Top Categories
-        <div className="w-16 h-1 bg-blue-500 mt-2 absolute mt-[18px] z-[-1] w-[96%]"></div>
+        <div className=" h-1 bg-blue-500 absolute mt-[18px] z-[-1] w-[96%]"></div>
       </h2>
 
           {/* Search Bar */}
@@ -142,7 +142,7 @@ const Layout = () => {
             {catImage.map((catImage, index) => (
               <div
                 key={index}
-                className="relative h-56 flex-wrap w-[100%] flex items-center justify-center hover:scale-105 cursor-pointer"
+                className="relative h-56 flex-wrap w-[100%] flex items-center justify-center hover:scale-105 duration-300 cursor-pointer"
               >
                 <img src={catImage.catImage} alt={`Slide ${index + 1}`} className='bg-cover p-2 h-48 w-[100%] rounded-xl' />
                 <span className='text-black font-semibold text-xl font-[lato]'>{catImage.catName}</span>
@@ -238,7 +238,7 @@ const Layout = () => {
       {/* Footer */}
       <div className="bg-[#192B3C] flex flex-col">
         <div className="flex flex-wrap justify-between p-8">
-          <div className="w-full md:w-1/2 bg-white p-8 rounded shadow-lg mt-8 md:mt-0 md:ml-8">
+          <div id='contact-form' className="w-full md:w-1/2 bg-white p-8 rounded shadow-lg mt-8 md:mt-0 md:ml-8">
             {/* contact form - right side */}
             <h2 id='contact' className="text-black text-xl font-bold mb-6">Contact</h2>
             <form className="space-y-4">

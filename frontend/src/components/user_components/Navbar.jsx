@@ -1,20 +1,22 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   return (
     <nav className="bg-[#192B3C] text-white p-4 font-[Roboto]">
       <div className="container mx-auto flex items-center justify-between">
         {/* Website Name */}
-        <div className="text-2xl font-bold">WorkPort</div>
+        <NavLink to='/' className="text-2xl font-bold">WorkPort</NavLink>
 
         {/* Navigation Links */}
         <div className="hidden md:flex space-x-8 items-center justify-between">
-          <a href="#home" className="hover:text-gray-400">Home</a>
+          <a href="/" className="hover:text-gray-400">Home</a>
           <a href="#services" className="hover:text-gray-400">Services</a>
           <a href="#about" className="hover:text-gray-400">About</a>
           <a href="#contact" className="hover:text-gray-400">Contact</a>
-          <button className="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Login</button>
-          <button className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-500">Start Selling</button>
+          <NavLink to='/user-login'
+          className="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Login</NavLink>
+          <NavLink to='/sp-provider' className="block w-full bg-blue-600 px-4 py-2 rounded hover:bg-blue-500">Start Selling</NavLink>
         </div>
 
         {/* Mobile Menu Button */}
@@ -50,8 +52,8 @@ const Navbar = () => {
         <a href="#services" className="block hover:text-gray-400">Services</a>
         <a href="#about" className="block hover:text-gray-400">About</a>
         <a href="#contact" className="block hover:text-gray-400">Contact</a>
-        <button className="block w-full bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Login</button>
-        <NavLink to='/dashboard' className="block w-full bg-blue-600 px-4 py-2 rounded hover:bg-blue-500">Start Selling</NavLink>
+        <NavLink to='/user-login' className="bg-gray-800 px-4 py-2 rounded hover:bg-gray-700">Login</NavLink>
+        <NavLink to='/sp-provider' className="block w-full bg-blue-600 px-4 py-2 rounded hover:bg-blue-500">Start Selling</NavLink>
       </div>
     </nav>
   );

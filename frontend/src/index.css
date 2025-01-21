@@ -2,29 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-html,body{
+html,
+body {
     scroll-behavior: smooth;
 }
 
-body{
+body {
     overflow-x: hidden;
 }
 
-.navbar-link{
-    position: relative;
-    overflow: hidden;
-}
-
-.navbar-link::after{
-    content: "";
-    display: block;
-    height: 2.5px;
-    width: 100%;
-    background-color: #6499C2;
-    transform: scale(0);
-    transition: transform 0.3s ease;
-}
-
-.navbar-link:hover::after{
-    transform: scale(1);
+#login,
+#registration,
+#card,
+#contact-form,
+#sp_registrationForm {
+    border-top-left-radius: 25px;
+    border-bottom-right-radius: 25px;
 }

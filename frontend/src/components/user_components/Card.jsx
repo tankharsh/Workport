@@ -52,52 +52,14 @@ const Card = () => {
         },
     ];
 
-    const sectionRef = useRef(null);
-    const leftContentRef = useRef(null);
-    const rightImageRef = useRef(null);
-    useEffect(() => {
-      const section = sectionRef.current;
-  
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top center",
-          end: "bottom center",
-          scrub: 1, // Smooth scrubbing
-        },
-      })
-        .fromTo(
-          leftContentRef.current,
-          {
-            x: -100,
-            opacity: 0
-          },
-          {
-            x: 0,
-            opacity: 1
-          }
-        )
-        .fromTo(
-          rightImageRef.current,
-          {
-            x: 100,
-            opacity: 0
-          },
-          {
-            x: 0,
-            opacity: 1
-          },
-          "-=0.5"
-        );
-    }, []);
 
     return (
         <div
-        ref={sectionRef}
-        className=" mt-5 p-5 bg-[#192B3C] flex flex-col justify-center items-center">
+
+            className=" mt-5 p-5 bg-[#192B3C] flex flex-col justify-center items-center">
             <div
-            ref={leftContentRef}
-            className=" bg-white p-5">
+
+                className=" bg-white p-5">
                 <h1 className="text-xl font-semibold flex gap-5 title">
                     <span className="mt-2">
                         <FaCheckDouble />
@@ -105,12 +67,12 @@ const Card = () => {
                     One-Stop for All Local Businesses, Services, & Stores
                 </h1>
                 <div
-                ref={rightImageRef}
-                className="flex gap-5 flex-wrap justify-center mt-10 cards-container">
+                    className="flex gap-5 flex-wrap justify-center mt-10 cards-container">
                     {cardsData.map((card, index) => (
                         <div
+                            id='card'
                             key={index}
-                            className="card h-48 w-80 mt-3 flex gap-3 items-start p-3 border rounded-lg shadow-lg bg-gray-100"
+                            className="card h-48 w-80 mt-3 flex gap-3 items-start p-3 border shadow-lg bg-gray-100"
                         >
                             <span className="text-4xl text-red-500">{card.icon}</span>
                             <div>
