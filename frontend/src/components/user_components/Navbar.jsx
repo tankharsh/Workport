@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink , Link } from 'react-router-dom';
+
 
 const Navbar = () => {
   return (
@@ -10,7 +11,7 @@ const Navbar = () => {
 
         {/* Navigation Links */}
         <div className="hidden md:flex space-x-8 items-center justify-between">
-          <a href="/" className="hover:text-gray-400">Home</a>
+          <Link to="/" className="hover:text-gray-400">Home</Link>
           <a href="#services" className="hover:text-gray-400">Services</a>
           <a href="#about" className="hover:text-gray-400">About</a>
           <a href="#contact" className="hover:text-gray-400">Contact</a>
