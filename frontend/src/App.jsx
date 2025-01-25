@@ -10,26 +10,28 @@ import Feedback from './pages/sp_pages/Feedback'
 import UserLogin from './components/user_components/UserLogin';
 import UserRegistrationFrom from './components/user_components/UserRegistrationFrom';
 import SP_RegistrationForm from './components/sp_components/SP_RegistrationForm';
+import User_Dashboard from './pages/user_pages/User_Dashboard';
 
 
 function App() {
 
   return (
     <>
-    <Router>
-      <Routes>
-      <Route path="/" element={<Layout />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path='/profile' element={<Profile/>}/>
-        <Route path='/myshop' element={<Myshop/>}/>
-        <Route path='/order' element={<Orders/>}/>
-        <Route path='/feedback' element={<Feedback />}/>
-        <Route path='/user-login' element={<UserLogin />} />
-        <Route path='user-registrationFrom' element={<UserRegistrationFrom />} />
-        <Route path='/sp-provider' element={<SP_RegistrationForm />} />
-        
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Layout />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/myshop' element={<Myshop />} />
+          <Route path='/order' element={<Orders />} />
+          <Route path='/feedback' element={<Feedback />} />
+          <Route path='/user-login' element={<UserLogin />} />
+          <Route path='user-registrationFrom' element={<UserRegistrationFrom />} />
+          <Route path='/sp-provider' element={<SP_RegistrationForm />} />
+          <Route path='/User-Dashboard' element={<User_Dashboard />} />
+
+        </Routes>
+      </Router>
 
 
     </>

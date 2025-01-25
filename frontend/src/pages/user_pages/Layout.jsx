@@ -7,6 +7,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import gsap from 'gsap';
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Card from '../../components/user_components/Card';
+import { NavLink } from 'react-router-dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -140,13 +141,14 @@ const Layout = () => {
           {/* Cards Section */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 ">
             {catImage.map((catImage, index) => (
-              <div
+              <NavLink
+              to='/User-Dashboard'
                 key={index}
                 className="relative h-56 flex-wrap w-[100%] flex items-center justify-center hover:scale-105 duration-300 cursor-pointer"
               >
                 <img src={catImage.catImage} alt={`Slide ${index + 1}`} className='bg-cover p-2 h-48 w-[100%] rounded-xl' />
                 <span className='text-black font-semibold text-xl font-[lato]'>{catImage.catName}</span>
-              </div>
+              </NavLink>
             ))}
           </div>
         </div>

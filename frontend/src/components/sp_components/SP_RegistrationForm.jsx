@@ -34,7 +34,7 @@ const SP_RegistrationForm = () => {
             <Navbar />
             <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
                 {/* Container with fixed size */}
-                <div id="sp_registrationForm" className="flex flex-col md:flex-row w-full max-w-4xl h-[65%] bg-white shadow-lg rounded-lg overflow-hidden">
+                <div id="sp_registrationForm" className="flex flex-col md:flex-row w-full max-w-4xl h-[65%] bg-white shadow-lg  overflow-hidden">
                     {/* Left Side: Large Text */}
                     <div className="flex-1 bg-green-500 text-white flex items-center justify-center px-8">
                         <h1 className="text-4xl md:text-5xl font-bold text-center">

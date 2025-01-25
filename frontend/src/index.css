@@ -15,7 +15,15 @@ body {
 #registration,
 #card,
 #contact-form,
-#sp_registrationForm {
+#sp_registrationForm,
+#user-dashboard-img{
     border-top-left-radius: 25px;
     border-bottom-right-radius: 25px;
+}
+
+#user-dashboard-phone,
+#user-dashboard-whatsapp,
+.user-dashboard-service {
+    border-top-left-radius: 15px;
+    border-bottom-right-radius: 15px;
 }
