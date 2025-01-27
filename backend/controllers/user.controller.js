@@ -10,7 +10,7 @@ module.exports.registerUser = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, useremail, usercontactno, password, socketId } = req.body;
+    const { username, useremail, usercontactno, password } = req.body;
 
     try {
         // Hash the password
@@ -22,7 +22,7 @@ module.exports.registerUser = async (req, res, next) => {
             useremail,
             usercontactno,
             password: hashedPassword,
-            socketId,
+            //socketId,
         });
 
         // Generate JWT token
@@ -40,7 +40,7 @@ module.exports.registerUser = async (req, res, next) => {
                 username: user.username,
                 useremail: user.useremail,
                 usercontactno: user.usercontactno,
-                socketId: user.socketId,
+               // socketId: user.socketId,
             },
             token,
         });
@@ -93,7 +93,7 @@ module.exports.loginUser = async (req, res, next) => {
                 id: user._id,
                 username: user.username,
                 useremail: user.useremail,
-                socketId: user.socketId,
+                // socketId: user.socketId,
             },
         });
     } catch (error) {

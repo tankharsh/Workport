@@ -15,7 +15,7 @@ router.post(
             .isLength({ min: 10, max: 10 })
             .withMessage("Contact number must be 10 digits"),
         body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
-        body("socketId").notEmpty().withMessage("Socket ID is required"),
+       // body("socketId").notEmpty().withMessage("Socket ID is required"),
     ],
     userController.registerUser
 );
