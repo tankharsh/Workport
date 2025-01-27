@@ -5,6 +5,9 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET || "secret-000";
 const userControllers = require('../controllers/user.controller');
 const router = require("express").Router();
+const authmiddleware = require("../middlewares/auth.middleware");
+
+
 
 router.post(
     "/register",
@@ -30,6 +33,7 @@ router.post(
     userControllers.loginUser
 );
 
+router.get("/profile", authmiddleware.authUser, userControllers.getUserProfile);
 
 
 module.exports = router;

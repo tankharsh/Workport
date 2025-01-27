@@ -52,10 +52,6 @@ module.exports.registerUser = async (req, res, next) => {
     }
 };
 
-
-
-
-
 module.exports.loginUser = async (req, res, next) => {
     // Validate input fields
     const errors = validationResult(req);
@@ -84,7 +80,7 @@ module.exports.loginUser = async (req, res, next) => {
             JWT_SECRET,
             { expiresIn: "1h" }
         );
-
+    
         // Send success response
         res.status(200).json({
             message: "Login successful",
@@ -99,4 +95,21 @@ module.exports.loginUser = async (req, res, next) => {
     } catch (error) {
         next(error); // Pass any errors to the global error handler
     }
+
+
 };
+
+module.exports.getUserProfile = async (req, res) => {
+    try {
+      // Check if the middleware attached a valid user to the request object
+      if (!req.user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // Return the user profile
+      res.status(200).json(req.user);
+    } catch (err) {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  
