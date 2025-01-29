@@ -3,6 +3,8 @@ const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const blackListToken = require("../models/blackListToken.model");
 const JWT_SECRET = process.env.JWT_SECRET;
+const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
 // Register a new user
 module.exports.registerUser = async (req, res, next) => {
@@ -122,3 +124,54 @@ module.exports.logoutUser = async (req, res) => {
 
     res.status(200).json({ message: "Logout successful" });
 };
+
+
+
+// Update Service Provider
+exports.updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid Service Provider ID" });
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: "No fields provided for update" });
+        }
+
+        if (updates.password) {
+            updates.password = await bcrypt.hash(updates.password, 10);
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(id, updates, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "Service Provider not found" });
+        }
+
+        res.json({ message: "Updated successfully", data: updatedUser });
+    } catch (error) {
+        console.error("Update Error:", error);
+        res.status(500).json({ message: "Error updating service provider", error: error.message });
+    }
+};
+
+
+// Delete Service Provider
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedUser = await userModel.findByIdAndDelete(id);
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: "Service Provider not found" });
+        }
+
+        res.json({ message: "Deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting service provider", error });
+    }
+};
+

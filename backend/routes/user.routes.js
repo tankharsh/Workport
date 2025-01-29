@@ -29,7 +29,17 @@ router.post(
     userController.loginUser
 );
 
+
+// Update Service Provider
+router.put("/updateUser/:id", userController.updateUser);
+
+// Delete Service Provider
+router.delete("/deleteUser/:id", userController.deleteUser); 
+
+// Get user profile
 router.get("/profile", authmiddleware.authUser, userController.getUserProfile);
+
+// Logout User
 router.get("/logout", authmiddleware.authUser, userController.logoutUser);
 
 
