@@ -1,9 +1,5 @@
 const userController = require("../controllers/user.controller");
-const express = require("express");
-const { body, validationResult } = require("express-validator");
-const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET || "secret-000";
-const userControllers = require('../controllers/user.controller');
+const { body } = require("express-validator");
 const router = require("express").Router();
 const authmiddleware = require("../middlewares/auth.middleware");
 
@@ -30,10 +26,11 @@ router.post(
         body("useremail").isEmail().withMessage("Valid email is required"),
         body("password").notEmpty().withMessage("Password is required"),
     ],
-    userControllers.loginUser
+    userController.loginUser
 );
 
-router.get("/profile", authmiddleware.authUser, userControllers.getUserProfile);
+router.get("/profile", authmiddleware.authUser, userController.getUserProfile);
+router.get("/logout", authmiddleware.authUser, userController.logoutUser);
 
 
 module.exports = router;
