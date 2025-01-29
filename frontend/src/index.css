@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Nova+Slim&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Domine:wght@400..700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,12 +13,29 @@ body {
     overflow-x: hidden;
 }
 
+.bg-txt {
+    font-family: "Nova Slim", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.txt {
+    font-family: "Domine", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#top-categories::-webkit-scrollbar{
+    display: none;
+}
+
 #login,
 #registration,
 #card,
 #contact-form,
 #sp_registrationForm,
-#user-dashboard-img{
+#user-dashboard-img {
     border-top-left-radius: 25px;
     border-bottom-right-radius: 25px;
 }

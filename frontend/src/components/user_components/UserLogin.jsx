@@ -1,95 +1,167 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from './Navbar';
-import gsap from 'gsap';
+import { useContext, useState } from "react";
+import { motion } from "framer-motion";
+import Navbar from "./Navbar";
+import Slice from '../../assets/Slice.png'
+import { FaUser, FaEnvelope, FaLock, FaPhone } from 'react-icons/fa';
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../../context/AuthContext";
 
-function UserLogin() {
-  const loginRef = useRef();
-  useEffect(() => {
-    gsap.fromTo(
-      loginRef.current,
-      { opacity: 0, y: 50, scale: 0.8 },
-      { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power2.out' }
-    );
-  }, []);
+export default function UserLogin() {
+  const [isSignup, setIsSignup] = useState(false);
+
+  const [useremail, setUseremail] = useState('');
+  const [password, setPassword] = useState('');
+  const [usercontactno, setUsercontactno] = useState('');
+  const [username, setUsername] = useState('');
+  const navigate = useNavigate()
+
+  const { login } = useContext(AuthContext);
+  const { register } = useContext(AuthContext);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      const response = login({ useremail, password });
+      if (response) {
+        navigate('/User-Dashboard');
+      } else {
+        console.error('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login failed:', error.message);
+    }
+  }
+
+  const handleSignUpSubmit = (e) => {
+    e.preventDefault();
+    register({ username, useremail, usercontactno, password })
+    navigate('/User-Dashboard');
+  }
 
   return (
     <>
       <Navbar />
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-        <div
-          ref={loginRef}
-          id="login"
-          className="bg-white rounded-lg shadow-lg w-full max-w-sm p-6"
-        >
-          <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
-            Login
-          </h2>
-          <form>
-            <div className="mb-4">
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-600"
-              >
-                User Name
-              </label>
-              <input
-                type="text"
-                id="username"
-                placeholder="Enter your username"
-                className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-600"
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </div>
-            <div className="flex items-center justify-between mb-6">
-              <label className="flex items-center text-sm text-gray-600">
+      <div className="flex justify-center items-center h-screen bg-gray-300">
+        <div className="relative w-[700px] h-[400px] bg-white shadow-xl rounded-lg overflow-hidden flex">
+          {/* Login Form */}
+          <div
+            className={`w-1/2 p-8 absolute left-0 top-0 h-full transition-all duration-500 ${isSignup ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          >
+            <h2 className="text-2xl font-bold mb-4">Login</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="flex items-center mt-2">
+                <FaEnvelope className="text-gray-500 mr-3" />
                 <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4 text-blue-500 rounded focus:ring-blue-400"
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={useremail}
+                  onChange={(e) => setUseremail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
-                <span className="ml-2">Remember Me</span>
-              </label>
-              <a
-                href="#"
-                className="text-sm text-blue-500 hover:underline focus:outline-none"
-              >
-                Forget Me?
-              </a>
-            </div>
-            <div className="mt-4 text-center">
-              <span className="text-sm text-gray-600">Not registered? </span>
-              <Link
-                to="/user-registrationFrom"
-                className="text-sm text-blue-500 hover:underline focus:outline-none"
-              >
-                Register here
-              </Link>
-            </div>
+              </div>
+              <div className="flex items-center mt-2">
+                <FaLock className="text-gray-500 mr-3" />
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <button type="submit" className="w-full mt-5 bg-purple-600 text-white p-2 rounded">Login</button>
+            </form>
+          </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-500 mt-6 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              Login
-            </button>
-          </form>
+          {/* Signup Form */}
+          <div
+            className={`w-1/2 p-8 absolute right-0 top-0 h-full transition-all duration-500 ${isSignup ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+          >
+            <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
+            <form onSubmit={handleSignUpSubmit}>
+              <div className="flex items-center mt-2">
+                <FaUser className="text-gray-500 mr-3" />
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Enter your name"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div className="flex items-center mt-2">
+                <FaEnvelope className="text-gray-500 mr-3" />
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={useremail}
+                  onChange={(e) => setUseremail(e.target.value)}
+                  placeholder="Enter your email"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div className="flex items-center mt-2">
+                <FaPhone className="text-gray-500 mr-3" />
+                <input
+                  type="tel"
+                  id="contact"
+                  name="contact"
+                  value={usercontactno}
+                  onChange={(e) => setUsercontactno(e.target.value)}
+                  placeholder="Enter your contact number"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div className="flex items-center mt-2">
+                <FaLock className="text-gray-500 mr-3" />
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <button type="submit" className="w-full mt-5 bg-purple-600 text-white p-2 rounded">Sign Up</button>
+            </form>
+          </div>
+
+          {/* Animated Image */}
+          <motion.div
+            initial={{ x: 0 }}
+            animate={{ x: isSignup ? "100%" : "0%" }}
+            transition={{ duration: 0.5 }}
+            style={{ backgroundImage: `url(${Slice})` }}
+            className="absolute bg-cover top-0 left-0 w-1/2 h-full  flex justify-center items-center text-xl font-bold cursor-pointer z-10"
+            onClick={() => setIsSignup(!isSignup)}
+          >
+            {isSignup ? (
+              <div className="flex flex-col justify-center items-center">
+                <h1 className="text-white text-3xl mb-3">Welcome Back</h1>
+                <p className="w-[260px] text-white text-center text-lg mt-2">please sign into your accountwith the given details to continue</p>
+                <p className="text-white mt-5">If you haven't an account! sign up</p>
+                <button className="px-6 py-2 mt-3 text-black bg-transparent border-2 border-black rounded-lg">Sign up</button>
+              </div>
+            ) : (
+              <div className="flex flex-col justify-center items-center">
+                <h1 className="text-white text-3xl mb-3">Hello Friends</h1>
+                <p className="w-[260px] text-white text-center text-lg mt-2">Please provide the information to register your account!</p>
+                <p className="text-white mt-5">Already have an account ! Sign In</p>
+                <button className="px-6 py-2 mt-3 text-black bg-transparent border-2 border-black rounded-lg">Sign In</button>
+              </div>
+            )}
+          </motion.div>
         </div>
       </div>
     </>
   );
 }
-
-export default UserLogin;

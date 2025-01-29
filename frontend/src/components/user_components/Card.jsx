@@ -55,19 +55,12 @@ const Card = () => {
 
     return (
         <div
-
-            className=" mt-5 p-5 bg-[#192B3C] flex flex-col justify-center items-center">
-            <div
-
-                className=" bg-white p-5">
-                <h1 className="text-xl font-semibold flex gap-5 title">
-                    <span className="mt-2">
-                        <FaCheckDouble />
-                    </span>
+            className=" mt-5 p-5 bg-[#fff] flex flex-col justify-center items-center">
+            <div className=" bg-white p-5">
+                <h1 className="bg-txt text-2xl text-center font-semibold title">
                     One-Stop for All Local Businesses, Services, & Stores
                 </h1>
-                <div
-                    className="flex gap-5 flex-wrap justify-center mt-10 cards-container">
+                <div className="txt flex gap-5 flex-wrap justify-center mt-10 cards-container">
                     {cardsData.map((card, index) => (
                         <div
                             id='card'

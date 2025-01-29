@@ -2,50 +2,22 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import Navbar from './Navbar'
 import gsap from 'gsap'
 import AuthContext from '../../context/AuthContext';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 function UserRegistrationFrom() {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [useremail, setUseremail] = useState('');
+  const [usercontactno, setUsercontactno] = useState('');
+  const [password, setPassword] = useState('')
+  const { register } = useContext(AuthContext);
 
-  // const { register } = useContext(AuthContext);
-
-  const [formData, setFormData] = useState({
-    username: "",
-    useremail: "",
-    usercontactno: "",
-    password: "",
-  });
-
-  const handlechange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    const data = new FormData();
-    for (const key in formData) {
-      data.append(key, formData[key]);
-    }
-    // register(formData);
-
-    try {
-      const res = await fetch('http://localhost:3000/api/users/register', {
-        method:"POST",
-        headers:{
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-      // toast.error(`Error: ${err.response.data.error}`);
-    }
+    register({ username, useremail, usercontactno, password })
+    navigate('/user-login');
   }
 
   const RegRef = useRef();
@@ -81,8 +53,8 @@ function UserRegistrationFrom() {
                 name='username'
                 type="text"
                 id="name"
-                value={formData.username}
-                onChange={handlechange}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your full name"
                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
               />
@@ -100,8 +72,8 @@ function UserRegistrationFrom() {
                 name='useremail'
                 type="email"
                 id="email"
-                value={formData.useremail}
-                onChange={handlechange}
+                value={useremail}
+                onChange={(e) => setUseremail(e.target.value)}
                 placeholder="Enter your email"
                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
               />
@@ -119,8 +91,8 @@ function UserRegistrationFrom() {
                 name='usercontactno'
                 type="text"
                 id="contact"
-                value={formData.usercontactno}
-                onChange={handlechange}
+                value={usercontactno}
+                onChange={(e) => setUsercontactno(e.target.value)}
                 placeholder="Enter your contact number"
                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
               />
@@ -138,8 +110,8 @@ function UserRegistrationFrom() {
                 name='password'
                 type="password"
                 id="password"
-                value={formData.password}
-                onChange={handlechange}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
               />
