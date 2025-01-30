@@ -34,6 +34,12 @@ router.post(
     spController.loginSP
 );
 
+// Update Service Provider
+router.put("/update/:id", spController.updateServiceProvider);
+
+// Delete Service Provider
+router.delete("/delete/:id", spController.deleteServiceProvider); 
+
 
 router.get("/sp_profile", authmiddleware.authServiceProvider, spController.getProfile);
 router.get("/sp_logout", authmiddleware.authServiceProvider, spController.logoutSP);

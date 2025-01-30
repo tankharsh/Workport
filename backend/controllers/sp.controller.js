@@ -2,6 +2,8 @@ const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const ServiceProvider = require('../models/sp.model');
 const { blacklistToken } = require('../services/tokenService'); 
+const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -134,4 +136,52 @@ module.exports.logoutSP = async (req, res) => {
     }
 
     res.status(200).json({ message: result.message });
+};
+
+// Update Service Provider
+exports.updateServiceProvider = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid Service Provider ID" });
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: "No fields provided for update" });
+        }
+
+        if (updates.sp_password) {
+            updates.sp_password = await bcrypt.hash(updates.sp_password, 10);
+        }
+
+        const updatedProvider = await ServiceProvider.findByIdAndUpdate(id, updates, { new: true });
+
+        if (!updatedProvider) {
+            return res.status(404).json({ message: "Service Provider not found" });
+        }
+
+        res.json({ message: "Updated successfully", data: updatedProvider });
+    } catch (error) {
+        console.error("Update Error:", error);
+        res.status(500).json({ message: "Error updating service provider", error: error.message });
+    }
+};
+
+
+// Delete Service Provider
+exports.deleteServiceProvider = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedProvider = await ServiceProvider.findByIdAndDelete(id);
+
+        if (!deletedProvider) {
+            return res.status(404).json({ message: "Service Provider not found" });
+        }
+
+        res.json({ message: "Deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting service provider", error });
+    }
 };
