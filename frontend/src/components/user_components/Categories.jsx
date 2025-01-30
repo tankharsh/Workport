@@ -45,9 +45,6 @@ const Categories = () => {
                     <CatCard/>
                     <CatCard/>
 
-
-
-
                 </div>
 
                 {/* Right Button */}

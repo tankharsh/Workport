@@ -11,6 +11,9 @@ import UserLogin from './components/user_components/UserLogin';
 import UserRegistrationFrom from './components/user_components/UserRegistrationFrom';
 import SP_RegistrationForm from './components/sp_components/SP_RegistrationForm';
 import User_Dashboard from './pages/user_pages/User_Dashboard';
+import AdminDashboard from './admin/AdminDashboard';
+import AdminGetAllServiceProvider from './admin/AdminGetAllServiceProvider';
+import AdminGetAllUser from './admin/AdminGetAllUser';
 
 
 function App() {
@@ -29,6 +32,15 @@ function App() {
           <Route path='user-registrationFrom' element={<UserRegistrationFrom />} />
           <Route path='/sp-provider' element={<SP_RegistrationForm />} />
           <Route path='/User-Dashboard' element={<User_Dashboard />} />
+
+
+
+          {/* Admin routes */}
+          <Route path='/Admin-Dashboard' element={<AdminDashboard />} />
+          <Route path='/Admin-Dashboard/all-serviceproviders' element={<AdminGetAllServiceProvider />} />
+          <Route path='/Admin-Dashboard/all-users' element={<AdminGetAllUser />} />
+          {/* <Route path='/Admin-Dashboard' element={<AdminDashboard />} /> */}
+
 
         </Routes>
       </Router>
