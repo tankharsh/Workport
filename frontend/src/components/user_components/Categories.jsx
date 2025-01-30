@@ -18,7 +18,7 @@ const Categories = () => {
     };
 
     return (
-        <div className="bg-[#ECC3C2]/25 mt-12 h-auto relative">
+        <div className="bg-[#DAD4EDB5]/75 mt-12 h-auto relative">
             {/* Heading */}
             <h1 className="bg-txt text-center pt-5 text-3xl sm:text-4xl lg:text-5xl font-semibold">
                 Top Categories

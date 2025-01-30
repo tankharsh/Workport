@@ -11,6 +11,8 @@ import UserLogin from './components/user_components/UserLogin';
 import UserRegistrationFrom from './components/user_components/UserRegistrationFrom';
 import SP_RegistrationForm from './components/sp_components/SP_RegistrationForm';
 import User_Dashboard from './pages/user_pages/User_Dashboard';
+import SP_LoginForm from './components/sp_components/SP_LoginForm';
+import Shop_Dashboard from './pages/user_pages/Shop_Dashboard';
 
 
 function App() {
@@ -28,7 +30,9 @@ function App() {
           <Route path='/user-login' element={<UserLogin />} />
           <Route path='user-registrationFrom' element={<UserRegistrationFrom />} />
           <Route path='/sp-provider' element={<SP_RegistrationForm />} />
+          <Route path='/sp-provider-login' element={<SP_LoginForm />} />
           <Route path='/User-Dashboard' element={<User_Dashboard />} />
+          <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
 
         </Routes>
       </Router>

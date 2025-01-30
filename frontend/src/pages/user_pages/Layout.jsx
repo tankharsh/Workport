@@ -22,7 +22,7 @@ const Layout = () => {
             <p className="bg-txt text-black text-lg md:text-7xl tracking-wide leading-loose mb-8">
               Simplify Your Search, Amplify Your Choices.
             </p>
-            <NavLink to="/sp-provider" className="mt-5 text-3xl font-semibold bg-[#EEB6B6] text-black px-8 py-2 rounded-3xl hover:pointer">List Your Business</NavLink>
+            <NavLink to="/sp-provider" className="mt-5 text-3xl font-semibold bg-[#7D84B2BF] hover:bg-[#3a3e5cbf] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">List Your Business</NavLink>
           </div>
         </div>
       </div>
@@ -46,7 +46,7 @@ const Layout = () => {
           mollitia harum, numquam libero consectetur voluptatem magnam sed, doloremque
           id impedit aspernatur a quam.
         </p>
-        <button className="txt w-48 mt-6 bg-[#EEB6B6] py-2 px-6 text-center rounded-3xl hover:bg-green-500 transition-all duration-300">
+        <button className="txt w-48 mt-6 bg-[#7D84B2BF] hover:bg-[#3a3e5cbf] py-2 px-6 text-center rounded-3xl transition-all duration-300">
           Learn More
         </button>
       </div>

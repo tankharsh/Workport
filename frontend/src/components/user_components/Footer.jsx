@@ -4,12 +4,13 @@ import LinkedIn from '../../assets/LinkedIn.png'
 import insta from '../../assets/insta.png'
 import facebook from '../../assets/facebook.png'
 import twitter from '../../assets/twitter.png'
+import { NavLink } from "react-router-dom";
 
 
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-r from-purple-100 to-white p-8 md:p-16">
+    <footer className="bg-gradient-to-r from-[#7D84B21D] to-[#7D84B21D] p-8 md:p-16">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Our Services Section */}
         <div>
@@ -31,7 +32,9 @@ const Footer = () => {
             <li>About Us</li>
             <li>Services</li>
             <li>Contact Us</li>
+            <li><NavLink to="/sp-provider" className="hover:text-green-500">List Your Business</NavLink></li>
           </ul>
+          
         </div>
 
         {/* Contact Details Section */}

@@ -5,6 +5,7 @@ import Slice from '../../assets/Slice.png'
 import { FaUser, FaEnvelope, FaLock, FaPhone } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
+import Footer from "./Footer";
 
 export default function UserLogin() {
   const [isSignup, setIsSignup] = useState(false);
@@ -162,6 +163,7 @@ export default function UserLogin() {
           </motion.div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 }

@@ -5,6 +5,14 @@ import { FaRupeeSign } from "react-icons/fa"
 import { MdPhone } from "react-icons/md"
 import { FaCheckCircle } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa"
+import Footer from '../../components/user_components/Footer'
+import { NavLink } from 'react-router-dom'
+
+const services = [
+    { name: "Hair Wash", price: 3500 },
+    { name: "Hair Wash", price: 3500 },
+    { name: "Hair Wash", price: 3500 }
+];
 
 const User_Dashboard = () => {
     return (
@@ -12,145 +20,51 @@ const User_Dashboard = () => {
             <Navbar />
             <AdvancedSearchMenu />
             <div className="bg-[#192B3C] w-full text-white text-3xl font-bold p-4 mt-2">
-                <h1>Hair and Care Shop</h1>
-                <div className="bg-gray-200 h-[40%] w-[65%] text-black p-4 rounded-lg shadow-md flex gap-10 mt-4">
-                    {/* Image Placeholder */}
-                    <img
-                        src="https://cdn.pixabay.com/photo/2020/05/24/02/00/barber-shop-5212059_640.jpg"
-                        id="user-dashboard-img"
-                        className="bg-gray-300 w-36 h-36 md:w-72 md:h-64 mx-auto md:mx-0"
-                    />
+                <h1 className="text-center">Hair and Care Shop</h1>
 
-                    {/* Service Details */}
-                    <div className="flex-1">
-                        <h2 className="text-2xl font-bold">Ant Top Hair Care</h2>
-                        <p className="text-sm text-gray-600 mt-2">Location</p>
+                {[1, 2, 3].map((_, index) => (
+                    <div key={index} className="bg-gray-200 w-full max-w-5xl mx-auto text-black p-4 rounded-lg shadow-md flex flex-col md:flex-row gap-6 mt-6">
+                        {/* Image Placeholder */}
+                        <img src="https://cdn.pixabay.com/photo/2020/05/24/02/00/barber-shop-5212059_640.jpg"
+                            className="bg-gray-300 w-full md:w-72 md:h-64 object-cover rounded-lg" alt="Hair Care" />
 
-                        {/* Services and Prices */}
-                        <div className="flex flex-wrap gap-4 justify-center md:justify-start my-10">
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center">
-                                    <span>
-                                        <FaRupeeSign />
-                                    </span>
-                                    3500
-                                </p>
-                            </div>
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center">
-                                    <span>
-                                        <FaRupeeSign />
-                                    </span>
-                                    3500
-                                </p>
-                            </div>
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center">
-                                    <span>
-                                        <FaRupeeSign />
-                                    </span>
-                                    3500
-                                </p>
-                            </div>
-                        </div>
+                        {/* Service Details */}
+                        <div className="flex-1">
+                            <h2 className="text-2xl font-bold">Ant Top Hair Care</h2>
+                            <p className="text-sm text-gray-600 mt-2">Location</p>
 
-                        {/* Contact Buttons */}
-                        <div className="flex items-center gap-4 mt-10">
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-blue-800 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-600 before:duration-500 before:ease-out hover:shadow-blue-600 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><MdPhone/></span>922103020</span>
-                            </button>
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-green-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-green-700 before:duration-500 before:ease-out hover:shadow-green-700 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><FaWhatsapp/></span>Whatsapp</span>
-                            </button>
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-yellow-500 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-yellow-600 before:duration-500 before:ease-out hover:shadow-yellow-600 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><FaCheckCircle/></span>Book Now</span>
-                            </button>
+                            {/* Services and Prices */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-6">
+                                {services.map((service, i) => (
+                                    <div key={i} className="bg-white border border-gray-300 p-3 text-center text-lg rounded-lg">
+                                        <p>{service.name}</p>
+                                        <p className="text-gray-700 font-bold flex justify-center items-center gap-1">
+                                            <FaRupeeSign /> {service.price}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Contact Buttons */}
+                            <div className="flex flex-col sm:flex-row items-center gap-4 mt-6">
+                                <NavLink className="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-blue-800 hover:shadow-blue-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-opacity-50 before:duration-500 before:ease-out hover:before:h-56 hover:before:w-56 rounded-lg">
+                                    <span className="relative z-10 text-lg flex justify-center items-center gap-2"><MdPhone />922103020</span>
+                                </NavLink>
+
+                                <NavLink className="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-green-600 hover:shadow-green-700 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-opacity-50 before:duration-500 before:ease-out hover:before:h-56 hover:before:w-56 rounded-lg">
+                                    <span className="relative z-10 text-lg flex justify-center items-center gap-2"><FaWhatsapp />Whatsapp</span>
+                                </NavLink>
+
+                                <NavLink to='/Shop_Dashboard' className="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-yellow-500 hover:shadow-yellow-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-opacity-50 before:duration-500 before:ease-out hover:before:h-56 hover:before:w-56 rounded-lg">
+                                    <span className="relative z-10 text-lg flex justify-center items-center gap-2"><FaCheckCircle />Book Now</span>
+                                </NavLink>
+
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="bg-gray-200 h-[40%] w-[65%] text-black p-4 rounded-lg shadow-md flex gap-10 mt-4">
-                    {/* Image Placeholder */}
-                    <img src='https://cdn.pixabay.com/photo/2020/05/24/02/00/barber-shop-5212059_640.jpg' id='user-dashboard-img' className="bg-gray-300 w-36 h-36 md:w-72 md:h-64 "></img>
-
-                    {/* Service Details */}
-                    <div className="flex-1">
-                        <h2 className="text-2xl font-bold">Ant Top Hair Care</h2>
-                        <p className="text-sm text-gray-600 mt-2">Location</p>
-
-                        {/* Services and Prices */}
-                        <div className="flex gap-2 my-10">
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center"><span><FaRupeeSign /></span>3500</p>
-                            </div>
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center"><span><FaRupeeSign /></span>3500</p>
-                            </div>
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center"><span><FaRupeeSign /></span>3500</p>
-                            </div>
-                        </div>
-
-                        {/* Contact Buttons */}
-                        <div className="flex items-center gap-4 mt-10">
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-blue-800 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-600 before:duration-500 before:ease-out hover:shadow-blue-600 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><MdPhone/></span>922103020</span>
-                            </button>
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-green-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-green-700 before:duration-500 before:ease-out hover:shadow-green-700 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><FaWhatsapp/></span>Whatsapp</span>
-                            </button>
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-yellow-500 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-yellow-600 before:duration-500 before:ease-out hover:shadow-yellow-600 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><FaCheckCircle/></span>Book Now</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="bg-gray-200 h-[40%] w-[65%] text-black p-4 rounded-lg shadow-md flex gap-10 mt-4">
-                    {/* Image Placeholder */}
-                    <img src='https://cdn.pixabay.com/photo/2020/05/24/02/00/barber-shop-5212059_640.jpg' id='user-dashboard-img' className="bg-gray-300 w-36 h-36 md:w-72 md:h-64 "></img>
-
-                    {/* Service Details */}
-                    <div className="flex-1">
-                        <h2 className="text-2xl font-bold">Ant Top Hair Care</h2>
-                        <p className="text-sm text-gray-600 mt-2">Location</p>
-
-                        {/* Services and Prices */}
-                        <div className="flex gap-2 my-10">
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center"><span><FaRupeeSign /></span>3500</p>
-                            </div>
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center"><span><FaRupeeSign /></span>3500</p>
-                            </div>
-                            <div className="user-dashboard-service bg-white border border-gray-300 p-2 text-center text-lg w-40">
-                                <p>Hair Wash</p>
-                                <p className="text-gray-700 font-bold flex justify-center items-center"><span><FaRupeeSign /></span>3500</p>
-                            </div>
-                        </div>
-
-                        {/* Contact Buttons */}
-                        <div className="flex items-center gap-4 mt-10">
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-blue-800 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-blue-600 before:duration-500 before:ease-out hover:shadow-blue-600 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><MdPhone/></span>922103020</span>
-                            </button>
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-green-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-green-700 before:duration-500 before:ease-out hover:shadow-green-700 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><FaWhatsapp/></span>Whatsapp</span>
-                            </button>
-                            <button id='user-dashboard-phone' class="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-yellow-500 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-yellow-600 before:duration-500 before:ease-out hover:shadow-yellow-600 hover:before:h-56 hover:before:w-56">
-                                <span class="relative z-10 text-lg flex justify-center items-center gap-2"> <span><FaCheckCircle/></span>Book Now</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                ))}
             </div>
-
+            <Footer />
         </>
     )
 }

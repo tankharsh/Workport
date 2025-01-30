@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import Navbar from "../user_components/Navbar";
 import { NavLink } from "react-router-dom";
+import { FaEnvelope, FaLock, FaPhone, FaUser } from "react-icons/fa";
+import { GiShop } from "react-icons/gi";
+import { BiSolidCategoryAlt, BiSolidCity } from "react-icons/bi";
+import { FaMapLocationDot } from "react-icons/fa6";
+import { PiMapPinAreaFill } from "react-icons/pi";
+import { TbMapPinCode } from "react-icons/tb";
+import Footer from "../user_components/Footer";
 
 const SP_RegistrationForm = () => {
     const [step, setStep] = useState(1);
@@ -32,15 +39,26 @@ const SP_RegistrationForm = () => {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-300 flex p-2 items-center justify-center">
                 {/* Container with fixed size */}
-                <div id="sp_registrationForm" className="flex flex-col md:flex-row w-full max-w-4xl h-[65%] bg-white shadow-lg  overflow-hidden">
+                <div className="flex rounded-lg flex-col md:flex-row w-full max-w-4xl h-[65%] bg-white shadow-lg  overflow-hidden">
                     {/* Left Side: Large Text */}
-                    <div className="flex-1 bg-green-500 text-white flex items-center justify-center px-8">
-                        <h1 className="text-4xl md:text-5xl font-bold text-center">
+                    <div className="flex-1 bg-gradient-to-r from-blue-500/75 to-purple-600/75 text-white flex items-center justify-center ">
+                        <h1 className="text-xl md:text-xl font-bold text-center p-8">
                             {step === 1
-                                ? "Welcome to Registration"
-                                : "Shop Details Registration"}
+                                ? (
+                                    <div className>
+                                        <h1 className="mb-5">"Welcome to Registration"</h1>
+                                        <NavLink to="/sp-provider-login" className="mb-2 px-6 py-2 rounded-lg hover:scale-95 border-2 border-white">Login</NavLink>
+                                    </div>
+                                )
+                                : (
+                                    <div className>
+                                        <h1 className="mb-5">"Shop Details Registration"</h1>
+                                        <NavLink to="/sp-provider-login" className="mt-5 px-6 py-2 rounded-lg hover:scale-95 border-2 border-white">Login</NavLink>
+                                    </div>
+                                )
+                            }
                         </h1>
                     </div>
 
@@ -57,91 +75,160 @@ const SP_RegistrationForm = () => {
                                 {/* Step 1 */}
                                 {step === 1 && (
                                     <div>
-                                        <label className="block text-gray-700 text-sm font-bold mb-2">
-                                            Service Pro Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter name"
-                                        />
+                                        {/* sp_name  */}
+                                        <div className="flex items-center mt-2">
+                                            <FaUser className="text-gray-500 mr-3" />
+                                            <input
+                                                type="text"
+                                                id="sp_name"
+                                                name="sp_name"
+                                                placeholder="Enter your name"
+                                                className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                        </div>
 
-                                        <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
-                                            Service Pro Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter email"
-                                        />
+                                        {/* sp_email */}
+                                        <div className="flex items-center mt-2">
+                                            <FaEnvelope className="text-gray-500 mr-3" />
+                                            <input
+                                                type="email"
+                                                id="sp_email"
+                                                name="sp_email"
+                                                placeholder="Enter your Email"
+                                                className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                        </div>
 
-                                        <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
-                                            Service Pro Contact Number
-                                        </label>
-                                        <input
-                                            type="tel"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter contact number"
-                                        />
+                                        {/* sp_contact */}
+                                        <div className="flex items-center mt-2">
+                                            <FaPhone className="text-gray-500 mr-3" />
+                                            <input
+                                                type="tel"
+                                                id="sp_contact"
+                                                name="sp_contact"
+                                                placeholder="Enter your Contact No"
+                                                className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                        </div>
                                     </div>
                                 )}
 
                                 {/* Step 2 */}
                                 {step === 2 && (
                                     <div>
-                                        <label className="block text-gray-700 text-sm font-bold mb-2">
-                                            Service Pro Shop Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter shop name"
-                                        />
+                                        {/* sp_shop_name */}
+                                        <div className="flex items-center mt-2">
+                                            <GiShop className="text-gray-500 mr-3" />
+                                            <input
+                                                type="text"
+                                                id="sp_shop_name"
+                                                name="sp_shop_name"
+                                                placeholder="Enter your Name"
+                                                className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                        </div>
 
-                                        <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
-                                            Service Pro Category
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter category"
-                                        />
+                                        {/* sp_category */}
+                                        <div className="flex items-center mt-2">
+                                            <BiSolidCategoryAlt className="text-gray-500 mr-3" />
+                                            <input
+                                                type="text"
+                                                id="sp_category"
+                                                name="sp_category"
+                                                placeholder="Enter your Category"
+                                                className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                        </div>
 
-                                        <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
-                                            House No./Building Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter house/building name"
-                                        />
 
-                                        <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
-                                            Road Name / Area / Colony
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter road name/area/colony"
-                                        />
 
-                                        <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
-                                            Pincode
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter pincode"
-                                        />
+                                        {/* sp_area */}
+                                        <div className="flex items-center mt-2">
+                                            <PiMapPinAreaFill className="text-gray-500 mr-3" />
+                                            <input
+                                                type="text"
+                                                id="sp_area"
+                                                name="sp_area"
+                                                placeholder="Enter your Shop Area"
+                                                className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                        </div>
 
-                                        <label className="block text-gray-700 text-sm font-bold mt-4 mb-2">
-                                            City
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            placeholder="Enter city"
-                                        />
+                                        {/* sp_block_no */}
+                                        <div className="flex gap-4 mt-2">
+                                            {/* sp_block_no */}
+                                            <div className="flex items-center w-1/2">
+                                                <FaMapLocationDot className="text-gray-500 mr-3" />
+                                                <input
+                                                    type="text"
+                                                    id="sp_block_no"
+                                                    name="sp_block_no"
+                                                    placeholder="Block No"
+                                                    className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                />
+                                            </div>
+
+                                            {/* sp_pincode */}
+                                            <div className="flex items-center w-1/2">
+                                                <TbMapPinCode className="text-gray-500 mr-3" />
+                                                <input
+                                                    type="text"
+                                                    id="sp_pincode"
+                                                    name="sp_pincode"
+                                                    placeholder="Pincode"
+                                                    className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                />
+                                            </div>
+                                        </div>
+
+
+                                        {/* sp_city */}
+                                        <div className="flex items-center mt-2">
+                                            <BiSolidCity className="text-gray-500 mr-3" />
+                                            <input
+                                                type="text"
+                                                id="sp_city"
+                                                name="sp_city"
+                                                placeholder="Enter your Shop City"
+                                                className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center mt-2">
+                                            <FaLock className="text-gray-500 mr-3" />
+                                            <input
+                                                type="password"
+                                                id="sp_password"
+                                                name="sp_password"
+                                                placeholder="Enter your password"
+                                                className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            />
+                                        </div>
+
+                                        <div className="flex gap-4 mt-2">
+                                            {/* Shop Image */}
+                                            <div className="flex items-center w-1/2">
+                                                <label htmlFor="shop_image" className="text-gray-500 mr-3">Shop Image:</label>
+                                                <input
+                                                    type="file"
+                                                    id="shop_image"
+                                                    name="shop_image"
+                                                    className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                />
+                                            </div>
+
+                                            {/* Banner Image */}
+                                            <div className="flex items-center w-1/2">
+                                                <label htmlFor="banner_image" className="text-gray-500 mr-3">Banner Image:</label>
+                                                <input
+                                                    type="file"
+                                                    id="banner_image"
+                                                    name="banner_image"
+                                                    className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                                />
+                                            </div>
+                                        </div>
+
                                     </div>
                                 )}
 
@@ -167,7 +254,7 @@ const SP_RegistrationForm = () => {
                                         </button>
                                     ) : (
                                         <NavLink
-                                        to="/dashboard"
+                                            to="/dashboard"
                                             type="submit"
                                             className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                                         >
@@ -180,6 +267,7 @@ const SP_RegistrationForm = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 };
