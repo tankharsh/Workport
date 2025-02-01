@@ -6,11 +6,27 @@ import { FaEnvelope, FaLock, FaPhone, FaUser } from "react-icons/fa";
 import { GiShop } from "react-icons/gi";
 import { BiSolidCategoryAlt, BiSolidCity } from "react-icons/bi";
 import { FaMapLocationDot } from "react-icons/fa6";
-import { PiMapPinAreaFill } from "react-icons/pi";
 import { TbMapPinCode } from "react-icons/tb";
 import Footer from "../user_components/Footer";
+import { PiMapPinAreaFill } from "react-icons/pi";
 
 const SP_RegistrationForm = () => {
+
+    const [formData, setFormData] = useState({
+        sp_name: '',
+        sp_email: '',
+        contact: '',
+        sp_shop_name: '',
+        sp_contact: '',
+        sp_shop_name: '',
+        sp_category: '',
+        sp_area: '',
+        sp_block_no: '',
+        sp_city: '',
+        sp_password: '',
+    })
+
+
     const [step, setStep] = useState(1);
     const formRef = useRef();
 
@@ -140,8 +156,6 @@ const SP_RegistrationForm = () => {
                                             />
                                         </div>
 
-
-
                                         {/* sp_area */}
                                         <div className="flex items-center mt-2">
                                             <PiMapPinAreaFill className="text-gray-500 mr-3" />
@@ -181,7 +195,6 @@ const SP_RegistrationForm = () => {
                                             </div>
                                         </div>
 
-
                                         {/* sp_city */}
                                         <div className="flex items-center mt-2">
                                             <BiSolidCity className="text-gray-500 mr-3" />
@@ -194,6 +207,7 @@ const SP_RegistrationForm = () => {
                                             />
                                         </div>
 
+                                        {/* sp_password  */}
                                         <div className="flex items-center mt-2">
                                             <FaLock className="text-gray-500 mr-3" />
                                             <input
@@ -205,6 +219,7 @@ const SP_RegistrationForm = () => {
                                             />
                                         </div>
 
+                                        {/* Images  */}
                                         <div className="flex gap-4 mt-2">
                                             {/* Shop Image */}
                                             <div className="flex items-center w-1/2">

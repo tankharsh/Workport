@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
+import AuthContext from '../../context/AuthContext'; // Import Auth Context
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLogoutPopup, setShowLogoutPopup] = useState(false); // State for logout confirmation
+  const { user, logout } = useContext(AuthContext);
 
-  // Function to close menu when a link is clicked
+  // Function to close the mobile menu when a link is clicked
   const closeMenu = () => setIsMenuOpen(false);
+
+  // Logout Confirmation
+  const handleLogout = () => {
+    logout();
+    setShowLogoutPopup(false); // Close popup after logout
+  };
 
   return (
     <nav className="bg-[#63849E30]/25 text-black p-4 font-[Roboto]">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Website Logo */}
+        {/* Logo */}
         <NavLink to="/" className="flex items-center text-3xl font-bold">
           <img src={logo} alt="Workport Logo" className="h-12 w-20" />
           <span>WORKPORT</span>
@@ -23,9 +32,23 @@ const Navbar = () => {
           <NavLink to="/#services" className="hover:text-gray-400 text-lg font-semibold">Services</NavLink>
           <NavLink to="/#about" className="hover:text-gray-400 text-lg font-semibold">About</NavLink>
           <NavLink to="/#contact" className="hover:text-gray-400 text-lg font-semibold">Contact</NavLink>
-          <NavLink to="/user-login" className="bg-[#7D84B2BF] text-lg font-semibold text-black px-4 py-2 rounded hover:bg-[#3a3e5cbf] transition-all duration-300">
-            Login
-          </NavLink>
+
+          {user ? (
+            <button
+              onClick={() => setShowLogoutPopup(true)}
+              className="bg-red-500 text-lg font-semibold text-white px-4 py-2 rounded hover:bg-red-700 transition-all duration-300"
+            >
+              Logout
+            </button>
+          ) : (
+            <NavLink
+              to="/user-login"
+              className="bg-[#7D84B2BF] text-lg font-semibold text-black px-4 py-2 rounded hover:bg-[#3a3e5cbf] transition-all duration-300"
+            >
+              Login
+            </NavLink>
+          )}
+
         </div>
 
         {/* Mobile Menu Button */}
@@ -58,10 +81,50 @@ const Navbar = () => {
         <NavLink to="/#services" className="block hover:text-gray-400" onClick={closeMenu}>Services</NavLink>
         <NavLink to="/#about" className="block hover:text-gray-400" onClick={closeMenu}>About</NavLink>
         <NavLink to="/#contact" className="block hover:text-gray-400" onClick={closeMenu}>Contact</NavLink>
-        <NavLink to="/user-login" className="bg-[#EEB6B6] text-lg font-semibold text-black px-4 py-2 rounded hover:bg-pink-700 block" onClick={closeMenu}>
-          Login
-        </NavLink>
+
+        {/* Mobile Login / Logout Button */}
+        {user ? (
+          <button
+            onClick={() => setShowLogoutPopup(true)}
+            className="bg-red-500 text-lg font-semibold text-white px-4 py-2 rounded hover:bg-red-700 block"
+          >
+            Logout
+          </button>
+        ) : (
+          <NavLink
+            to="/user-login"
+            className="bg-[#EEB6B6] text-lg font-semibold text-black px-4 py-2 rounded hover:bg-pink-700 block"
+            onClick={closeMenu}
+          >
+            Login
+          </NavLink>
+        )}
+
       </div>
+
+      {/* Logout Confirmation Popup */}
+      {showLogoutPopup && (
+        <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-lg font-semibold mb-4">Are you sure you want to logout?</h2>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Yes, Logout
+              </button>
+              <button
+                onClick={() => setShowLogoutPopup(false)}
+                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </nav>
   );
 };

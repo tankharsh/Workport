@@ -55,7 +55,7 @@ const User_Dashboard = () => {
                                     <span className="relative z-10 text-lg flex justify-center items-center gap-2"><FaWhatsapp />Whatsapp</span>
                                 </NavLink>
 
-                                <NavLink to='/Shop_Dashboard' className="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-yellow-500 hover:shadow-yellow-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-opacity-50 before:duration-500 before:ease-out hover:before:h-56 hover:before:w-56 rounded-lg">
+                                <NavLink to='/Shop-Dashboard' className="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-yellow-500 hover:shadow-yellow-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-opacity-50 before:duration-500 before:ease-out hover:before:h-56 hover:before:w-56 rounded-lg">
                                     <span className="relative z-10 text-lg flex justify-center items-center gap-2"><FaCheckCircle />Book Now</span>
                                 </NavLink>
 

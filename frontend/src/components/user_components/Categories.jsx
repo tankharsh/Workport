@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { NavLink } from "react-router-dom";
 
 const Categories = () => {
     const sliderRef = useRef(null);
@@ -40,10 +41,10 @@ const Categories = () => {
                     className="flex gap-6 overflow-x-scroll scrollbar-hide snap-x snap-mandatory"
                 >
 
-                    <CatCard/>
-                    <CatCard/>
-                    <CatCard/>
-                    <CatCard/>
+                    <CatCard />
+                    <CatCard />
+                    <CatCard />
+                    <CatCard />
 
 
 
@@ -66,26 +67,29 @@ const Categories = () => {
 const CatCard = () => {
     return (
         <>
-            <div className="txt flex justify-center items-center bg-gray-100">
-                <div className="w-80 bg-[#EDC2C1] rounded-xl shadow-lg overflow-hidden">
-                    <div className="flex justify-center ">
-                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-100 shadow-md">
-                            <img
-                                src="https://cdn.pixabay.com/photo/2022/11/07/17/20/shear-7576856_640.jpg"
-                                alt="Hair Salon"
-                                className="object-cover w-full h-full"
-                            />
+            <NavLink
+                to='/User-Dashboard'>
+                <div className="txt flex justify-center items-center bg-gray-100">
+                    <div className="w-80 bg-[#EDC2C1] rounded-xl shadow-lg overflow-hidden">
+                        <div className="flex justify-center ">
+                            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-100 shadow-md">
+                                <img
+                                    src="https://cdn.pixabay.com/photo/2022/11/07/17/20/shear-7576856_640.jpg"
+                                    alt="Hair Salon"
+                                    className="object-cover w-full h-full"
+                                />
+                            </div>
+                        </div>
+                        <div className="px-6 py-8">
+                            <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Hair Salon</h2>
+                            <p className="text-gray-600 text-center text-sm leading-relaxed">
+                                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an
+                                unknown printer took a of type and scramb.
+                            </p>
                         </div>
                     </div>
-                    <div className="px-6 py-8">
-                        <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Hair Salon</h2>
-                        <p className="text-gray-600 text-center text-sm leading-relaxed">
-                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an
-                            unknown printer took a of type and scramb.
-                        </p>
-                    </div>
                 </div>
-            </div>
+            </NavLink>
         </>
     )
 }
