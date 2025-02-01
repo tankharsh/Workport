@@ -4,7 +4,7 @@ const RecentlyCategories = () => {
   return (
     <>
       <div
-        className="h-[100vh] pt-5 bg-gradient-to-l from-[#ECC3C2]/50 via-[#C197D2]/25 to-[#ECC3C2]/0"
+        className="h-auto md:mt-16 pt-5 bg-gradient-to-l from-[#7D84B230]/50 via-[#8FA6CB52]/50 to-[#D5F9DE99]/50"
       >
         <h1 className="bg-txt text-center mt-5 text-3xl sm:text-4xl lg:text-5xl font-semibold">
           Recently Added

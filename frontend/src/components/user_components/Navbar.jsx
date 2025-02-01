@@ -8,9 +8,9 @@ const Navbar = () => {
   // Function to close menu when a link is clicked
   const closeMenu = () => setIsMenuOpen(false);
 
-  return (
-    <nav className="bg-[#ECC3C2]/25 text-black p-4 font-[Roboto]">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
+  return (<>
+    <nav className="bg-[#63849E30]/25 text-black p-4 font-[Roboto]">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Website Logo */}
         <NavLink to="/" className="flex items-center text-3xl font-bold">
           <img src={logo} alt="Workport Logo" className="h-12 w-20" />
@@ -23,7 +23,7 @@ const Navbar = () => {
           <NavLink to="/#services" className="hover:text-gray-400 text-lg font-semibold">Services</NavLink>
           <NavLink to="/#about" className="hover:text-gray-400 text-lg font-semibold">About</NavLink>
           <NavLink to="/#contact" className="hover:text-gray-400 text-lg font-semibold">Contact</NavLink>
-          <NavLink to="/user-login" className="bg-[#EEB6B6] text-lg font-semibold text-black px-4 py-2 rounded hover:bg-pink-700">
+          <NavLink to="/user-login" className="bg-[#7D84B2BF] text-lg font-semibold text-black px-4 py-2 rounded hover:bg-[#3a3e5cbf] transition-all duration-300">
             Login
           </NavLink>
         </div>
@@ -63,7 +63,7 @@ const Navbar = () => {
         </NavLink>
       </div>
     </nav>
-  );
+  </>);
 };
 
 export default Navbar;

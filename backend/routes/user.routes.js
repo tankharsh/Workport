@@ -39,6 +39,9 @@ router.delete("/deleteUser/:id", userController.deleteUser);
 // Get user profile
 router.get("/profile", authmiddleware.authUser, userController.getUserProfile);
 
+//Get all users
+router.get('/', userController.getAllUsers);
+
 // Logout User
 router.get("/logout", authmiddleware.authUser, userController.logoutUser);
 

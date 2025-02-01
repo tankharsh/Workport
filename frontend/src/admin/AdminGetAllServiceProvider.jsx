@@ -1,11 +1,36 @@
-import React, { useState } from 'react'; 
+import React, { useState , useEffect } from 'react'; 
 import AdminSidebar from './AdminSidebar'; 
 import { MdDeleteForever } from 'react-icons/md';
 import { FaEdit } from "react-icons/fa";
+import axios from 'axios';
 
 function AdminGetAllServiceProvider() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [serviceProviderData, setServiceProviderData] = useState([]);
+  // const [loading, setLoading] = useState(true);  // To track loading state
+  const [error, setError] = useState(null);      // To track errors
+
+  useEffect(() => {
+    // Fetch data from the API using Axios
+    axios.get('http://localhost:4000/api/sp')
+      .then((response) => {
+        setServiceProviderData(response.data);  // Update the state with the fetched data
+        // setLoading(false);         // Set loading to false after data is fetched
+      })
+      .catch((error) => {
+        setError('Error fetching users: ' + error.message);  // Handle errors
+        // setLoading(false);  // Set loading to false after error
+      });
+  }, []);  // Empty dependency array ensures it runs only once after initial render
+
+  // if (loading) {
+  //   return <div>Loading...</div>;  // Show loading message while fetching data
+  // }
+
+  if (error) {
+    return <div>{error}</div>;  // Show error message if there's any error
+  }
 
   const openModal = (user) => {
     setCurrentUser(user);
@@ -16,29 +41,6 @@ function AdminGetAllServiceProvider() {
     setIsModalOpen(false);
     setCurrentUser(null);
   };
-
-  const serviceProviderData = [
-    {
-      "no": 1,
-      "service_provider_name": "John Doe",
-      "sp_email": "john.doe@example.com",
-      "sp_contact": "1234567890",
-      "sp_shop_name": "John's Electronics",
-      "sp_category": "Electronics",
-      "sp_pincode": "123456",
-      "sp_city": "New York"
-    },
-    {
-      "no": 2,
-      "service_provider_name": "Jane Smith",
-      "sp_email": "jane.smith@example.com",
-      "sp_contact": "0987654321",
-      "sp_shop_name": "Smith's Bakery",
-      "sp_category": "Bakery",
-      "sp_pincode": "654321",
-      "sp_city": "Los Angeles"
-    }
-  ];
 
   return (
     <div>
@@ -61,10 +63,10 @@ function AdminGetAllServiceProvider() {
               </tr>
             </thead>
             <tbody>
-              {serviceProviderData.map((user) => (
-                <tr key={user.no} className="hover:bg-gray-200 text-sm sm:text-base">
-                  <td className="px-2 py-2 border">{user.no}</td>
-                  <td className="px-2 py-2 border">{user.service_provider_name}</td>
+              {serviceProviderData.map((user , index) => (
+                <tr key={index} className="hover:bg-gray-200 text-sm sm:text-base">
+                  <td className="px-2 py-2 border">{index + 1}</td>
+                  <td className="px-2 py-2 border">{user.sp_name}</td>
                   <td className="px-2 py-2 border">{user.sp_email}</td>
                   <td className="px-2 py-2 border">{user.sp_contact}</td>
                   <td className="px-2 py-2 border">{user.sp_shop_name}</td>
@@ -84,6 +86,8 @@ function AdminGetAllServiceProvider() {
             </tbody>
           </table>
         </div>
+
+        
       </main>
 
       {/* Responsive Edit Modal */}
@@ -125,6 +129,9 @@ function AdminGetAllServiceProvider() {
           </div>
         </div>
       )}
+
+
+   
     </div>
   );
 }

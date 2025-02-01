@@ -5,6 +5,10 @@ import Slice from '../../assets/Slice.png'
 import { FaUser, FaEnvelope, FaLock, FaPhone } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
+import Footer from "./Footer";
+import { Helmet } from "react-helmet-async";
+
+
 
 export default function UserLogin() {
   const [isSignup, setIsSignup] = useState(false);
@@ -40,6 +44,11 @@ export default function UserLogin() {
 
   return (
     <>
+    <Helmet>
+        <title>WorkPort | Login</title>
+        <meta name="description" content="Know more about us." />
+        <meta name="author" content="My Website Team" />
+      </Helmet>
       <Navbar />
       <div className="flex justify-center items-center h-screen bg-gray-300">
         <div className="relative w-[700px] h-[400px] bg-white shadow-xl rounded-lg overflow-hidden flex">
@@ -162,6 +171,7 @@ export default function UserLogin() {
           </motion.div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 }
