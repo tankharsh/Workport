@@ -3,6 +3,7 @@ import Navbar from './Navbar'
 import gsap from 'gsap'
 import AuthContext from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 
 function UserRegistrationFrom() {
@@ -31,6 +32,11 @@ function UserRegistrationFrom() {
 
   return (
     <>
+    <Helmet>
+        <title>WorkPort | Registration</title>
+        <meta name="description" content="Know more about us." />
+        <meta name="author" content="My Website Team" />
+      </Helmet>
       <Navbar />
       <div className="flex items-center justify-center min-h-screen  bg-gradient-to-r from-blue-500 to-purple-600">
         <div

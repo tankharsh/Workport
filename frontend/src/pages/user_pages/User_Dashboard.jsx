@@ -7,6 +7,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa"
 import Footer from '../../components/user_components/Footer'
 import { NavLink } from 'react-router-dom'
+import { Helmet } from "react-helmet-async";
 
 const services = [
     { name: "Hair Wash", price: 3500 },
@@ -17,6 +18,11 @@ const services = [
 const User_Dashboard = () => {
     return (
         <>
+        <Helmet>
+        <title>WorkPort</title>
+        <meta name="description" content="Know more about us." />
+        <meta name="author" content="My Website Team" />
+      </Helmet>
             <Navbar />
             <AdvancedSearchMenu />
             <div className="bg-[#192B3C] w-full text-white text-3xl font-bold p-4 mt-2">

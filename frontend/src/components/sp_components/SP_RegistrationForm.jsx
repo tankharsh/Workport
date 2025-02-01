@@ -9,6 +9,8 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { TbMapPinCode } from "react-icons/tb";
 import Footer from "../user_components/Footer";
 import { PiMapPinAreaFill } from "react-icons/pi";
+import { Helmet } from "react-helmet-async";
+
 
 const SP_RegistrationForm = () => {
 
@@ -54,6 +56,11 @@ const SP_RegistrationForm = () => {
 
     return (
         <>
+        <Helmet>
+        <title>Service Provider | Registration</title>
+        <meta name="description" content="Know more about us." />
+        <meta name="author" content="My Website Team" />
+      </Helmet>
             <Navbar />
             <div className="min-h-screen bg-gray-300 flex p-2 items-center justify-center">
                 {/* Container with fixed size */}

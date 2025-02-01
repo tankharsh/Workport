@@ -1,26 +1,45 @@
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
-const ServiceProvider = require('../models/sp.model');
-const { blacklistToken } = require('../services/tokenService'); 
+const ServiceProvider = require("../models/sp.model");
+const { blacklistToken } = require("../services/tokenService");
 const mongoose = require("mongoose");
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
+const multer = require("multer");
+const upload = require("../multer/multer");
+const path = require("path");
+
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Register a Service Provider
-module.exports.registerSP = async (req, res, next) => {
+exports.registerSP = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { sp_name, sp_email, sp_contact, sp_shop_name, sp_category, sp_block_no, sp_area, sp_pincode, sp_city, sp_password } = req.body;
+    console.log(req.files); // Debugging: Check the files received
+
+    const {
+        sp_name,
+        sp_email,
+        sp_contact,
+        sp_shop_name,
+        sp_category,
+        sp_block_no,
+        sp_area,
+        sp_pincode,
+        sp_city,
+        sp_password,
+    } = req.body;
 
     try {
-        // Hash the password
-        const hashedPassword = await ServiceProvider.hashpassword(sp_password);
+        // Check if files were uploaded
+        if (!req.files || !req.files["sp_shop_img"] || !req.files["sp_shop_banner_img"]) {
+            return res.status(400).json({ message: "Shop image and banner image are required" });
+        }
 
-        // Create the service provider
+        const hashedPassword = await ServiceProvider.hashpassword(sp_password);
         const sp = await ServiceProvider.create({
             sp_name,
             sp_email,
@@ -32,30 +51,15 @@ module.exports.registerSP = async (req, res, next) => {
             sp_pincode,
             sp_city,
             sp_password: hashedPassword,
+            sp_shop_img: req.files["sp_shop_img"][0].path, // Path to the uploaded shop image
+            sp_shop_banner_img: req.files["sp_shop_banner_img"][0].path, // Path to the uploaded banner image
         });
 
-        // Generate JWT token
-        const token = jwt.sign(
-            { id: sp._id, sp_name: sp.sp_name, sp_email: sp.sp_email },
-            JWT_SECRET,
-            { expiresIn: "1h" }
-        );
+        const token = jwt.sign({ id: sp._id, sp_name: sp.sp_name, sp_email: sp.sp_email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-        // Send response
         res.status(201).json({
             message: "Service Provider registered successfully",
-            serviceProvider: {
-                id: sp._id,
-                sp_name: sp.sp_name,
-                sp_email: sp.sp_email,
-                sp_contact: sp.sp_contact,
-                sp_shop_name: sp.sp_shop_name,
-                sp_category: sp.sp_category,
-                sp_block_no: sp.sp_block_no,
-                sp_area: sp.sp_area,
-                sp_pincode: sp.sp_pincode,
-                sp_city: sp.sp_city,
-            },
+            serviceProvider: sp,
             token,
         });
     } catch (error) {
@@ -122,6 +126,16 @@ module.exports.getProfile = (req, res) => {
         serviceProvider, // Sends the entire object
     });
 };
+
+// Get all Service Providers
+exports.getAllSP = async (req, res) => {
+    try {
+      const SP = await ServiceProvider.find(); // Fetch all service providers from DB
+      res.json(SP); // Send the users as JSON response
+    } catch (err) {
+      res.status(500).json({ message: 'Error fetching ServiceProvider', error: err });
+    }
+  };
 
 // Service Provider Logout
 module.exports.logoutSP = async (req, res) => {

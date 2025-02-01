@@ -4,10 +4,16 @@ import Navbar from '../user_components/Navbar';
 import Footer from '../user_components/Footer';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 function SP_LoginForm() {
     return (
         <>
+        <Helmet>
+                <title>Service Provider | Login</title>
+                <meta name="description" content="Know more about us." />
+                <meta name="author" content="My Website Team" />
+              </Helmet>
             <Navbar />
             <div className="min-h-screen bg-gray-300 p-2 flex items-center justify-center">
                 {/* Container with fixed size */}

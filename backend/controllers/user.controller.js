@@ -125,6 +125,15 @@ module.exports.logoutUser = async (req, res) => {
     res.status(200).json({ message: "Logout successful" });
 };
 
+// Get all users
+exports.getAllUsers = async (req, res) => {
+    try {
+      const users = await userModel.find(); // Fetch all users from DB
+      res.json(users); // Send the users as JSON response
+    } catch (err) {
+      res.status(500).json({ message: 'Error fetching users', error: err });
+    }
+  };
 
 
 // Update Service Provider

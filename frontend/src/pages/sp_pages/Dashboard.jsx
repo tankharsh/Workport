@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import Sidebar from '../../components/sp_components/Sidebar';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { Helmet } from 'react-helmet-async';
 
 
 const Dashboard = () => {
@@ -19,6 +20,10 @@ const Dashboard = () => {
 
     return (
         <>
+        <Helmet>
+            <title>Service Provider | Dashboard</title>
+            <meta name="description" content="Dashboard" />
+        </Helmet>
             <Sidebar />
             <main className="flex-1 lg:ml-64 py-2 mt-20">
                 <div className='text-3xl font-bold mt-2 ml-3'>Welcome...</div>

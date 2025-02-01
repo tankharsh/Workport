@@ -17,7 +17,8 @@ const Navbar = () => {
     setShowLogoutPopup(false); // Close popup after logout
   };
 
-  return (
+  return (<>
+
     <nav className="bg-[#63849E30]/25 text-black p-4 font-[Roboto]">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
@@ -126,7 +127,7 @@ const Navbar = () => {
       )}
 
     </nav>
-  );
+  </>);
 };
 
 export default Navbar;
