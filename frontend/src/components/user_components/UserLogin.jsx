@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
 import Slice from '../../assets/Slice.png'
-import { FaUser, FaEnvelope, FaLock, FaPhone } from 'react-icons/fa';
+import { FaUser, FaEnvelope, FaLock, FaPhone, FaEyeSlash, FaEye } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Footer from "./Footer";
@@ -19,6 +19,8 @@ export default function UserLogin() {
   const [password, setPassword] = useState('');
   const [usercontactno, setUsercontactno] = useState('');
   const [username, setUsername] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate()
 
   const { storeUserToken, showPopup } = useAuth();
@@ -119,17 +121,24 @@ export default function UserLogin() {
               </div>
 
               {/* user login password  */}
-              <div className="flex items-center mt-2">
+              <div className="flex items-center mt-2 relative">
                 <FaLock className="text-gray-500 mr-3" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
                 />
+                <button
+                  type="button"
+                  className="absolute right-3 text-gray-500"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
               </div>
 
               {/* login submit button  */}
@@ -186,16 +195,23 @@ export default function UserLogin() {
               </div>
 
               {/* user password  */}
-              <div className="flex items-center mt-2">
+              <div className="flex items-center mt-2 relative">
                 <FaLock className="text-gray-500 mr-3" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none active:scale-95 transition-all duration-200 focus:ring-2 focus:ring-purple-500"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
                 />
+                <button
+                  type="button"
+                  className="absolute right-3 text-gray-500"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
               </div>
 
               <button type="submit" className="w-full mt-5 bg-purple-600 text-white p-2 rounded">Sign Up</button>
@@ -215,7 +231,9 @@ export default function UserLogin() {
               <div className="flex flex-col justify-center items-center">
                 <h1 className="text-white text-3xl mb-3">Welcome Back</h1>
                 <p className="w-[260px] text-white text-center text-lg mt-2">please sign into your accountwith the given details to continue</p>
-                <p className="text-white mt-5">If you haven't an account! sign up</p>
+                <p className="text-white mt-5">If you haven't an account! sign up
+                
+                </p>
                 <button className="px-6 py-2 mt-3 text-black bg-transparent border-2 border-black rounded-lg hover:scale-95 transition-all duration-200">Sign up</button>
               </div>
             ) : (

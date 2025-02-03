@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaEnvelope, FaLock, FaPhone, FaUser } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaPhone, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import { GiShop } from "react-icons/gi";
 import { BiSolidCategoryAlt, BiSolidCity } from "react-icons/bi";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -32,6 +32,7 @@ const SP_RegistrationForm = () => {
         sp_shop_img: null,
         sp_shop_banner_img: null,
     });
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
@@ -208,17 +209,24 @@ const SP_RegistrationForm = () => {
                         </div>
 
                         {/* SP Password  */}
-                        <div className="flex items-center border p-2 rounded-md">
+                        <div className="flex items-center border p-2 rounded-md relative">
                             <FaLock className="mr-2 text-gray-500" />
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 name="sp_password"
                                 placeholder="Enter password"
                                 value={formData.sp_password}
                                 onChange={handleChange}
-                                className="w-full outline-none"
+                                className="w-full outline-none pr-8"
                                 required
                             />
+                            <button
+                                type="button"
+                                className="absolute right-3 text-gray-500"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
                         </div>
 
                         {/* SP Shop Image upload fields */}

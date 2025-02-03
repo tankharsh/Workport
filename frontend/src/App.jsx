@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import axios from 'axios';
 import Loader from './admin/Loader';
 import './App.css';
@@ -21,13 +21,13 @@ import Shop_Dashboard from './pages/user_pages/Shop_Dashboard';
 import AdminAddCategory from './admin/AdminAddCategory';
 import AdminAllCategory from './admin/AdminAllCategory';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
+import SPProtectedRoute from './pages/Protected';
 
 
 function App() {
   const [loading, setLoading] = useState(false);
 
   // let timer; // Declare timer outside to avoid resetting
-
   useEffect(() => {
     const requestInterceptor = axios.interceptors.request.use(
       (config) => {
@@ -69,33 +69,35 @@ function App() {
           <meta name="description" content="Description of my website" />
         </Helmet>
 
-
         <Router>
           <Loader show={loading} />
-            <Routes>
-              {/* users routes  */}
-              <Route path="/" element={<Layout />} />
-              <Route path='/user-login' element={<UserLogin />} />
-              <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
-              <Route path='/User-Dashboard' element={<User_Dashboard />} />
-              <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
+          <Routes>
+            {/* users routes  */}
+            <Route path="/" element={<Layout />} />
+            <Route path='/user-login' element={<UserLogin />} />
+            <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
+            <Route path='/User-Dashboard' element={<User_Dashboard />} />
+            <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
 
-              {/* Service Provider routes  */}
-              <Route path='/sp-provider' element={<SP_RegistrationForm />} />
-              <Route path='/sp-provider-login' element={<SP_LoginForm />} />
+            {/* Service Provider routes  */}
+            <Route path='/sp-provider' element={<SP_RegistrationForm />} />
+            <Route path='/sp-provider-login' element={<SP_LoginForm />} />
+            <Route element={<SPProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path='/profile' element={<Profile />} />
               <Route path='/myshop' element={<Myshop />} />
               <Route path='/order' element={<Orders />} />
               <Route path='/feedback' element={<Feedback />} />
+            </Route>
+            {/* Admin routes */}
+            <Route path='/Admin-Dashboard' element={<AdminDashboard />} />
+            <Route path='/Admin-Dashboard/all-serviceproviders' element={<AdminGetAllServiceProvider />} />
+            <Route path='/Admin-Dashboard/all-users' element={<AdminGetAllUser />} />
+            <Route path='/Admin-Dashboard/add-category' element={<AdminAddCategory />} />
+            <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
 
-              {/* Admin routes */}
-              <Route path='/Admin-Dashboard' element={<AdminDashboard />} />
-              <Route path='/Admin-Dashboard/all-serviceproviders' element={<AdminGetAllServiceProvider />} />
-              <Route path='/Admin-Dashboard/all-users' element={<AdminGetAllUser />} />
-              <Route path='/Admin-Dashboard/add-category' element={<AdminAddCategory />} />
-              <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
-            </Routes>
+            <Route path="*" element={<Navigate to="/sp-provider-login" />} />
+          </Routes>
         </Router>
       </HelmetProvider>
     </>

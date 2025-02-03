@@ -38,9 +38,10 @@ const Categories = () => {
                 {/* Scrollable Cards */}
                 <div
                     ref={sliderRef}
-                    className="flex gap-6 overflow-x-scroll scrollbar-hide snap-x snap-mandatory"
+                    className="flex gap-6  overflow-x-scroll scrollbar-hide snap-x snap-mandatory"
                 >
-
+                    <CatCard />
+                    <CatCard />
                     <CatCard />
                     <CatCard />
                     <CatCard />

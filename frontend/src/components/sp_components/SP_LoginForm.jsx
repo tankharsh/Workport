@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../user_components/Navbar';
 import Footer from '../user_components/Footer';
-import { FaEnvelope, FaLock } from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
@@ -17,6 +17,7 @@ function SP_LoginForm() {
 
     const [sp_email, setSp_email] = useState("");
     const [sp_password, setSp_password] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     // *** SP Login Here 
     const handleSubmit = async (e) => {
@@ -94,17 +95,24 @@ function SP_LoginForm() {
                                     </div>
 
                                     {/* SP password */}
-                                    <div className="flex items-center mt-2">
+                                    <div className="flex items-center mt-2 relative">
                                         <FaLock className="text-gray-500 mr-3" />
                                         <input
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             id="sp_password"
                                             name="sp_password"
                                             value={sp_password}
                                             onChange={(e) => setSp_password(e.target.value)}
                                             placeholder="Enter your password"
-                                            className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 pr-10"
                                         />
+                                        <button
+                                            type="button"
+                                            className="absolute right-3 text-gray-500"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
                                     </div>
                                 </div>
 

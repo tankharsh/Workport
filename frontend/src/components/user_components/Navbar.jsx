@@ -107,7 +107,7 @@ const Navbar = () => {
       {showLogoutPopup && (
         <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <h2 className="text-lg font-semibold mb-4">Are you sure you want to logout?</h2>
+            <h2 className="text-lg font-semibold text-black mb-4">Are you sure you want to logout?</h2>
             <div className="flex justify-center space-x-4">
               <button
                 onClick={handleLogout}

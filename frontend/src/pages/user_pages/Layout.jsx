@@ -6,12 +6,13 @@ import Categories from '../../components/user_components/Categories'
 import RecentlyCategories from '../../components/user_components/RecentlyCategories'
 import Card from '../../components/user_components/Card'
 import Footer from '../../components/user_components/Footer'
+import LoginPopup from '../../components/user_components/LoginPopup'
 
 const Layout = () => {
   return (
     <>
       <Navbar />
-
+      <LoginPopup/>
       {/* background and heading  */}
       <div
         className="relative h-screen w-full bg-cover bg-gray-500/75 bg-center flex items-center"
@@ -62,6 +63,8 @@ const Layout = () => {
 
       {/* Footer  */}
       <Footer/>
+
+
     </>
   )
 }
