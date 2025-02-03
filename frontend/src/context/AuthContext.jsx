@@ -1,25 +1,39 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import Popup from '../components/user_components/Popup';
 
+// APIs 
 const USER_API_URI = "http://localhost:4000/api/users";
 const SERVICE_PROVIDER_API_URI = "http://localhost:4000/api/sp";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+
     const [user, setUser] = useState(null);
     const [serviceprovider, setServiceprovider] = useState(null);
+
     const [popupMessage, setPopupMessage] = useState("");
 
-    // Load user from localStorage on component mount
+    //*----------------------------------------------------------------
+    // USERS TOKEN LOGIC **START** HERE
+    //*----------------------------------------------------------------
+
+    // ***  user from localStorage 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setUser(token)
-            fetchUserProfile(token);
+        const userToken = localStorage.getItem('token');
+        if (userToken) {
+            setUser(JSON.parse(localStorage.getItem('loggedInUser')));
         }
     }, []);
 
-    // *** fetch the profile *** 
+    // *** Store user token 
+    const storeUserToken = (token, userData) => {
+        localStorage.setItem('token', token);
+        localStorage.setItem('loggedInUser', JSON.stringify(userData));
+        setUser(userData);
+    };
+
+    // *** USER - fetch the profile  
     const fetchUserProfile = async (id, token) => {
         try {
             const res = await fetch(`${USER_API_URI}/${id}`, {
@@ -41,61 +55,10 @@ export const AuthProvider = ({ children }) => {
             console.error("Error fetching user profile:", error);
         }
     };
-    // *** fetch Profile ends *** 
+    // *** USER - fetch Profile ends  
 
-    // *** user login ***
-    const login = async (credentials) => {
-        try {
-            const res = await fetch(`${USER_API_URI}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials),
-            });
 
-            const data = await res.json();
-
-            if (res.ok) {
-                console.log("Login successful:", data);
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('loggedInUser', JSON.stringify(data));
-                showPopup('Login Successful !', 'success')
-                setUser(data.user);
-            } else {
-                showPopup('Login Failed: ' + (data.message || "Unknown error"), 'error');
-                console.error("Login failed:", data.message || "Unknown error");
-            }
-            
-        } catch (error) {
-            console.error("Unexpected error during login:", error);
-        }
-    };
-    // *** user login ends ***
-
-    // *** user registration ***
-    const register = async (details) => {
-        try {
-            const res = await fetch(`${USER_API_URI}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(details),
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                showPopup('Registration Successful !', 'success')
-                console.log("Registration successful:", data.message);
-            } else {
-                showPopup('Registration failed !', 'success')
-                console.error("Registration failed:", data.message);
-            }
-        } catch (error) {
-            console.error('Registration Error:', error);
-        }
-    };
-    // *** user registration ends *** 
-
-    // *** logout ***
+    // *** USER - logout 
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('loggedInUser');
@@ -103,31 +66,47 @@ export const AuthProvider = ({ children }) => {
         console.log("User logged out successfully");
         showPopup('Logout Successful!', 'success');
     };
-    // *** logout ends ***
 
-    // *** Popup Message ***
+    //*----------------------------------------------------------------
+    // USERS TOKEN LOGIC **ENDs** HERE
+    //*----------------------------------------------------------------
+
+
+    // *** Popup Message 
     const showPopup = (message, type) => {
         setPopupMessage({ message, type });
         setTimeout(() => {
             setPopupMessage("");
         }, 1000);
     };
-    // *** Popup Message ends ***
 
-/* =================================================================================
-        **** SERVICE PROVIDER LOGIC HERE ****
-==================================================================================*/
-       
-    // *** Service Provider fetch profile ***
+    //*----------------------------------------------------------------
+    //  SERVICE PROVIDER TOKEN LOGIC **START** HERE
+    //*----------------------------------------------------------------
 
+    // *** SERVICE PROVIDER -  from localStorage 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setServiceprovider(token)
-            fetchServiceProviderProfile(token);
-        }
-    }, [])
+        const spToken = localStorage.getItem('SP_token');
+        const spData = localStorage.getItem('SP_LoggedInUser');
 
+        if (spToken && spData) {
+            try {
+                setServiceprovider(JSON.parse(spData));
+            } catch (error) {
+                console.error("Error parsing SP_LoggedInUser:", error);
+                setServiceprovider(null);
+            }
+        }
+    }, []);
+
+    // *** SERVICE PROVIDER - Store token 
+    const storeSPToken = (token, spData) => {
+        localStorage.setItem('SP_token', token);
+        localStorage.setItem('SP_LoggedInUser', JSON.stringify(spData));
+        setServiceprovider(spData);
+    };
+
+    // *** SERVICE PROVIDER - fetch profile 
     const fetchServiceProviderProfile = async (id, token) => {
         try {
             const res = await fetch(`${SERVICE_PROVIDER_API_URI}/${id}`, {
@@ -140,61 +119,48 @@ export const AuthProvider = ({ children }) => {
             const data = await res.json();
 
             if (res.ok) {
-                setServiceprovider(data.user);
+                setServiceprovider(data.serviceprovider);
             } else {
                 console.error("Failed to fetch user profile:", data.message);
-                logout(); // Logout if token is invalid
+                spLogout(); // Logout if token is invalid
             }
         } catch (error) {
             console.error("Error fetching Service Provider profile:", error);
         }
     };
-    // *** Service Provider fetch profile ends ***
+    // *** SERVICE PROVIDER - fetch profile ends 
 
-    // *** Service Provider Login ***
-    const SP_login = async (credentials) => {
-        try {
-            const res = await fetch(`${SERVICE_PROVIDER_API_URI}//sp_login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(credentials),
-            });
+    // *** SERVICE PROVIDER - Logout 
+    const spLogout = () => {
+        localStorage.removeItem('SP_token');
+        localStorage.removeItem('SP_LoggedInUser');
+        setServiceprovider(null);
+    };
 
-            const data = await res.json();
-
-            if (res.ok) {
-                console.log("Service Provider Login Successful :", data);
-                localStorage.setItem('SP_token', data.token);
-                localStorage.setItem('SP_LoggedInUser', JSON.stringify(data));
-                showPopup('Login Successful !', 'success')
-                setServiceprovider(data.serviceprovider);
-                setRedirect(true)
-                navigate('/Dashboard')
-            } else {
-                showPopup('Login Failed : ' + (data.message || "Unknown error"), 'error');
-                console.error("Login Failed : ", data.message || "Unknown error")
-            }
-            return { success: true, token: data.token };
-        } catch (error) {
-            console.error('Unexpected Error During Login :', error)
-            return { success: false , message:"ERROR" };
-        }
-    }
-    // *** Service Provider Login ends ***
-/* ===============================================================================
-        **** SERVICE PROVIDER LOGIC ENDS **** 
-==================================================================================*/
-   
-
-
-
+    //*----------------------------------------------------------------
+    //  SERVICE PROVIDER TOKEN LOGIC **ENDs**  HERE
+    //*----------------------------------------------------------------
 
     return (
-        <AuthContext.Provider value={{ login, register, logout, user, showPopup, SP_login, serviceprovider }}>
+        <AuthContext.Provider
+            value=
+            {{
+                storeUserToken,
+                logout,
+                user,
+                showPopup,
+                serviceprovider,
+                spLogout,
+                storeSPToken
+            }}
+        >
             {children}
-            {popupMessage && <Popup message={popupMessage.message} type={popupMessage.type} onClose={() => setPopupData(null)} />}
+            {popupMessage &&
+                <Popup
+                    message={popupMessage.message}
+                    type={popupMessage.type}
+                    onClose={() => setPopupData(null)}
+                />}
         </AuthContext.Provider>
     );
 };

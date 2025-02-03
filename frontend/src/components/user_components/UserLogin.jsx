@@ -1,44 +1,96 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "./Navbar";
 import Slice from '../../assets/Slice.png'
 import { FaUser, FaEnvelope, FaLock, FaPhone } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
-import {useAuth} from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import Footer from "./Footer";
 import { Helmet } from "react-helmet-async";
 
-
-
 export default function UserLogin() {
-  const [isSignup, setIsSignup] = useState(false);
 
+  // *** Users API 
+  const USER_LOGIN_API_URI = "http://localhost:4000/api/users/login"
+  const USER_REGISTER_API_URI = "http://localhost:4000/api/users/register"
+
+  const [isSignup, setIsSignup] = useState(false);
   const [useremail, setUseremail] = useState('');
   const [password, setPassword] = useState('');
   const [usercontactno, setUsercontactno] = useState('');
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
 
-  const { login } = useAuth();
-  const { register } = useAuth();
+  const { storeUserToken, showPopup } = useAuth();
 
-  
-
-  const handleSubmit = (e) => {
+  //  *** Login Logic here
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login({ useremail, password });
-    navigate('/User-Dashboard')
-  }
 
-  const handleSignUpSubmit = (e) => {
-    e.preventDefault();
-    register({ username, useremail, usercontactno, password })
-    navigate('/user-login');
+    const credentials = ({ useremail, password })
+    try {
+      const res = await fetch(USER_LOGIN_API_URI, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log("Login successful:", data);
+        storeUserToken(data.token, data.user);
+        showPopup('Login Successful !', 'success')
+        // setUser(data.user);
+        setUseremail('');
+        setPassword('');
+        navigate('/')
+      } else {
+        showPopup('Login Failed: ' + (data.message || "Unknown error"), 'error');
+        console.log("Login failed:", data.message || "Unknown error");
+      }
+
+    } catch (error) {
+      console.error("Unexpected error during login:", error);
+    }
   }
+  // *** Login Logic Ends Here
+
+  // *** Registration Logic Here 
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+
+    const details = ({ username, useremail, usercontactno, password })
+
+    try {
+      const res = await fetch(USER_REGISTER_API_URI, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(details),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        showPopup('Registration Successful !', 'success')
+        console.log("Registration successful:", data.message);
+        setUsername(''),
+          setUseremail(''),
+          setUsercontactno(''),
+          setPassword('')
+      } else {
+        showPopup('Registration failed !', 'error')
+        console.error("Registration failed:", data.message);
+      }
+    } catch (error) {
+      console.error('Registration Error:', error);
+    }
+  }
+  // *** Registration Logic Ends Here 
 
   return (
     <>
-    <Helmet>
+      <Helmet>
         <title>WorkPort | Login</title>
         <meta name="description" content="Know more about us." />
         <meta name="author" content="My Website Team" />
@@ -52,6 +104,7 @@ export default function UserLogin() {
           >
             <h2 className="text-2xl font-bold mb-4">Login</h2>
             <form onSubmit={handleSubmit}>
+              {/* user login email  */}
               <div className="flex items-center mt-2">
                 <FaEnvelope className="text-gray-500 mr-3" />
                 <input
@@ -64,6 +117,8 @@ export default function UserLogin() {
                   className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
+
+              {/* user login password  */}
               <div className="flex items-center mt-2">
                 <FaLock className="text-gray-500 mr-3" />
                 <input
@@ -76,6 +131,8 @@ export default function UserLogin() {
                   className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
+
+              {/* login submit button  */}
               <button type="submit" className="w-full mt-5 bg-purple-600 text-white p-2 rounded">Login</button>
             </form>
           </div>
@@ -86,6 +143,7 @@ export default function UserLogin() {
           >
             <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
             <form onSubmit={handleSignUpSubmit}>
+              {/* user name  */}
               <div className="flex items-center mt-2">
                 <FaUser className="text-gray-500 mr-3" />
                 <input
@@ -98,6 +156,8 @@ export default function UserLogin() {
                   className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
+
+              {/* user email  */}
               <div className="flex items-center mt-2">
                 <FaEnvelope className="text-gray-500 mr-3" />
                 <input
@@ -110,6 +170,8 @@ export default function UserLogin() {
                   className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
+
+              {/* user contact  */}
               <div className="flex items-center mt-2">
                 <FaPhone className="text-gray-500 mr-3" />
                 <input
@@ -122,6 +184,8 @@ export default function UserLogin() {
                   className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
+
+              {/* user password  */}
               <div className="flex items-center mt-2">
                 <FaLock className="text-gray-500 mr-3" />
                 <input
@@ -133,6 +197,7 @@ export default function UserLogin() {
                   className="p-2 w-full border border-gray-300 rounded-md focus:outline-none active:scale-95 transition-all duration-200 focus:ring-2 focus:ring-purple-500"
                 />
               </div>
+
               <button type="submit" className="w-full mt-5 bg-purple-600 text-white p-2 rounded">Sign Up</button>
             </form>
           </div>

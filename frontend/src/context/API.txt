@@ -1,0 +1,8 @@
+
+ ****** Users APIs ******
+ USER_LOGIN_API_URI = "http://localhost:4000/api/users/login"
+ USER_REGISTER_API_URI = "http://localhost:4000/api/users/register"
+
+ ****** Service Provider APIs ******
+ SERVICE_PROVIDER_LOGIN_API_URI = "http://localhost:4000/api/sp/sp_login"
+ SERVICE_PROVIDER_REGISTER_API = 'http://localhost:4000/api/sp/sp_register'

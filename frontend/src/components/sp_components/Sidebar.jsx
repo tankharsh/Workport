@@ -14,7 +14,7 @@ const Sidebar = () => {
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
-        document.body.style.overflow = isOpen ? "auto" : "hidden"; 
+        document.body.style.overflow = isOpen ? "auto" : "hidden";
     };
 
     return (
@@ -23,15 +23,14 @@ const Sidebar = () => {
             {isOpen && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-                    onClick={toggleSidebar} 
+                    onClick={toggleSidebar}
                 ></div>
             )}
 
             {/* Sidebar */}
             <div
-                className={`fixed inset-y-0 left-0 bg-[#192B3C] text-white w-64 transform ${
-                    isOpen ? "translate-x-0" : "-translate-x-full"
-                } transition-transform duration-300 ease-in-out z-50 lg:translate-x-0 lg:block`}
+                className={`fixed inset-y-0 left-0 bg-[#192B3C] text-white w-64 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+                    } transition-transform duration-300 ease-in-out z-50 lg:translate-x-0 lg:block`}
             >
                 {/* Sidebar Header */}
                 <div className="flex items-center justify-between p-4">
@@ -46,8 +45,10 @@ const Sidebar = () => {
                 </div>
                 {/* Sidebar Links */}
                 <nav className="mt-3">
+
+                    {/* Dashboard Link  */}
                     <NavLink
-                        to="/"
+                        to="/Dashboard"
                         className={({ isActive }) =>
                             isActive
                                 ? "block px-4 py-2 bg-[#6499C2] text-white"
@@ -58,11 +59,15 @@ const Sidebar = () => {
                             <TbHomeFilled className="text-2xl" /> Dashboard
                         </span>
                     </NavLink>
+
+                    {/* Add Service Link  */}
                     <a href="#" className="block px-4 py-2 mt-3 hover:bg-[#6499C2]">
                         <span className="flex px-2 gap-3 justify-start items-center">
                             <GrServices className="text-2xl" /> Add Service
                         </span>
                     </a>
+
+                    {/* Profile Link  */}
                     <NavLink
                         to="/profile"
                         className={({ isActive }) =>
@@ -75,6 +80,8 @@ const Sidebar = () => {
                             <BsPersonWorkspace className="text-2xl" /> Profile
                         </span>
                     </NavLink>
+
+                    {/* Myshop Link  */}
                     <NavLink
                         to="/myshop"
                         className={({ isActive }) =>
@@ -87,6 +94,8 @@ const Sidebar = () => {
                             <BsShop className="text-2xl" /> My Shop
                         </span>
                     </NavLink>
+
+                    {/* Order Link  */}
                     <NavLink
                         to="/order"
                         className={({ isActive }) =>
@@ -99,16 +108,20 @@ const Sidebar = () => {
                             <FaCartShopping className="text-2xl" /> Orders
                         </span>
                     </NavLink>
+
+                    {/* Feedback Link  */}
                     <NavLink to="/feedback" className="block px-4 py-2 mt-3 hover:bg-[#6499C2]">
                         <span className="flex px-2 gap-3 justify-start items-center">
                             <MdFeedback className="text-2xl" /> Feedback
                         </span>
                     </NavLink>
-                    <a href="#" className="block px-4 py-2 mt-3 hover:bg-red-700">
+
+                    {/* Logout Link  */}
+                    <NavLink to="/" className="block px-4 bg-red-500 py-2 mt-3 hover:bg-red-700">
                         <span className="flex px-2 gap-3 justify-start items-center">
                             <HiOutlineLogout className="text-2xl" /> Logout
                         </span>
-                    </a>
+                    </NavLink>
                 </nav>
             </div>
 

@@ -5,12 +5,19 @@ import { BiSolidCategoryAlt, BiSolidCity } from "react-icons/bi";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { TbMapPinCode } from "react-icons/tb";
 import { PiMapPinAreaFill } from "react-icons/pi";
-import axios from "axios";
 import Navbar from "../user_components/Navbar";
 import Footer from "../user_components/Footer";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const SP_RegistrationForm = () => {
+    // *** Service Provider Registration Api 
+    const SERVICE_PROVIDER_REGISTER_API = 'http://localhost:4000/api/sp/sp_register';
+
+    const { showPopup } = useAuth();
+
+    const navigate = useNavigate()
+
     const [formData, setFormData] = useState({
         sp_name: "",
         sp_email: "",
@@ -34,6 +41,7 @@ const SP_RegistrationForm = () => {
         }));
     };
 
+    // *** SP Registration 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const data = new FormData();
@@ -42,17 +50,27 @@ const SP_RegistrationForm = () => {
         });
 
         try {
-            const response = await axios.post(
-                "http://localhost:4000/api/sp/sp_register",
-                data,
-                { headers: { "Content-Type": "multipart/form-data" } }
-            );
-            alert("Registration Successful");
+            const res = await fetch(SERVICE_PROVIDER_REGISTER_API, {
+                method: 'POST',
+                body: data, // Sending FormData with the request
+            });
+            const responseData = await res.json();
+
+            if (res.ok) {
+                showPopup('Registration Successful!', 'success');
+                console.log("Registration successful:", responseData.message);
+                setFormData('');
+                navigate('/sp-provider-login')
+            } else {
+                showPopup('Registration failed!', 'error');
+                console.error("Registration failed:", responseData.message);
+            }
         } catch (error) {
-            console.error("Error:", error);
-            alert("Registration Failed");
+            console.log("Error:", error);
+            showPopup('Registration failed!', 'error');
         }
     };
+    // *** SP Registration Ends
 
     return (
         <>
@@ -60,7 +78,10 @@ const SP_RegistrationForm = () => {
             <div className="min-h-screen flex items-center justify-center bg-gray-300 p-6">
                 <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
                     <h2 className="text-2xl font-bold text-center mb-4">Service Provider Registration</h2>
+
+                    {/* Registration Form  */}
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        {/* SP Name  */}
                         <div className="flex items-center border p-2 rounded-md">
                             <FaUser className="mr-2 text-gray-500" />
                             <input
@@ -73,6 +94,8 @@ const SP_RegistrationForm = () => {
                                 required
                             />
                         </div>
+
+                        {/* SP Email  */}
                         <div className="flex items-center border p-2 rounded-md">
                             <FaEnvelope className="mr-2 text-gray-500" />
                             <input
@@ -85,6 +108,8 @@ const SP_RegistrationForm = () => {
                                 required
                             />
                         </div>
+
+                        {/* SP Contact  */}
                         <div className="flex items-center border p-2 rounded-md">
                             <FaPhone className="mr-2 text-gray-500" />
                             <input
@@ -97,6 +122,8 @@ const SP_RegistrationForm = () => {
                                 required
                             />
                         </div>
+
+                        {/* SP Shop Name  */}
                         <div className="flex items-center border p-2 rounded-md">
                             <GiShop className="mr-2 text-gray-500" />
                             <input
@@ -109,6 +136,8 @@ const SP_RegistrationForm = () => {
                                 required
                             />
                         </div>
+
+                        {/* SP Category  */}
                         <div className="flex items-center border p-2 rounded-md">
                             <BiSolidCategoryAlt className="mr-2 text-gray-500" />
                             <input
@@ -121,6 +150,8 @@ const SP_RegistrationForm = () => {
                                 required
                             />
                         </div>
+
+                        {/* SP Area  */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex items-center border p-2 rounded-md">
                                 <PiMapPinAreaFill className="mr-2 text-gray-500" />
@@ -147,6 +178,8 @@ const SP_RegistrationForm = () => {
                                 />
                             </div>
                         </div>
+
+                        {/* SP Pincode  */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="flex items-center border p-2 rounded-md">
                                 <TbMapPinCode className="mr-2 text-gray-500" />
@@ -173,6 +206,8 @@ const SP_RegistrationForm = () => {
                                 />
                             </div>
                         </div>
+
+                        {/* SP Password  */}
                         <div className="flex items-center border p-2 rounded-md">
                             <FaLock className="mr-2 text-gray-500" />
                             <input
@@ -185,7 +220,8 @@ const SP_RegistrationForm = () => {
                                 required
                             />
                         </div>
-                        {/* Image upload fields */}
+
+                        {/* SP Shop Image upload fields */}
                         <div className="flex items-center border p-2 rounded-md">
                             <label className="mr-2 text-gray-500">Shop Image</label>
                             <input
@@ -198,6 +234,7 @@ const SP_RegistrationForm = () => {
                             />
                         </div>
 
+                        {/* SP Shop Banner Image upload fields */}
                         <div className="flex items-center border p-2 rounded-md">
                             <label className="mr-2 text-gray-500">Shop Banner Image</label>
                             <input
@@ -210,6 +247,7 @@ const SP_RegistrationForm = () => {
                             />
                         </div>
 
+                        {/* SP Form Submit Button  */}
                         <button
                             type="submit"
                             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
@@ -218,9 +256,18 @@ const SP_RegistrationForm = () => {
                         </button>
 
                     </form>
-                    <NavLink
-                        to='/sp-provider-login'
-                    >Login HERE</NavLink>
+                    {/* Registration Form ends */}
+
+                    {/* SP Login Button  */}
+                    <span className="flex justify-center">
+                        Already have an account ! &nbsp;
+                        <NavLink
+                            to='/sp-provider-login'
+                            className='text-blue-500'
+                        >
+                            Sign In
+                        </NavLink>
+                    </span>
                 </div>
             </div>
             <Footer />
