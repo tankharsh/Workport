@@ -1,19 +1,41 @@
-// src/LoginForm.js
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Navbar from '../user_components/Navbar';
 import Footer from '../user_components/Footer';
 import { FaEnvelope, FaLock } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import {useAuth} from '../../context/AuthContext';
 
 function SP_LoginForm() {
+
+    const { SP_login, serviceprovider } = useAuth()
+    const navigate = useNavigate();
+    const [sp_email, setSp_email] = useState("");
+    const [sp_password, setSp_password] = useState("");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const success = await SP_login({ sp_email, sp_password });
+        if (success) {
+            setIsLoggedIn(true); // Set state to trigger navigation
+        }
+    };
+
+    useEffect(() => {
+        if (isLoggedIn || serviceprovider) {
+            navigate("/dashboard");
+        }
+    }, [isLoggedIn, serviceprovider, navigate]);
+
     return (
         <>
-        <Helmet>
+            <Helmet>
                 <title>Service Provider | Login</title>
                 <meta name="description" content="Know more about us." />
                 <meta name="author" content="My Website Team" />
-              </Helmet>
+            </Helmet>
             <Navbar />
             <div className="min-h-screen bg-gray-300 p-2 flex items-center justify-center">
                 {/* Container with fixed size */}
@@ -34,7 +56,7 @@ function SP_LoginForm() {
                     >
                         <div className="w-full max-w-md">
                             <h2 className="text-2xl font-bold mb-4">Login</h2>
-                            <form>
+                            <form onSubmit={handleSubmit}>
                                 <div>
                                     {/* sp_email */}
                                     <div className="flex items-center mt-2">
@@ -43,6 +65,8 @@ function SP_LoginForm() {
                                             type="email"
                                             id="sp_email"
                                             name="sp_email"
+                                            value={sp_email}
+                                            onChange={(e) => setSp_email(e.target.value)}
                                             placeholder="Enter your Email"
                                             className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                                         />
@@ -54,6 +78,8 @@ function SP_LoginForm() {
                                             type="password"
                                             id="sp_password"
                                             name="sp_password"
+                                            value={sp_password}
+                                            onChange={(e) => setSp_password(e.target.value)}
                                             placeholder="Enter your password"
                                             className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                                         />
@@ -63,13 +89,12 @@ function SP_LoginForm() {
 
                                 {/* Navigation Buttons */}
                                 <div className="flex justify-between items-center mt-6">
-                                    <NavLink
-                                        to="/dashboard"
+                                    <button
                                         type="submit"
                                         className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                                     >
                                         Submit
-                                    </NavLink>
+                                    </button>
 
                                 </div>
                             </form>

@@ -27,7 +27,6 @@ router.put("/update/:id", spController.updateServiceProvider);
 // Delete Service Provider
 router.delete("/delete/:id", spController.deleteServiceProvider); 
 
-
 router.get("/sp_profile", authmiddleware.authServiceProvider, spController.getProfile);
 //Get all Services provider routes
 router.get('/', spController.getAllSP);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import AuthContext from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import Navbar from "../../components/user_components/Navbar";
 import { IoMdClose } from "react-icons/io";
 import { FaPhone, FaRupeeSign } from "react-icons/fa";
@@ -10,7 +10,7 @@ import { PiMapPinAreaFill } from "react-icons/pi";
 import Footer from "../../components/user_components/Footer";
 
 const Shop_Dashboard = () => {
-  const { user } = useContext(AuthContext); // Get user from context
+  const { user } = useAuth(); // Get user from context
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);

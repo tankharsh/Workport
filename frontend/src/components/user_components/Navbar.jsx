@@ -1,12 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, {  useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
-import AuthContext from '../../context/AuthContext'; // Import Auth Context
+import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false); // State for logout confirmation
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout } = useAuth();
 
   // Function to close the mobile menu when a link is clicked
   const closeMenu = () => setIsMenuOpen(false);
@@ -19,7 +19,7 @@ const Navbar = () => {
 
   return (<>
 
-    <nav className="bg-[#63849E30]/25 text-black p-4 font-[Roboto]">
+    <nav className="bg-[#2F3E46] text-white p-4 font-[Roboto]">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <NavLink to="/" className="flex items-center text-3xl font-bold">
@@ -44,7 +44,7 @@ const Navbar = () => {
           ) : (
             <NavLink
               to="/user-login"
-              className="bg-[#7D84B2BF] text-lg font-semibold text-black px-4 py-2 rounded hover:bg-[#3a3e5cbf] transition-all duration-300"
+              className="bg-[#84A98C] text-lg font-semibold text-white px-4 py-2 rounded hover:bg-[#3a3e5cbf] transition-all duration-300"
             >
               Login
             </NavLink>

@@ -4,7 +4,7 @@ const RecentlyCategories = () => {
   return (
     <>
       <div
-        className="h-auto md:mt-16 pt-5 bg-gradient-to-l from-[#7D84B230]/50 via-[#8FA6CB52]/50 to-[#D5F9DE99]/50"
+        className="h-auto md:mt-16 pt-5 bg-[#84A98C]"
       >
         <h1 className="bg-txt text-center mt-5 text-3xl sm:text-4xl lg:text-5xl font-semibold">
           Recently Added
@@ -39,7 +39,7 @@ const RcCat = () => {
           </div>
         </div>
         <div className="px-6 py-6">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Hair Salon</h2>
+          <h2 className="text-2xl font-bold text-center text-[#2F3E46] mb-4">Hair Salon</h2>
         </div>
       </div>
     </>

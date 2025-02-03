@@ -10,7 +10,7 @@ import { NavLink } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-r from-[#7D84B21D] to-[#7D84B21D] p-8 md:p-16">
+    <footer className="bg-[#CAD2C5] p-8 md:p-16">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Our Services Section */}
         <div>

@@ -22,7 +22,8 @@ import SP_LoginForm from './components/sp_components/SP_LoginForm';
 import Shop_Dashboard from './pages/user_pages/Shop_Dashboard';
 import AdminAddCategory from './admin/AdminAddCategory';
 import AdminAllCategory from './admin/AdminAllCategory';
-import { Helmet , HelmetProvider } from 'react-helmet-async';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { AuthProvider } from './context/AuthContext';
 
 
 function App() {
@@ -42,7 +43,7 @@ function App() {
         return Promise.reject(error);
       }
     );
-  
+
     const responseInterceptor = axios.interceptors.response.use(
       (response) => {
         console.log("API Request Completed"); // Debugging
@@ -54,49 +55,51 @@ function App() {
         return Promise.reject(error);
       }
     );
-  
+
     return () => {
       axios.interceptors.request.eject(requestInterceptor);
       axios.interceptors.response.eject(responseInterceptor);
     };
   }, []);
 
-  
+
 
   return (
     <>
-    <HelmetProvider>
-      <Helmet>
-        <title>Work Port</title>
-        <meta name="description" content="Description of my website" />
-      </Helmet>
+      <HelmetProvider>
+        <Helmet>
+          <title>Work Port</title>
+          <meta name="description" content="Description of my website" />
+        </Helmet>
 
-    
-      <Router>
-        <Loader show={loading} />
-        <Routes>
-          <Route path="/" element={<Layout />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/myshop' element={<Myshop />} />
-          <Route path='/order' element={<Orders />} />
-          <Route path='/feedback' element={<Feedback />} />
-          <Route path='/user-login' element={<UserLogin />} />
-          <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
-          <Route path='/sp-provider' element={<SP_RegistrationForm />} />
-          <Route path='/sp-provider-login' element={<SP_LoginForm />} />
-          <Route path='/User-Dashboard' element={<User_Dashboard />} />
-          <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
 
-          {/* Admin routes */}
-          <Route path='/Admin-Dashboard' element={<AdminDashboard />} />
-          <Route path='/Admin-Dashboard/all-serviceproviders' element={<AdminGetAllServiceProvider />} />
-          <Route path='/Admin-Dashboard/all-users' element={<AdminGetAllUser />} />
-          <Route path='/Admin-Dashboard/add-category' element={<AdminAddCategory />} />
-          <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
-        </Routes>
-      </Router>
-    </HelmetProvider>
+        <Router>
+          <Loader show={loading} />
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Layout />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path='/profile' element={<Profile />} />
+              <Route path='/myshop' element={<Myshop />} />
+              <Route path='/order' element={<Orders />} />
+              <Route path='/feedback' element={<Feedback />} />
+              <Route path='/user-login' element={<UserLogin />} />
+              <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
+              <Route path='/sp-provider' element={<SP_RegistrationForm />} />
+              <Route path='/sp-provider-login' element={<SP_LoginForm />} />
+              <Route path='/User-Dashboard' element={<User_Dashboard />} />
+              <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
+
+              {/* Admin routes */}
+              <Route path='/Admin-Dashboard' element={<AdminDashboard />} />
+              <Route path='/Admin-Dashboard/all-serviceproviders' element={<AdminGetAllServiceProvider />} />
+              <Route path='/Admin-Dashboard/all-users' element={<AdminGetAllUser />} />
+              <Route path='/Admin-Dashboard/add-category' element={<AdminAddCategory />} />
+              <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
+            </Routes>
+          </AuthProvider>
+        </Router>
+      </HelmetProvider>
     </>
   );
 }

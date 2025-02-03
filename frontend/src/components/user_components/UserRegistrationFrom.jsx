@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import Navbar from './Navbar'
 import gsap from 'gsap'
-import AuthContext from '../../context/AuthContext';
+import {useAuth} from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
@@ -12,7 +12,7 @@ function UserRegistrationFrom() {
   const [useremail, setUseremail] = useState('');
   const [usercontactno, setUsercontactno] = useState('');
   const [password, setPassword] = useState('')
-  const { register } = useContext(AuthContext);
+  const { register } = useAuth();
 
 
   const handleSubmit = async (e) => {

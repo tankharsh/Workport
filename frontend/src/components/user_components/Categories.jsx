@@ -19,7 +19,7 @@ const Categories = () => {
     };
 
     return (
-        <div className="bg-[#DAD4EDB5]/75 mt-12 h-auto relative">
+        <div className="bg-[#354F52] text-white mt-12 h-auto relative">
             {/* Heading */}
             <h1 className="bg-txt text-center pt-5 text-3xl sm:text-4xl lg:text-5xl font-semibold">
                 Top Categories
@@ -66,8 +66,8 @@ const CatCard = () => {
         <>
             <NavLink
                 to='/User-Dashboard'>
-                <div className="txt flex justify-center items-center bg-gray-100">
-                    <div className="w-80 bg-[#EDC2C1] rounded-xl shadow-lg overflow-hidden">
+                <div className="txt flex justify-center items-center ">
+                    <div className="w-80 bg-[#52796F] rounded-xl shadow-lg overflow-hidden">
                         <div className="flex justify-center ">
                             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-100 shadow-md">
                                 <img
@@ -78,8 +78,8 @@ const CatCard = () => {
                             </div>
                         </div>
                         <div className="px-6 py-8">
-                            <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Hair Salon</h2>
-                            <p className="text-gray-600 text-center text-sm leading-relaxed">
+                            <h2 className="text-2xl font-bold text-center text-white  mb-4">Hair Salon</h2>
+                            <p className="text-white text-center text-sm leading-relaxed">
                                 Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an
                                 unknown printer took a of type and scramb.
                             </p>

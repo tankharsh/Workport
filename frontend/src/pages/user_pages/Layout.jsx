@@ -1,6 +1,6 @@
 import React from 'react'
 import Navbar from '../../components/user_components/Navbar'
-import bg from '../../assets/bg.png'
+import bg from '../../assets/bg.jpeg'
 import { NavLink } from 'react-router-dom'
 import Categories from '../../components/user_components/Categories'
 import RecentlyCategories from '../../components/user_components/RecentlyCategories'
@@ -14,18 +14,18 @@ const Layout = () => {
 
       {/* background and heading  */}
       <div
-        className="h-screen w-full bg-cover bg-center flex items-center"
+        className="relative h-screen w-full bg-cover bg-gray-500/75 bg-center flex items-center"
         style={{ backgroundImage: `url(${bg})` }}
-      >
-        <div className="container mx-auto px-6 md:px-12 lg:px-20">
+      ></div>
+        <div className="absolute top-80 container mx-auto px-6 md:px-12 lg:px-20">
           <div className="max-w-xl text-white space-y-20">
-            <p className="bg-txt text-black text-lg md:text-7xl tracking-wide leading-loose mb-8">
+            <p className="font-extrabold font-[Roboto] text-black text-4xl md:text-7xl tracking-wide leading-loose mb-8">
               Simplify Your Search, Amplify Your Choices.
             </p>
-            <NavLink to="/sp-provider" className="mt-5 text-3xl font-semibold bg-[#7D84B2BF] hover:bg-[#3a3e5cbf] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">List Your Business</NavLink>
+            <NavLink to="/sp-provider" className="mt-5 text-3xl font-semibold bg-[#84A98C] hover:bg-[#3a3e5cbf] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">List Your Business</NavLink>
           </div>
         </div>
-      </div>
+      
 
       {/* About Section  */}
       <div className="mt-6 flex flex-col justify-center items-center px-4 sm:px-8 lg:px-16">
@@ -46,7 +46,7 @@ const Layout = () => {
           mollitia harum, numquam libero consectetur voluptatem magnam sed, doloremque
           id impedit aspernatur a quam.
         </p>
-        <button className="txt w-48 mt-6 bg-[#7D84B2BF] hover:bg-[#3a3e5cbf] py-2 px-6 text-center rounded-3xl transition-all duration-300">
+        <button className="txt w-48 mt-6 bg-[#84A98C] hover:bg-[#3a3e5cbf] py-2 px-6 text-center rounded-3xl transition-all duration-300">
           Learn More
         </button>
       </div>

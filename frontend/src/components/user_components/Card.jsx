@@ -65,9 +65,9 @@ const Card = () => {
                         <div
                             id='card'
                             key={index}
-                            className="card h-48 w-80 mt-3 flex gap-3 items-start p-3 border shadow-lg bg-[#8FA6CB4D]/35"
+                            className="card h-48 w-80 mt-3 flex gap-3 items-start p-3 border shadow-lg bg-[#52796F] text-white"
                         >
-                            <span className="text-4xl text-red-500">{card.icon}</span>
+                            <span className="text-4xl text-white">{card.icon}</span>
                             <div>
                                 <h2 className="font-bold text-lg">{card.title}</h2>
                                 <p>{card.description}</p>

@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import Slice from '../../assets/Slice.png'
 import { FaUser, FaEnvelope, FaLock, FaPhone } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../../context/AuthContext";
+import {useAuth} from "../../context/AuthContext";
 import Footer from "./Footer";
 import { Helmet } from "react-helmet-async";
 
@@ -19,8 +19,8 @@ export default function UserLogin() {
   const [username, setUsername] = useState('');
   const navigate = useNavigate()
 
-  const { login } = useContext(AuthContext);
-  const { register } = useContext(AuthContext);
+  const { login } = useAuth();
+  const { register } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
