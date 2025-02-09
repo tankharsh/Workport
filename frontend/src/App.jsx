@@ -22,6 +22,8 @@ import AdminAddCategory from './admin/AdminAddCategory';
 import AdminAllCategory from './admin/AdminAllCategory';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import SPProtectedRoute from './pages/Protected';
+import Cartpage from './components/user_components/Cartpage';
+import { ToastContainer } from 'react-toastify';
 
 
 function App() {
@@ -69,6 +71,9 @@ function App() {
           <meta name="description" content="Description of my website" />
         </Helmet>
 
+        {/* toast  */}
+        <ToastContainer />
+
         <Router>
           <Loader show={loading} />
           <Routes>
@@ -78,8 +83,9 @@ function App() {
             <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
             <Route path='/User-Dashboard' element={<User_Dashboard />} />
             <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
+            <Route path='/cart' element={<Cartpage />} />
 
-            {/* Service Provider routes  */}
+              {/* Service Provider routes  */}
             <Route path='/sp-provider' element={<SP_RegistrationForm />} />
             <Route path='/sp-provider-login' element={<SP_LoginForm />} />
             <Route element={<SPProtectedRoute />}>

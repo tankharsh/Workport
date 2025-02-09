@@ -1,286 +1,124 @@
-import React from 'react'
-import Sidebar from '../../components/sp_components/Sidebar'
-import react from '../../assets/react.svg'
-import { MdAddPhotoAlternate } from "react-icons/md";
-import { MdOutlineAddAPhoto } from "react-icons/md";
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
+import React, { useState } from 'react';
+import Sidebar from '../../components/sp_components/Sidebar';
+import { FaUser, FaStore, FaPhone, FaList, FaMapMarkerAlt, FaFileImage } from 'react-icons/fa';
 
 const Myshop = () => {
+  const [shopLogo, setShopLogo] = useState(null);
+  const [shopBanner, setShopBanner] = useState(null);
 
-  // animation 
-  useGSAP(() =>{
-
-    gsap.from(".myshop",{
-      y:-50,
-      opacity:0,
-      delay:0.2,
-      duration:0.1
-    })
-
-    var animationImages = gsap.timeline();
-    animationImages.from(".shopImage",{
-      y: -50,
-      delay: 0.1,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationImages.from(".bannerImage",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    })
-
-    var animationForm = gsap.timeline();
-    animationForm.from(".oname",{
-      y: -50,
-      delay: 0.1,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationForm.from(".sname",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationForm.from(".semail",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationForm.from(".scontact",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationForm.from(".sadd",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationForm.from(".sdesc",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationForm.from(".scat",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationForm.from(".sprice",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-    animationForm.from(".sBtn",{
-      y: -50,
-      opacity: 0,
-      duration: 0.2,
-    })
-  })
-
+  // Handle image change
+  const handleImageChange = (e, setImage) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+    }
+  };
 
   return (
     <>
       <Sidebar />
-      <main className="flex-1 lg:ml-64 py-2 mt-20">
-        <div className="text-3xl font-bold text-center myshop">My Shop</div>
-        <div className="flex flex-col-reverse lg:flex-row justify-evenly mt-10 gap-5">
-          <form className="flex flex-col lg:flex-row justify-evenly w-full p-5">
-            <div className="flex flex-col gap-24 w-full lg:w-1/3">
-              {/* Image Profiles */}
-              <div className="shopImage flex flex-wrap justify-center">
-                <img
-                  src={react}
-                  alt="profile Photo"
-                  className="h-56 w-56 lg:w-72 border-4 border-sky-500 rounded-xl object-cover"
-                />
-                <div>
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                  >
-                    <div className="text-center flex justify-center items-center gap-2">
-                      <MdOutlineAddAPhoto aria-hidden="true" className="mx-auto size-8 text-gray-800" />
-                      <span>Upload a file here</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                    </div>
-                  </label>
-                </div>
-              </div>
+      <main className="flex-1 lg:ml-64 min-h-screen mt-16">
+        <div className="text-3xl font-bold text-center prof pt-5">Shop Registration</div>
+        <div className="flex m-5 rounded-lg flex-col-reverse lg:flex-row justify-evenly mt-10">
+          <form className="flex flex-col lg:flex-row justify-between gap-14 w-full p-5">
+            <div className="w-full bg-white p-5 rounded-lg lg:w-1/2">
+              <p className="text-black font-semibold mb-2 capitalize">Shop Details</p>
 
-              {/* Banner Image */}
-              <div className="bannerImage flex flex-wrap justify-center">
-                <img
-                  src={react}
-                  alt="Banner"
-                  className="h-56 w-56 lg:w-72 border-4 border-sky-500 rounded-xl object-cover"
-                />
-                <div>
-                  <label
-                    htmlFor="file-upload"
-                    className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                  >
-                    <div className="text-center flex justify-center items-center gap-2">
-                      <MdAddPhotoAlternate aria-hidden="true" className="mx-auto size-8 text-gray-800" />
-                      <span>Upload a file here</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                    </div>
-                  </label>
-                </div>
-              </div>
-            </div>
-
-            {/* Form Fields */}
-            <div className="w-full lg:w-1/2">
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* Owner Name */}
-                <div className="oname w-full md:w-full lg:w-full">
-                  <label htmlFor="owner-name" className="block text-sm font-medium text-gray-900">
-                    Owner Name
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="owner-name"
-                      name="owner-name"
-                      type="text"
-                      autoComplete="given-name"
-                      className="block w-full md:w-full lg:w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm mx-2 md:mx-0"
-                    />
-                  </div>
-                </div>
+              {/* Owner Name */}
+              <div className="flex w-full items-center border border-gray-700 p-2 rounded-md">
+                <FaUser className="mr-2 text-gray-700" />
+                <input type="text" name="owner_name" placeholder="Owner Name" className="w-full outline-none text-black placeholder-gray-700" required />
               </div>
 
               {/* Shop Name */}
-              <div className="sname mt-3">
-                <label htmlFor="shop-name" className="block text-sm font-medium text-gray-900">
-                  Shop Name
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="shop-name"
-                    name="shop-name"
-                    type="text"
-                    autoComplete="given-name"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm mx-2 md:mx-0"
-                  />
-                </div>
+              <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md">
+                <FaStore className="mr-2 text-gray-700" />
+                <input type="text" name="shop_name" placeholder="Shop Name" className="w-full outline-none text-black placeholder-gray-700" required />
               </div>
 
-              {/* Email */}
-              <div className="semail mt-4">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-900">
-                  Email
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm mx-2 md:mx-0"
-                  />
-                </div>
+              {/* Shop Contact */}
+              <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md">
+                <FaPhone className="mr-2 text-gray-700" />
+                <input type="tel" name="shop_contact" placeholder="Shop Contact" className="w-full outline-none text-black placeholder-gray-700" required />
               </div>
 
-              {/* Contact */}
-              <div className="scontact mt-4">
-                <label htmlFor="contact" className="block text-sm font-medium text-gray-900">
-                  Contact
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="contact"
-                    name="contact"
-                    type="number"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm mx-2 md:mx-0"
-                  />
-                </div>
-              </div>
-
-              {/* Shop Address */}
-              <div className="sadd mt-4">
-                <label htmlFor="shop-address" className="block text-sm font-medium text-gray-900">
-                  Shop Address
-                </label>
-                <div className="mt-2">
-                  <textarea
-                    id="shop-address"
-                    name="shop-address"
-                    rows={3}
-                    placeholder="Write full address"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm mx-2 md:mx-0"
-                  />
-                </div>
+              {/* Category */}
+              <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md">
+                <FaList className="mr-2 text-gray-700" />
+                <input type="text" name="category" placeholder="Shop Category" className="w-full outline-none text-black placeholder-gray-700" required />
               </div>
 
               {/* Shop Description */}
-              <div className="sdesc mt-4">
-                <label htmlFor="shop-desc" className="block text-sm font-medium text-gray-900">
-                  Shop Description
-                </label>
-                <div className="mt-2">
-                  <textarea
-                    id="shop-desc"
-                    name="shop-desc"
-                    rows={3}
-                    placeholder="Write About your shop"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm mx-2 md:mx-0"
-                  />
-                </div>
+              <div className="mt-3">
+                <textarea name="shop_description" placeholder="Shop Description" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700" rows="3" required></textarea>
               </div>
 
-              {/* Shop Category */}
-              <div className="scat mt-4">
-                <label htmlFor="shop-category" className="block text-sm font-medium text-gray-900">
-                  Shop Category
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="shop-category"
-                    name="shop-category"
-                    type="text"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm mx-2 md:mx-0"
-                  />
-                </div>
-              </div>
+              <p className="text-black font-semibold mt-3">Shop Address</p>
 
-              {/* Price */}
-              <div className="sprice mt-4">
-                <label htmlFor="price" className="block text-sm font-medium text-gray-900 capitalize">
-                  Price
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="price"
-                    name="price"
-                    type="text"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 outline-gray-300 placeholder:text-gray-400 focus:outline-indigo-600 sm:text-sm mx-2 md:mx-0"
-                  />
-                </div>
-              </div>
+              {/* Block No */}
+              <input type="text" name="block_no" placeholder="Block No." className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
 
-              {/* Update Button */}
-              <button className="sBtn bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded-md mt-4 w-full sm:w-auto">
-                Update
+              {/* Area */}
+              <input type="text" name="area" placeholder="Area" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
+
+              {/* Pincode */}
+              <input type="text" name="pincode" placeholder="Pincode" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
+
+              {/* City */}
+              <input type="text" name="city" placeholder="City" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
+
+              {/* Shop Logo Upload */}
+              <p className="text-black font-semibold mt-3">Upload Shop Image</p>
+              <label className="flex items-center cursor-pointer border border-gray-700 p-2 rounded-md mt-2">
+                <FaFileImage className="mr-2 text-gray-700" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageChange(e, setShopLogo)} className="hidden"
+                  required />
+                <span className="text-black">Choose Image</span>
+              </label>
+
+              {/* Shop Banner Upload */}
+              <p className="text-black font-semibold mt-3">Upload Shop Banner</p>
+              <label className="flex items-center cursor-pointer border border-gray-700 p-2 rounded-md mt-2">
+                <FaFileImage className="mr-2 text-gray-700" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageChange(e, setShopBanner)} className="hidden"
+                  required
+                />
+                <span className="text-black">Choose Banner</span>
+              </label>
+
+              {/* Submit Button */}
+              <button className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded-md mt-3 w-full">
+                Register Shop
               </button>
+            </div>
+
+            {/* Image Previews */}
+            <div className="w-1/2 flex flex-col items-center justify-center gap-4">
+              {shopLogo && (
+                <div className="flex flex-col items-center">
+                  <p className="text-white font-semibold">Shop Logo Preview</p>
+                  <img src={shopLogo} alt="Shop Logo" className="w-96 h-96 object-conatiner rounded-md border-2 border-green-600" />
+                </div>
+              )}
+
+              {shopBanner && (
+                <div className="flex flex-col items-center">
+                  <p className="text-white font-semibold">Shop Banner Preview</p>
+                  <img src={shopBanner} alt="Shop Banner" className="w-96 h-56 object-cover rounded-md border-2 border-green-600" />
+                </div>
+              )}
             </div>
           </form>
         </div>
-
       </main>
-
     </>
-  )
-}
+  );
+};
 
-export default Myshop
+export default Myshop;

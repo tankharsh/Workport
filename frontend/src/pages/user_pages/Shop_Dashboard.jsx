@@ -1,30 +1,74 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useAuth } from "../../context/AuthContext";
-import Navbar from "../../components/user_components/Navbar";
-import { IoMdClose } from "react-icons/io";
-import { FaPhone, FaRupeeSign } from "react-icons/fa";
-import { BiSolidCity } from "react-icons/bi";
-import { TbMapPinCode } from "react-icons/tb";
-import { FaMapLocationDot } from "react-icons/fa6";
-import { PiMapPinAreaFill } from "react-icons/pi";
-import Footer from "../../components/user_components/Footer";
+import React, { useState } from 'react';
+import { FaEnvelope, FaPhone, FaRupeeSign } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import Navbar from '../../components/user_components/Navbar';
+import Footer from '../../components/user_components/Footer';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { FaAddressCard } from "react-icons/fa";
+import { IoIosPerson } from "react-icons/io";
 
 const Shop_Dashboard = () => {
-  const { user } = useAuth(); // Get user from context
-  const [isOpen, setIsOpen] = useState(false);
-  const [error, setError] = useState("");
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const { addToCart, user } = useAuth();
+  const navigate = useNavigate();
+  
+  const [showPopup, setShowPopup] = useState(false);
 
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "auto";
-  }, [isOpen]);
+  const services = [
+    { 
+      id: 1, 
+      name: 'Hair Wash', 
+      price: 3500, 
+      image: 'https://cdn.pixabay.com/photo/2025/01/31/09/52/dj-9372007_640.jpg',
+      desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro at saepe voluptas ducimus quaerat, ullam tenetur ratione inventore soluta facere molestiae a voluptatem.'
+    },
+    { 
+      id: 2, 
+      name: 'Hair Cut', 
+      price: 1500, 
+      image: 'https://cdn.pixabay.com/photo/2025/01/26/20/33/robin-9361610_640.jpg',
+      desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro at saepe voluptas ducimus quaerat, ullam tenetur ratione inventore soluta facere molestiae a voluptatem.' 
+    },
+    { 
+      id: 3, 
+      name: 'Hair Color', 
+      price: 5000, 
+      image: 'https://cdn.pixabay.com/photo/2024/09/09/14/06/aster-9034882_640.jpg',
+      desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro at saepe voluptas ducimus quaerat, ullam tenetur ratione inventore soluta facere molestiae a voluptatem.' 
+    },
+    { 
+      id: 4, 
+      name: 'Hair Color', 
+      price: 5000, 
+      image: 'https://cdn.pixabay.com/photo/2024/09/09/14/06/aster-9034882_640.jpg',
+      desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro at saepe voluptas ducimus quaerat, ullam tenetur ratione inventore soluta facere molestiae a voluptatem.' 
+    },
+    { 
+      id: 5, 
+      name: 'Hair Color', 
+      price: 5000, 
+      image: 'https://cdn.pixabay.com/photo/2024/09/09/14/06/aster-9034882_640.jpg',
+      desc: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro at saepe voluptas ducimus quaerat, ullam tenetur ratione inventore soluta facere molestiae a voluptatem.' 
+    },
+  ];
 
-  const handleOpenSidebar = () => {
-    if (user) {
-      setIsOpen(true);
-    } else {
-      setShowLoginPrompt(true);
+  const handleAddToCart = (service) => {
+    if (!user) {
+      setShowPopup(true);
+      return;
     }
+    addToCart(service);
+    toast.success(`✅ ${service.name} added to cart!`, {
+      position: "bottom-center",
+      autoClose: 1500, 
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
+    // navigate('/cart');
   };
 
   return (
@@ -36,12 +80,33 @@ const Shop_Dashboard = () => {
           <div className="flex items-center gap-4">
             <h1 className="uppercase text-2xl lg:text-4xl font-bold">SHOP NAME</h1>
           </div>
-
           <div className="flex items-center mt-5 gap-2">
+            <span>
+              <IoIosPerson />
+            </span>
+            <span className="font-bold text-xl">Owner Name : <span className='text-lg font-medium'>Milan</span></span>
+          </div>
+          <hr className='h-5 mt-2' />
+          <div className="flex items-center gap-2">
             <span>
               <FaPhone />
             </span>
             <span className="font-bold">Contact No: 1234567890</span>
+          </div>
+          <hr className='h-5 mt-2' />
+          <div className="flex items-center gap-2">
+            <span>
+              <FaEnvelope />
+            </span>
+            <span className="font-bold">Email: a@gmail.com</span>
+          </div>
+          <hr className='h-5 mt-2' />
+          <div className="flex items-center gap-2 flex-wrap">
+            <span>
+              <FaAddressCard />
+            </span>
+            <span className="font-bold">Address : </span>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium, reprehenderit.
           </div>
         </div>
 
@@ -54,29 +119,43 @@ const Shop_Dashboard = () => {
               className="w-full h-full object-cover rounded-3xl"
             />
           </div>
+          <div className="h-48 lg:h-60 w-full lg:w-1/2">
+            <img
+              src="https://cdn.pixabay.com/photo/2022/09/10/22/24/apples-7445797_640.jpg"
+              alt="Shop Image"
+              className="w-full h-full object-cover rounded-3xl"
+            />
+          </div>
         </div>
       </div>
 
       {/* Services */}
       <div className="h-auto p-4 lg:p-10">
-        <div className="h-full pt-5 border-2 border-black">
+        <div className="h-full pt-5 border-2 border-white rounded-lg">
           <h1 className="uppercase px-4 lg:px-10 text-2xl lg:text-4xl font-bold">
             Services
           </h1>
-
           <div className="grid px-4 lg:px-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-6">
-            {[1, 2, 3].map((_, i) => (
+            {services.map((service) => (
               <div
-                key={i}
-                className="bg-white hover:scale-105 transition-all duration-300 border border-gray-500 p-3 text-center text-lg rounded-lg"
+                key={service.id}
+                className="bg-[#52796F] hover:scale-105 transition-all duration-300 border border-gray-500 p-3 text-center text-lg rounded-lg"
               >
-                <p>Hair Wash</p>
-                <p className="text-gray-700 font-bold flex justify-center items-center gap-1">
-                  <FaRupeeSign /> 3500
-                </p>
+                <img 
+                  src={service.image} 
+                  alt={service.name} 
+                  className="w-full h-40 object-cover rounded-lg mb-3" 
+                />
+                <div className='flex justify-between'>
+                <p className="font-semibold text-left text-2xl">{service.name}</p>
+                <p className="text-2xl font-bold flex justify-center items-center gap-1">
+                  <FaRupeeSign /> {service.price}
+                </p></div>
+               <p className="font-medium mt-2 text-sm text-left ">{service.desc}</p>
+                
                 <button
-                  onClick={handleOpenSidebar}
-                  className="bg-green-500 px-6 py-2 rounded-lg"
+                  onClick={() => handleAddToCart(service)}
+                  className="bg-green-500 text-white px-6 py-2 rounded-lg mt-3"
                 >
                   Book Now
                 </button>
@@ -85,86 +164,27 @@ const Shop_Dashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Sidebar (Only Opens If Logged In) */}
-      {isOpen && (
-        <>
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={() => setIsOpen(false)}
-          ></div>
-
-          <div className="fixed top-0 right-0 h-full w-80 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out translate-x-0">
-            {/* Sidebar Header */}
-            <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-lg font-semibold">Enter Your Full Address</h2>
-              <button onClick={() => setIsOpen(false)} className="text-xl">
-                <IoMdClose />
+     
+      {/* Custom Popup for Login Alert */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
+            <h2 className="text-xl text-black font-bold mb-3">Login Required</h2>
+            <p className="text-gray-700 mb-4">You need to login to book a service.</p>
+            <div className="flex justify-center gap-4">
+              <button 
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                onClick={() => navigate('/user-login')}
+              >
+                Login
+              </button>
+              <button 
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg"
+                onClick={() => setShowPopup(false)}
+              >
+                Close
               </button>
             </div>
-
-            <div className="p-4">
-              <form>
-                <div className="flex items-center mt-2">
-                  <PiMapPinAreaFill className="text-gray-500 mr-3" />
-                  <input
-                    type="text"
-                    placeholder="Enter your Area"
-                    className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  />
-                </div>
-
-                <div className="flex gap-4 mt-2">
-                  <div className="flex items-center w-1/2">
-                    <FaMapLocationDot className="text-gray-500 mr-3" />
-                    <input
-                      type="text"
-                      placeholder="Block No"
-                      className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                  <div className="flex items-center w-1/2">
-                    <TbMapPinCode className="text-gray-500 mr-3" />
-                    <input
-                      type="text"
-                      placeholder="Pincode"
-                      className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center mt-2">
-                  <BiSolidCity className="text-gray-500 mr-3" />
-                  <input
-                    type="text"
-                    placeholder="Enter your City"
-                    className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="mt-4 w-full bg-purple-600 text-white py-2 rounded-lg shadow-md hover:bg-purple-700"
-                >
-                  Submit
-                </button>
-              </form>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Login Prompt */}
-      {showLoginPrompt && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <p className="text-xl font-semibold">You need to log in first!</p>
-            <button
-              onClick={() => setShowLoginPrompt(false)}
-              className="mt-4 px-6 py-2 bg-red-500 text-white rounded-lg"
-            >
-              Close
-            </button>
           </div>
         </div>
       )}

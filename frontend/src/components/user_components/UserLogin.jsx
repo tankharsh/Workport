@@ -98,13 +98,13 @@ export default function UserLogin() {
         <meta name="author" content="My Website Team" />
       </Helmet>
       <Navbar />
-      <div className="flex justify-center items-center h-screen bg-gray-300">
+      <div className="flex justify-center items-center h-screen">
         <div className="relative w-[700px] h-[400px] bg-white shadow-xl rounded-lg overflow-hidden flex">
           {/* Login Form */}
           <div
             className={`w-1/2 p-8 absolute left-0 top-0 h-full transition-all duration-500 ${isSignup ? "opacity-100" : "opacity-0 pointer-events-none"}`}
           >
-            <h2 className="text-2xl font-bold mb-4">Login</h2>
+            <h2 className="text-2xl font-bold text-black mb-4">Login</h2>
             <form onSubmit={handleSubmit}>
               {/* user login email  */}
               <div className="flex items-center mt-2">
@@ -116,7 +116,7 @@ export default function UserLogin() {
                   value={useremail}
                   onChange={(e) => setUseremail(e.target.value)}
                   placeholder="Enter your email"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
+                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
 
@@ -130,7 +130,7 @@ export default function UserLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
+                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
                 />
                 <button
                   type="button"
@@ -150,7 +150,7 @@ export default function UserLogin() {
           <div
             className={`w-1/2 p-8 absolute right-0 top-0 h-full transition-all duration-500 ${isSignup ? "opacity-0 pointer-events-none" : "opacity-100"}`}
           >
-            <h2 className="text-2xl font-bold mb-4">Sign Up</h2>
+            <h2 className="text-2xl font-bold mb-4 text-black">Sign Up</h2>
             <form onSubmit={handleSignUpSubmit}>
               {/* user name  */}
               <div className="flex items-center mt-2">
@@ -162,7 +162,7 @@ export default function UserLogin() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="Enter your name"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
+                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 text-black focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
 
@@ -176,7 +176,7 @@ export default function UserLogin() {
                   value={useremail}
                   onChange={(e) => setUseremail(e.target.value)}
                   placeholder="Enter your email"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
+                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
 
@@ -190,7 +190,7 @@ export default function UserLogin() {
                   value={usercontactno}
                   onChange={(e) => setUsercontactno(e.target.value)}
                   placeholder="Enter your contact number"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
+                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                 />
               </div>
 
@@ -203,7 +203,7 @@ export default function UserLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
+                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
                 />
                 <button
                   type="button"

@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPopup() {
     const USER_LOGIN_API_URI = "http://localhost:4000/api/users/login";
-    const { storeUserToken, showPopup, user } = useAuth();
+    const { storeUserToken, showPopup, user, serviceprovider } = useAuth();
     const [showPopupp, setShowPopupp] = useState(false);
     const [useremail, setUseremail] = useState('');
     const [password, setPassword] = useState('');
@@ -70,7 +70,7 @@ export default function LoginPopup() {
 
     return (
         <div className="relative">
-            {showPopupp && !user && ( // Only show popup if not logged in
+            {showPopupp && !user && !serviceprovider && ( // Only show popup if not logged in
                 <div className="z-50 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
                     <div className="bg-white p-8 rounded-lg shadow-xl w-96 animate-fade-in relative">
                         <button onClick={closePopup} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900">
@@ -88,7 +88,7 @@ export default function LoginPopup() {
                                     value={useremail}
                                     onChange={(e) => setUseremail(e.target.value)}
                                     placeholder="Enter your email"
-                                    className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
+                                    className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
                                 />
                             </div>
                             <div className="flex items-center mt-2 relative">
@@ -100,7 +100,7 @@ export default function LoginPopup() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Enter your password"
-                                    className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
+                                    className="p-2  w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
                                 />
                                 <button
                                     type="button"

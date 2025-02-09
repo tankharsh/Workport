@@ -61,7 +61,7 @@ function SP_LoginForm() {
                 <meta name="author" content="My Website Team" />
             </Helmet>
             <Navbar />
-            <div className="min-h-screen bg-gray-300 p-2 flex items-center justify-center">
+            <div className="min-h-screen p-2 flex items-center justify-center">
                 <div className="flex flex-col rounded-lg md:flex-row w-full max-w-4xl h-[60vh] bg-white shadow-lg overflow-hidden">
                     {/* Left Side: Large Text */}
                     <div className="flex-1 bg-gradient-to-r from-blue-500/75 to-purple-600/75 text-white flex items-center justify-center px-8 flex-col">
@@ -77,11 +77,11 @@ function SP_LoginForm() {
                         className="flex-1 flex items-center justify-center px-8 py-8"
                     >
                         <div className="w-full max-w-md">
-                            <h2 className="text-2xl font-bold mb-4">Login</h2>
+                            <h2 className="text-2xl font-bold text-black mb-4">Login</h2>
                             <form onSubmit={handleSubmit}>
                                 <div>
                                     {/* SP email */}
-                                    <div className="flex items-center mt-2">
+                                    <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
                                         <FaEnvelope className="text-gray-500 mr-3" />
                                         <input
                                             type="email"
@@ -90,12 +90,12 @@ function SP_LoginForm() {
                                             value={sp_email}
                                             onChange={(e) => setSp_email(e.target.value)}
                                             placeholder="Enter your Email"
-                                            className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            className="w-full outline-none text-black placeholder:text-gray-700 "
                                         />
                                     </div>
 
                                     {/* SP password */}
-                                    <div className="flex items-center mt-2 relative">
+                                    <div className="flex mt-3 items-center border border-gray-700 p-2 rounded-md relative hover:scale-95 transition-all duration-200">
                                         <FaLock className="text-gray-500 mr-3" />
                                         <input
                                             type={showPassword ? "text" : "password"}
@@ -104,11 +104,11 @@ function SP_LoginForm() {
                                             value={sp_password}
                                             onChange={(e) => setSp_password(e.target.value)}
                                             placeholder="Enter your password"
-                                            className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 pr-10"
+                                             className="w-full outline-none text-black placeholder:text-gray-700"
                                         />
                                         <button
                                             type="button"
-                                            className="absolute right-3 text-gray-500"
+                                            className="absolute right-3  text-gray-500"
                                             onClick={() => setShowPassword(!showPassword)}
                                         >
                                             {showPassword ? <FaEyeSlash /> : <FaEye />}

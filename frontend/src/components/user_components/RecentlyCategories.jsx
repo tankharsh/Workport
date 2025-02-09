@@ -4,7 +4,7 @@ const RecentlyCategories = () => {
   return (
     <>
       <div
-        className="h-auto md:mt-16 pt-5 bg-[#84A98C]"
+        className="h-auto md:mt-6 "
       >
         <h1 className="bg-txt text-center mt-5 text-3xl sm:text-4xl lg:text-5xl font-semibold">
           Recently Added
