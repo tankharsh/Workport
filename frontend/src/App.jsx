@@ -24,6 +24,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import SPProtectedRoute from './pages/Protected';
 
 
+
 function App() {
   const [loading, setLoading] = useState(false);
 
@@ -95,6 +96,9 @@ function App() {
             <Route path='/Admin-Dashboard/all-users' element={<AdminGetAllUser />} />
             <Route path='/Admin-Dashboard/add-category' element={<AdminAddCategory />} />
             <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
+
+
+
 
             <Route path="*" element={<Navigate to="/sp-provider-login" />} />
           </Routes>
