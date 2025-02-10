@@ -55,17 +55,17 @@ const Card = () => {
 
     return (
         <div
-            className=" mt-5 p-5 bg-[#fff] flex flex-col justify-center items-center">
-            <div className=" bg-white p-5">
-                <h1 className="bg-txt text-2xl text-center font-semibold title">
+            className=" mt-5 flex flex-col justify-center items-center">
+            <div className=" p-5">
+                <h1 className="bg-txt text-4xl text-center font-semibold title">
                     One-Stop for All Local Businesses, Services, & Stores
                 </h1>
-                <div className="txt flex gap-5 flex-wrap justify-center mt-10 cards-container">
+                <div className="txt flex gap-5 flex-wrap justify-center mt-10 cards-container ">
                     {cardsData.map((card, index) => (
                         <div
                             id='card'
                             key={index}
-                            className="card h-48 w-80 mt-3 flex gap-3 items-start p-3 border shadow-lg bg-[#52796F] text-white"
+                            className="card h-48 w-80 mt-3 flex gap-3 items-start p-3 border shadow-lg rounded-xl bg-[#52796F] text-white"
                         >
                             <span className="text-4xl text-white">{card.icon}</span>
                             <div>

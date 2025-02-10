@@ -10,7 +10,6 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
-    const [serviceprovider, setServiceprovider] = useState(null);
 
     const [popupMessage, setPopupMessage] = useState("");
 
@@ -62,6 +61,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('loggedInUser');
+        localStorage.removeItem('cart');
         setUser(null);
         console.log("User logged out successfully");
         showPopup('Logout Successful!', 'success');
@@ -83,6 +83,7 @@ export const AuthProvider = ({ children }) => {
     //*----------------------------------------------------------------
     //  SERVICE PROVIDER TOKEN LOGIC **START** HERE
     //*----------------------------------------------------------------
+    const [serviceprovider, setServiceprovider] = useState(null);
 
     // *** SERVICE PROVIDER -  from localStorage 
     useEffect(() => {
@@ -90,12 +91,7 @@ export const AuthProvider = ({ children }) => {
         const spData = localStorage.getItem('SP_LoggedInUser');
 
         if (spToken && spData) {
-            try {
-                setServiceprovider(JSON.parse(spData));
-            } catch (error) {
-                console.error("Error parsing SP_LoggedInUser:", error);
-                setServiceprovider(null);
-            }
+            setServiceprovider(JSON.parse(spData));
         }
     }, []);
 
@@ -127,6 +123,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Error fetching Service Provider profile:", error);
         }
+
     };
     // *** SERVICE PROVIDER - fetch profile ends 
 
@@ -138,7 +135,48 @@ export const AuthProvider = ({ children }) => {
     };
 
     //*----------------------------------------------------------------
-    //  SERVICE PROVIDER TOKEN LOGIC **ENDs**  HERE
+    //  SERVICE PROVIDER TOKEN LOGIC **ENDs** HERE
+    //*----------------------------------------------------------------
+
+
+    //*----------------------------------------------------------------
+    //  ADD TO CART LOGIC **START**  HERE
+    //*----------------------------------------------------------------
+
+    const [cartItems, setCartItems] = useState([]);
+
+    //*** Load cart from localStorage 
+    useEffect(() => {
+        const storedCart = localStorage.getItem("cart");
+        if (storedCart) {
+            setCartItems(JSON.parse(storedCart));
+        }
+    }, []);
+
+    //*** Save cart to localStorage whenever cartItems change
+    useEffect(() => {
+        if (cartItems.length > 0) {
+            localStorage.setItem("cart", JSON.stringify(cartItems));
+        }
+    }, [cartItems]);
+
+    //*** Function to add item to cart
+    const addToCart = (item) => {
+        const updatedCart = [...cartItems, item];
+        setCartItems(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+    };
+
+    //*** Function to remove item from cart
+    const removeFromCart = (index) => {
+        const updatedCart = cartItems.filter((_, i) => i !== index);
+        setCartItems(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+    };
+
+
+    //*----------------------------------------------------------------
+    //  ADD TO CART LOGIC **ENDs** HERE
     //*----------------------------------------------------------------
 
     return (
@@ -151,7 +189,10 @@ export const AuthProvider = ({ children }) => {
                 showPopup,
                 serviceprovider,
                 spLogout,
-                storeSPToken
+                storeSPToken,
+                cartItems,
+                addToCart,
+                removeFromCart
             }}
         >
             {children}

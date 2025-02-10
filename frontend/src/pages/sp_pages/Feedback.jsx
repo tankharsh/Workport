@@ -10,7 +10,7 @@ const Feedback = () => {
       <main className="flex-1 lg:ml-64 py-2 mt-20">
       <div className='text-3xl text-center font-bold '>Feedback</div>
       <div className="overflow-x-auto mt-3">
-          <table className="min-w-full bg-white border border-gray-200">
+          <table className="min-w-full bg-[#354f52] border border-gray-200">
             <thead>
               <tr className="bg-gray-100">
                 <th className="px-4 py-2 text-left font-bold text-gray-700">No.</th>
@@ -40,7 +40,7 @@ const Feedback = () => {
               ].map((user, index) => (
                 <tr
                   key={user.id}
-                  className="transition-all duration-300 ease-in-out transform hover:bg-gray-200"
+                  className="transition-all duration-300 ease-in-out transform hover:bg-gray-400"
                 >
                   <td className="px-4 py-2 border-t border-gray-200">{index + 1}</td>
                   <td className="px-4 py-2 border-t border-gray-200">{user.userName}</td>

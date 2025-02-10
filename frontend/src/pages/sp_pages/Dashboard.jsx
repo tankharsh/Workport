@@ -1,8 +1,9 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Sidebar from '../../components/sp_components/Sidebar';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Helmet } from 'react-helmet-async';
+import { useAuth } from '../../context/AuthContext';
 
 
 const Dashboard = () => {
@@ -17,6 +18,8 @@ const Dashboard = () => {
             delay:0.3
         })
     })
+
+    
 
     return (
         <>

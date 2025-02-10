@@ -24,8 +24,7 @@ const User_Dashboard = () => {
         <meta name="author" content="My Website Team" />
       </Helmet>
             <Navbar />
-            <AdvancedSearchMenu />
-            <div className="bg-[#192B3C] w-full text-white text-3xl font-bold p-4 mt-2">
+            <div className=" w-full text-white text-3xl font-bold p-4 mt-2">
                 <h1 className="text-center">Hair and Care Shop</h1>
 
                 {[1, 2, 3].map((_, index) => (

@@ -1,188 +1,88 @@
-import React from 'react'
-import Sidebar from '../../components/sp_components/Sidebar'
-import react from '../../assets/react.svg'
+import React, { useState } from 'react';
+import Sidebar from '../../components/sp_components/Sidebar';
 import { MdOutlineAddAPhoto } from "react-icons/md";
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
+import { FaEnvelope, FaPhone, FaUser } from 'react-icons/fa';
 
+import avatar1 from '../../assets/avatar1.jpg'
+import avatar2 from '../../assets/avatar2.jpg'
+import avatar3 from '../../assets/avatar3.jpg'
+import avatar4 from '../../assets/avatar4.jpg'
+import avatar5 from '../../assets/avatar5.jpg'
+import avatar6 from '../../assets/avatar2.jpg'
+
+const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
 const Profile = () => {
-  // animation 
-  useGSAP(() => {
-    gsap.from(".prof", {
-      opacity: 0,
-      y: -50,
-      delay: 0.2
-    })
-
-    gsap.from("#profImg", {
-      y: 50,
-      delay: 0.2,
-      opacity: 0,
-      duration: 0.2
-    })
-
-    var t1 = gsap.timeline();
-
-    t1.from("#fname", {
-      y: -50,
-      delay: 0.1,
-      opacity: 0,
-      duration: 0.2,
-    }),
-
-      t1.from("#lname", {
-        y: -50,
-        opacity: 0,
-        duration: 0.2
-      }),
-
-      t1.from("#email", {
-        y: -50,
-        opacity: 0,
-        duration: 0.2
-      }),
-
-      t1.from("#contact", {
-        y: -50,
-        opacity: 0,
-        duration: 0.2
-      }),
-
-      t1.from("#add", {
-        y: -50,
-        opacity: 0,
-        duration: 0.2
-      }),
-
-      t1.from("#profBtn", {
-        y: -50,
-        opacity: 0,
-        duration: 0.2
-      })
-
-  })
-
-
-  return (
-    <>
-      <Sidebar />
-      <main className="flex-1 lg:ml-64 py-2 mt-20">
-        <div className='text-3xl font-bold text-center prof'>Profile</div>
-        <div className="flex flex-col-reverse lg:flex-row justify-evenly mt-10 gap-5">
-          <form className="flex flex-col lg:flex-row justify-evenly gap-10 w-full p-5">
-            <div className="w-full lg:w-2/3">
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* First Name */}
-                <div id='fname' className="w-full md:w-1/2">
-                  <label htmlFor="first-name" className="block text-sm font-medium text-gray-900">
-                    First Name
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="first-name"
-                      name="first-name"
-                      type="text"
-                      autoComplete="given-name"
-                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
+    const [selectedAvatar, setSelectedAvatar] = useState(avatars[0]); // Default to first avatar
+  
+    // Handle avatar selection
+    const handleAvatarSelect = (avatar) => {
+      setSelectedAvatar(avatar);
+    };
+  
+    return (
+      <>
+        <Sidebar />
+        <main className="flex-1 lg:ml-64 min-h-screen mt-16">
+          <div className="text-3xl font-bold text-center prof pt-5">Profile</div>
+          <div className="flex m-5 rounded-lg flex-col-reverse lg:flex-row justify-evenly mt-10">
+            <form className="flex bg-white rounded-lg flex-col lg:flex-row justify-between gap-14 w-full p-5 h-96">
+              <div className="w-full  p-5 rounded-lg lg:w-1/2">
+                <p className="text-black font-semibold mb-2 capitalize">Your Personal Details</p>
+  
+                {/* Name Field */}
+                <div id='fname' className="flex w-full items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                  <FaUser className="mr-2 text-gray-700" />
+                  <input type="text" name="sp_name" placeholder="Enter your name" className="w-full outline-none text-black placeholder:text-gray-700" required />
+                </div>
+  
+                {/* Email Field */}
+                <div id='email' className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                  <FaEnvelope className="mr-2 text-gray-700" />
+                  <input type="email" name="sp_email" placeholder="Enter your email" className="w-full outline-none text-black placeholder:text-gray-700" required />
+                </div>
+  
+                {/* Contact Field */}
+                <div id='contact' className="flex mt-3 w-full items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                  <FaPhone className="mr-2 text-gray-700" />
+                  <input type="tel" name="sp_contact" placeholder="Enter your contact no" className="w-full outline-none text-black placeholder:text-gray-700" required />
+                </div>
+  
+                {/* Avatar Selection */}
+                <p className="text-black font-semibold mt-3">Choose Your Avatar</p>
+                <div className="flex gap-2 flex-wrap">
+                  {avatars.map((avatar, index) => (
+                    <img
+                      key={index}
+                      src={avatar}
+                      alt={`Avatar ${index + 1}`}
+                      className={`w-16 h-16 rounded-full cursor-pointer border-2 ${
+                        selectedAvatar === avatar ? "border-green-500" : "border-transparent"
+                      }`}
+                      onClick={() => handleAvatarSelect(avatar)}
                     />
-                  </div>
+                  ))}
                 </div>
-
-                {/* Last Name */}
-                <div id='lname' className="w-full md:w-1/2">
-                  <label htmlFor="last-name" className="block text-sm font-medium text-gray-900">
-                    Last Name
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="last-name"
-                      name="last-name"
-                      type="text"
-                      autoComplete="family-name"
-                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
-                    />
-                  </div>
-                </div>
+  
+                {/* Update Button */}
+                <button id='profBtn' className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded-md mt-3 w-full sm:w-auto">
+                  Update
+                </button>
               </div>
-
-              {/* Email */}
-              <div id='email' className="mt-4">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-900">
-                  Email
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
-                  />
-                </div>
+  
+              {/* Profile Image Preview */}
+              <div className="w-1/2 flex justify-center items-center">
+                <img
+                  src={selectedAvatar}
+                  alt="Profile Avatar"
+                  className="w-64 h-64 object-cover border-green-600 rounded-full border-4"
+                />
               </div>
-
-              {/* Contact */}
-              <div id='contact' className="mt-4">
-                <label htmlFor="contact" className="block text-sm font-medium text-gray-900">
-                  Contact
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="contact"
-                    name="contact"
-                    type="number"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Address */}
-              <div id='add' className="mt-4">
-                <label htmlFor="address" className="block text-sm font-medium text-gray-900">
-                  Address
-                </label>
-                <div className="mt-2">
-                  <textarea
-                    id="address"
-                    name="address"
-                    rows={3}
-                    placeholder="Write full address"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
-                  />
-                </div>
-              </div>
-
-              {/* Update Button */}
-              <button id='profBtn' className="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded-md mt-4 w-full sm:w-auto">
-                Update
-              </button>
-            </div>
-            {/* Image Profile */}
-            <div id='profImg' className="flex flex-wrap justify-center lg:justify-between w-full lg:w-1/3">
-              <img
-                src={react}
-                alt="Profile"
-                className="h-72 w-72 rounded-xl object-cover border-4 border-sky-500"
-              />
-              <div className=''>
-                <label
-                  htmlFor="file-upload"
-                  className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                >
-                  <div className="text-center flex justify-center items-center gap-2">
-                    <MdOutlineAddAPhoto aria-hidden="true" className="mx-auto size-8 text-gray-800" />
-                    <span>Upload a file here</span>
-                    <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                  </div>
-                </label>
-              </div>
-            </div>
-          </form>
-        </div>
-
-      </main >
-    </>
-  )
-}
-
-export default Profile
+            </form>
+          </div>
+        </main>
+      </>
+    );
+  };
+  
+  export default Profile;

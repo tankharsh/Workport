@@ -29,7 +29,7 @@ const Sidebar = () => {
 
             {/* Sidebar */}
             <div
-                className={`fixed inset-y-0 left-0 bg-[#192B3C] text-white w-64 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+                className={`fixed inset-y-0 left-0 bg-[#2f3e46] shadow-2xl text-white w-64 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
                     } transition-transform duration-300 ease-in-out z-50 lg:translate-x-0 lg:block`}
             >
                 {/* Sidebar Header */}
@@ -45,14 +45,25 @@ const Sidebar = () => {
                 </div>
                 {/* Sidebar Links */}
                 <nav className="mt-3">
-
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) =>
+                            isActive
+                                ? "block px-4 py-2 bg-[#52796f] text-white"
+                                : "block px-4 py-2 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
+                        }
+                    >
+                        <span className="flex px-2 gap-3 justify-start items-center">
+                            <TbHomeFilled className="text-2xl" /> Home
+                        </span>
+                    </NavLink>
                     {/* Dashboard Link  */}
                     <NavLink
                         to="/Dashboard"
                         className={({ isActive }) =>
                             isActive
-                                ? "block px-4 py-2 bg-[#6499C2] text-white"
-                                : "block px-4 py-2 hover:bg-[#6499C2] text-white"
+                                ? "block px-4 py-2 bg-[#52796f] text-white"
+                                : "block px-4 py-2 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
                         }
                     >
                         <span className="flex px-2 gap-3 justify-start items-center">
@@ -61,7 +72,7 @@ const Sidebar = () => {
                     </NavLink>
 
                     {/* Add Service Link  */}
-                    <a href="#" className="block px-4 py-2 mt-3 hover:bg-[#6499C2]">
+                    <a href="#" className="block px-4 py-2 mt-3 hover:scale-95 transition-all duration-300 hover:bg-[#52796f]">
                         <span className="flex px-2 gap-3 justify-start items-center">
                             <GrServices className="text-2xl" /> Add Service
                         </span>
@@ -72,8 +83,8 @@ const Sidebar = () => {
                         to="/profile"
                         className={({ isActive }) =>
                             isActive
-                                ? "block px-4 py-2 mt-3 bg-[#6499C2] text-white"
-                                : "block px-4 py-2 mt-3 hover:bg-[#6499C2] text-white"
+                                ? "block px-4 py-2 mt-3 bg-[#52796f]  text-white"
+                                : "block px-4 py-2 mt-3 hover:bg-[#52796f] hover:scale-95 transition-all duration-300 text-white"
                         }
                     >
                         <span className="flex px-2 gap-3 justify-start items-center">
@@ -86,8 +97,8 @@ const Sidebar = () => {
                         to="/myshop"
                         className={({ isActive }) =>
                             isActive
-                                ? "block px-4 py-2 mt-3 bg-[#6499C2] text-white"
-                                : "block px-4 py-2 mt-3 hover:bg-[#6499C2] text-white"
+                                ? "block px-4 py-2 mt-3 bg-[#52796f] text-white"
+                                : "block px-4 py-2 mt-3 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
                         }
                     >
                         <span className="flex px-2 gap-3 justify-start items-center">
@@ -100,8 +111,8 @@ const Sidebar = () => {
                         to="/order"
                         className={({ isActive }) =>
                             isActive
-                                ? "block px-4 py-2 mt-3 bg-[#6499C2] text-white"
-                                : "block px-4 py-2 mt-3 hover:bg-[#6499C2] text-white"
+                                ? "block px-4 py-2 mt-3 bg-[#52796f] text-white"
+                                : "block px-4 py-2 mt-3 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
                         }
                     >
                         <span className="flex px-2 gap-3 justify-start items-center">
@@ -110,7 +121,7 @@ const Sidebar = () => {
                     </NavLink>
 
                     {/* Feedback Link  */}
-                    <NavLink to="/feedback" className="block px-4 py-2 mt-3 hover:bg-[#6499C2]">
+                    <NavLink to="/feedback" className="block hover:scale-95 transition-all duration-300 px-4 py-2 mt-3 hover:bg-[#52796f]">
                         <span className="flex px-2 gap-3 justify-start items-center">
                             <MdFeedback className="text-2xl" /> Feedback
                         </span>
@@ -127,7 +138,7 @@ const Sidebar = () => {
 
             {/* Navbar */}
             <div className="flex flex-1 flex-col">
-                <header className="fixed w-full top-0 z-50 flex items-center justify-between bg-[#192B3C] text-white p-4 shadow-md">
+                <header className="fixed w-full top-0 z-50 flex items-center justify-between bg-[#2f3e46] text-white p-4 shadow-md">
                     {/* Sidebar Toggle Button */}
                     <button
                         onClick={toggleSidebar}

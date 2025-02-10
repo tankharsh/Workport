@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaEnvelope, FaLock, FaPhone, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaPhone, FaUser, FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
 import { GiShop } from "react-icons/gi";
 import { BiSolidCategoryAlt, BiSolidCity } from "react-icons/bi";
 import { FaMapLocationDot } from "react-icons/fa6";
@@ -9,6 +9,7 @@ import Navbar from "../user_components/Navbar";
 import Footer from "../user_components/Footer";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+
 
 const SP_RegistrationForm = () => {
     // *** Service Provider Registration Api 
@@ -24,6 +25,7 @@ const SP_RegistrationForm = () => {
         sp_contact: "",
         sp_shop_name: "",
         sp_category: "",
+        sp_desc:"",
         sp_area: "",
         sp_pincode: "",
         sp_block_no: "",
@@ -76,85 +78,133 @@ const SP_RegistrationForm = () => {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen flex items-center justify-center bg-gray-300 p-6">
-                <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-lg">
-                    <h2 className="text-2xl font-bold text-center mb-4">Service Provider Registration</h2>
+            <div className="min-h-screen flex items-center justify-center p-6">
+                <div className="bg-white max-w-5xl shadow-lg rounded-lg p-6 w-full">
+                    <h2 className="text-2xl font-bold text-gray-900 text-center mb-4">Service Provider Registration</h2>
 
                     {/* Registration Form  */}
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* SP Name  */}
-                        <div className="flex items-center border p-2 rounded-md">
-                            <FaUser className="mr-2 text-gray-500" />
-                            <input
-                                type="text"
-                                name="sp_name"
-                                placeholder="Enter your name"
-                                value={formData.sp_name}
+                        <p className="text-gray-400 flex items-center gap-2">
+                            <FaStar />Personal Information<FaStar />
+                        </p>
+                        <div className="flex gap-5">
+                            {/* SP Name  */}
+                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                                <FaUser className="mr-2 text-gray-700" />
+                                <input
+                                    type="text"
+                                    name="sp_name"
+                                    placeholder="Enter your name"
+                                    value={formData.sp_name}
+                                    onChange={handleChange}
+                                    className="w-full outline-none text-black placeholder:text-gray-700 "
+                                    required
+                                />
+                            </div>
+
+                            {/* SP Email  */}
+                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                                <FaEnvelope className="mr-2 text-gray-500" />
+                                <input
+                                    type="email"
+                                    name="sp_email"
+                                    placeholder="Enter your email"
+                                    value={formData.sp_email}
+                                    onChange={handleChange}
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-5">
+                            {/* SP Contact  */}
+                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                                <FaPhone className="mr-2 text-gray-500" />
+                                <input
+                                    type="tel"
+                                    name="sp_contact"
+                                    placeholder="Enter your contact no"
+                                    value={formData.sp_contact}
+                                    onChange={handleChange}
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
+                                    required
+                                />
+                            </div>
+
+                            {/* SP Password  */}
+                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md relative hover:scale-95 transition-all duration-200">
+                                <FaLock className="mr-2 text-gray-500" />
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="sp_password"
+                                    placeholder="Enter password"
+                                    value={formData.sp_password}
+                                    onChange={handleChange}
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
+                                    required
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute right-3 text-black"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
+                        </div>
+                        <p className="text-gray-400 flex items-center gap-2">
+                            <FaStar />Shop Information<FaStar />
+                        </p>
+                        <div className="flex gap-5">
+                            {/* SP Shop Name  */}
+                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                                <GiShop className="mr-2 text-gray-500" />
+                                <input
+                                    type="text"
+                                    name="sp_shop_name"
+                                    placeholder="Enter shop name"
+                                    value={formData.sp_shop_name}
+                                    onChange={handleChange}
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
+                                    required
+                                />
+                            </div>
+
+                            {/* SP Category  */}
+                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                                <BiSolidCategoryAlt className="mr-2 text-gray-500" />
+                                <input
+                                    type="text"
+                                    name="sp_category"
+                                    placeholder="Enter category"
+                                    value={formData.sp_category}
+                                    onChange={handleChange}
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="flex border items-center border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                            {/* <BiSolidCategoryAlt className="mr-2 text-gray-500" /> */}
+                            <textarea
+                                name="sp_desc"
+                                placeholder="Enter Shop Description ..."
+                                value={formData.sp_desc}
                                 onChange={handleChange}
-                                className="w-full outline-none"
+                                className="w-full outline-none text-black placeholder-gray-700 placeholder:flex placeholder:items-center"
+                                rows={3}
                                 required
                             />
                         </div>
 
-                        {/* SP Email  */}
-                        <div className="flex items-center border p-2 rounded-md">
-                            <FaEnvelope className="mr-2 text-gray-500" />
-                            <input
-                                type="email"
-                                name="sp_email"
-                                placeholder="Enter your email"
-                                value={formData.sp_email}
-                                onChange={handleChange}
-                                className="w-full outline-none"
-                                required
-                            />
-                        </div>
 
-                        {/* SP Contact  */}
-                        <div className="flex items-center border p-2 rounded-md">
-                            <FaPhone className="mr-2 text-gray-500" />
-                            <input
-                                type="tel"
-                                name="sp_contact"
-                                placeholder="Enter your contact no"
-                                value={formData.sp_contact}
-                                onChange={handleChange}
-                                className="w-full outline-none"
-                                required
-                            />
-                        </div>
-
-                        {/* SP Shop Name  */}
-                        <div className="flex items-center border p-2 rounded-md">
-                            <GiShop className="mr-2 text-gray-500" />
-                            <input
-                                type="text"
-                                name="sp_shop_name"
-                                placeholder="Enter shop name"
-                                value={formData.sp_shop_name}
-                                onChange={handleChange}
-                                className="w-full outline-none"
-                                required
-                            />
-                        </div>
-
-                        {/* SP Category  */}
-                        <div className="flex items-center border p-2 rounded-md">
-                            <BiSolidCategoryAlt className="mr-2 text-gray-500" />
-                            <input
-                                type="text"
-                                name="sp_category"
-                                placeholder="Enter category"
-                                value={formData.sp_category}
-                                onChange={handleChange}
-                                className="w-full outline-none"
-                                required
-                            />
-                        </div>
-
+                        <p className="text-gray-400 flex items-center gap-2">
+                            <FaStar />Shop Address<FaStar />
+                        </p>
                         {/* SP Area  */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="flex items-center border p-2 rounded-md">
+                            <div className="flex items-center border p-2 border-gray-700 rounded-md hover:scale-95 transition-all duration-200">
                                 <PiMapPinAreaFill className="mr-2 text-gray-500" />
                                 <input
                                     type="text"
@@ -162,11 +212,11 @@ const SP_RegistrationForm = () => {
                                     placeholder="Shop Area"
                                     value={formData.sp_area}
                                     onChange={handleChange}
-                                    className="w-full outline-none"
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
                                     required
                                 />
                             </div>
-                            <div className="flex items-center border p-2 rounded-md">
+                            <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
                                 <FaMapLocationDot className="mr-2 text-gray-500" />
                                 <input
                                     type="text"
@@ -174,7 +224,7 @@ const SP_RegistrationForm = () => {
                                     placeholder="Block No"
                                     value={formData.sp_block_no}
                                     onChange={handleChange}
-                                    className="w-full outline-none"
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
                                     required
                                 />
                             </div>
@@ -182,7 +232,7 @@ const SP_RegistrationForm = () => {
 
                         {/* SP Pincode  */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="flex items-center border p-2 rounded-md">
+                            <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
                                 <TbMapPinCode className="mr-2 text-gray-500" />
                                 <input
                                     type="text"
@@ -190,11 +240,11 @@ const SP_RegistrationForm = () => {
                                     placeholder="Pincode"
                                     value={formData.sp_pincode}
                                     onChange={handleChange}
-                                    className="w-full outline-none"
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
                                     required
                                 />
                             </div>
-                            <div className="flex items-center border p-2 rounded-md">
+                            <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
                                 <BiSolidCity className="mr-2 text-gray-500" />
                                 <input
                                     type="text"
@@ -202,59 +252,42 @@ const SP_RegistrationForm = () => {
                                     placeholder="City"
                                     value={formData.sp_city}
                                     onChange={handleChange}
-                                    className="w-full outline-none"
+                                    className="w-full outline-none text-black placeholder:text-gray-700"
                                     required
                                 />
                             </div>
                         </div>
 
-                        {/* SP Password  */}
-                        <div className="flex items-center border p-2 rounded-md relative">
-                            <FaLock className="mr-2 text-gray-500" />
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                name="sp_password"
-                                placeholder="Enter password"
-                                value={formData.sp_password}
-                                onChange={handleChange}
-                                className="w-full outline-none pr-8"
-                                required
-                            />
-                            <button
-                                type="button"
-                                className="absolute right-3 text-gray-500"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
-                        </div>
+                        <p className="text-gray-400 flex items-center gap-2">
+                            <FaStar />Shop Images <FaStar />
+                        </p>
+                        <div className="flex gap-5">
+                            {/* SP Shop Image upload fields */}
+                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                                <label className="mr-2 text-gray-500">Shop Image</label>
+                                <input
+                                    type="file"
+                                    name="sp_shop_img"
+                                    onChange={handleChange}
+                                    className="w-full outline-none text-black"
+                                    accept="image/*"
+                                    required
+                                />
+                            </div>
 
-                        {/* SP Shop Image upload fields */}
-                        <div className="flex items-center border p-2 rounded-md">
-                            <label className="mr-2 text-gray-500">Shop Image</label>
-                            <input
-                                type="file"
-                                name="sp_shop_img"
-                                onChange={handleChange}
-                                className="w-full outline-none"
-                                accept="image/*"
-                                required
-                            />
+                            {/* SP Shop Banner Image upload fields */}
+                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                                <label className="mr-2 text-gray-500">Shop Banner Image</label>
+                                <input
+                                    type="file"
+                                    name="sp_shop_banner_img"
+                                    onChange={handleChange}
+                                    className="w-full outline-none text-black"
+                                    accept="image/*"
+                                    required
+                                />
+                            </div>
                         </div>
-
-                        {/* SP Shop Banner Image upload fields */}
-                        <div className="flex items-center border p-2 rounded-md">
-                            <label className="mr-2 text-gray-500">Shop Banner Image</label>
-                            <input
-                                type="file"
-                                name="sp_shop_banner_img"
-                                onChange={handleChange}
-                                className="w-full outline-none"
-                                accept="image/*"
-                                required
-                            />
-                        </div>
-
                         {/* SP Form Submit Button  */}
                         <button
                             type="submit"
@@ -267,7 +300,7 @@ const SP_RegistrationForm = () => {
                     {/* Registration Form ends */}
 
                     {/* SP Login Button  */}
-                    <span className="flex justify-center">
+                    <span className="flex text-gray-500 justify-center">
                         Already have an account ! &nbsp;
                         <NavLink
                             to='/sp-provider-login'
