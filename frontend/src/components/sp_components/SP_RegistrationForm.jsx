@@ -291,7 +291,7 @@ const SP_RegistrationForm = () => {
                         {/* SP Form Submit Button  */}
                         <button
                             type="submit"
-                            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+                            className="w-full bg-[#84A98C] text-white py-2 rounded-md hover:bg-blue-600"
                         >
                             Register
                         </button>

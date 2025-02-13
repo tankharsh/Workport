@@ -8,6 +8,7 @@ import { PiMapPinAreaFill } from "react-icons/pi";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { TbMapPinCode } from "react-icons/tb";
 import { BiSolidCity } from "react-icons/bi";
+import { FaCartArrowDown } from "react-icons/fa";
 
 const Cartpage = () => {
   const { cartItems, removeFromCart } = useAuth();
@@ -132,6 +133,29 @@ const Cartpage = () => {
                   className="w-full outline-none text-black"
                   required
                 />
+              </div>
+              <div className="flex items-center mt-2 border p-2 rounded-md">
+                <BiSolidCity className="mr-2 text-gray-500" />
+                <input
+                  type="text"
+                  name="sp_city"
+                  placeholder="City"
+                  className="w-full outline-none text-black"
+                  required
+                />
+              </div>
+
+              <div className="flex items-center mt-2 border p-2 rounded-md">
+              
+                <FaCartArrowDown className="mr-2 text-gray-500" />
+                <label className="w-full outline-none text-black">Total Items : 13 </label>
+                {/* <input
+                  type="text"
+                  name="sp_city"
+                  placeholder="City"
+                  className="w-full outline-none text-black"
+                  required
+                /> */}
               </div>
               <div className="flex items-center mt-2 border p-2 rounded-md">
                 <BiSolidCity className="mr-2 text-gray-500" />

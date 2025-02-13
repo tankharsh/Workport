@@ -10,6 +10,7 @@ const spRouter = require("./routes/sp.routes");
 const categoryRoutes = require("./routes/category.routes");
 const path = require("path");
 const bodyParser = require("body-parser");
+const otpRoutes = require('./routes/otpRoutes');
 
 
 connectDB();
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use("/api/sp", spRouter);
+app.use('/api/otp', otpRoutes);
 
 
 

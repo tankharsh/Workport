@@ -1,6 +1,6 @@
-import React from 'react'
+import { useState } from 'react'
 import Navbar from '../../components/user_components/Navbar'
-import AdvancedSearchMenu from '../../components/user_components/AdvancedSearchMenu'
+// import AdvancedSearchMenu from '../../components/user_components/AdvancedSearchMenu'
 import { FaRupeeSign } from "react-icons/fa"
 import { MdPhone } from "react-icons/md"
 import { FaCheckCircle } from "react-icons/fa";
@@ -8,6 +8,8 @@ import { FaWhatsapp } from "react-icons/fa"
 import Footer from '../../components/user_components/Footer'
 import { NavLink } from 'react-router-dom'
 import { Helmet } from "react-helmet-async";
+// import { FaUser, FaPhone, FaEnvelope } from "react-icons/fa";
+import VerificationModal from '../../components/user_components/VerificationModal'
 
 const services = [
     { name: "Hair Wash", price: 3500 },
@@ -16,6 +18,10 @@ const services = [
 ];
 
 const User_Dashboard = () => {
+
+      const [isModalOpen, setIsModalOpen] = useState(false);
+    
+
     return (
         <>
         <Helmet>
@@ -28,7 +34,7 @@ const User_Dashboard = () => {
                 <h1 className="text-center">Hair and Care Shop</h1>
 
                 {[1, 2, 3].map((_, index) => (
-                    <div key={index} className="bg-gray-200 w-full max-w-5xl mx-auto text-black p-4 rounded-lg shadow-md flex flex-col md:flex-row gap-6 mt-6">
+                    <div key={index} className="bg-gray-200 w-full max-w-5xl mx-auto text-black p-4 rounded-lg shadow-md flex fl    ex-col md:flex-row gap-6 mt-6">
                         {/* Image Placeholder */}
                         <img src="https://cdn.pixabay.com/photo/2020/05/24/02/00/barber-shop-5212059_640.jpg"
                             className="bg-gray-300 w-full md:w-72 md:h-64 object-cover rounded-lg" alt="Hair Care" />
@@ -60,15 +66,21 @@ const User_Dashboard = () => {
                                     <span className="relative z-10 text-lg flex justify-center items-center gap-2"><FaWhatsapp />Whatsapp</span>
                                 </NavLink>
 
-                                <NavLink to='/Shop-Dashboard' className="relative flex h-[50px] w-40 items-center justify-center overflow-hidden bg-yellow-500 hover:shadow-yellow-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-opacity-50 before:duration-500 before:ease-out hover:before:h-56 hover:before:w-56 rounded-lg">
-                                    <span className="relative z-10 text-lg flex justify-center items-center gap-2"><FaCheckCircle />Book Now</span>
+                                <NavLink onClick={() => setIsModalOpen(true)} className="relative flex h-[50px] w-55 items-center justify-center overflow-hidden bg-yellow-500 hover:shadow-yellow-600 text-white shadow-2xl transition-all before:absolute before:h-0 before:w-0 before:rounded-full before:bg-opacity-50 before:duration-500 before:ease-out hover:before:h-56 hover:before:w-56 rounded-lg">
+                                    <span className="relative z-10 text-lg flex justify-center items-center gap-2"><FaCheckCircle />Check Euquiry</span>
                                 </NavLink>
 
                             </div>
+
+
                         </div>
                     </div>
                 ))}
             </div>
+
+
+                 
+            <VerificationModal isModalOpen={isModalOpen}  setIsModalOpen={setIsModalOpen}   />
             <Footer />
         </>
     )
