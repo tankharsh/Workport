@@ -24,9 +24,9 @@ const mongoose = require("mongoose");
 
 const CategorySchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    image: { type: String, required: true }, // store image filename or path
+    Category_Name: { type: String, required: true },
+    Category_Description: { type: String, required: true },
+    Category_Image: { type: String, required: true }, // store image filename or path
   },
   { timestamps: true }
 );
