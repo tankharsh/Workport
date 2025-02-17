@@ -11,6 +11,7 @@ const categoryRoutes = require("./routes/category.routes");
 const path = require("path");
 const bodyParser = require("body-parser");
 const otpRoutes = require('./routes/otpRoutes');
+const serviceRoutes = require('./routes/service.routes');
 
 
 connectDB();
@@ -36,7 +37,7 @@ app.get("/", (req, res) => {
 app.use('/api/users', userRoutes);
 app.use("/api/sp", spRouter);
 app.use('/api/otp', otpRoutes);
-
+app.use('/api/services',serviceRoutes);
 
 
 // Static files for uploaded images

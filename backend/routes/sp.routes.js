@@ -31,4 +31,10 @@ router.get("/sp_profile", authmiddleware.authServiceProvider, spController.getPr
 //Get all Services provider routes
 router.get('/', spController.getAllSP);
 router.get("/sp_logout", authmiddleware.authServiceProvider, spController.logoutSP);
+
+//get all details for services provider
+router.get("/providers", spController.getAllServiceProviders);
+// get service provider by id 
+router.get("/providers/:id", spController.getServiceProviderById);
+
 module.exports = router;
