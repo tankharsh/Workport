@@ -24,8 +24,10 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import SPProtectedRoute from './pages/Protected';
 import Cartpage from './components/user_components/Cartpage';
 import { ToastContainer } from 'react-toastify';
-
-
+import Addservice from './pages/sp_pages/Addservice';
+import About from './pages/user_pages/About';
+import UserRoutesProtection from './pages/UserRoutesProtection';
+import Contact from './pages/user_pages/Contact';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -79,14 +81,18 @@ function App() {
           <Loader show={loading} />
           <Routes>
             {/* users routes  */}
-            <Route path="/" element={<Layout />} />
-            <Route path='/user-login' element={<UserLogin />} />
-            <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
-            <Route path='/User-Dashboard' element={<User_Dashboard />} />
-            <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
-            <Route path='/cart' element={<Cartpage />} />
+            <Route element={<UserRoutesProtection />}>
+              <Route path="/" element={<Layout />} />
+              <Route path='/user-login' element={<UserLogin />} />
+              <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
+              <Route path='/User-Dashboard' element={<User_Dashboard />} />
+              <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
+              <Route path='/Aboutpage' element={<About />} />
+              <Route path='/contactpage' element={<Contact />} />
+              <Route path='/cart' element={<Cartpage />} />
+            </Route>
 
-              {/* Service Provider routes  */}
+            {/* Service Provider routes  */}
             <Route path='/sp-provider' element={<SP_RegistrationForm />} />
             <Route path='/sp-provider-login' element={<SP_LoginForm />} />
             <Route element={<SPProtectedRoute />}>
@@ -94,8 +100,10 @@ function App() {
               <Route path='/profile' element={<Profile />} />
               <Route path='/myshop' element={<Myshop />} />
               <Route path='/order' element={<Orders />} />
+              <Route path='/addservice' element={<Addservice />} />
               <Route path='/feedback' element={<Feedback />} />
             </Route>
+
             {/* Admin routes */}
             <Route path='/Admin-Dashboard' element={<AdminDashboard />} />
             <Route path='/Admin-Dashboard/all-serviceproviders' element={<AdminGetAllServiceProvider />} />
@@ -103,10 +111,8 @@ function App() {
             <Route path='/Admin-Dashboard/add-category' element={<AdminAddCategory />} />
             <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
 
-
-
-
-            <Route path="*" element={<Navigate to="/sp-provider-login" />} />
+            {/* Universal routes  */}
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>
       </HelmetProvider>

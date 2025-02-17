@@ -30,9 +30,9 @@ const Layout = () => {
           </p>
 
           {serviceprovider ? (
-            <NavLink to="/sp_login" className="mt-5 text-3xl font-semibold bg-[#84A98C] hover:bg-[#3a3e5cbf] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">List Your Business</NavLink>
-          ) : (
             <NavLink to="/Dashboard" className="mt-5 text-3xl font-semibold bg-[#84A98C] hover:bg-[#3a3e5cbf] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">Dashboard</NavLink>
+          ) : (
+            <NavLink to="/sp-provider-login" className="mt-5 text-3xl font-semibold bg-[#84A98C] hover:bg-[#3a3e5cbf] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">List Your Business</NavLink>
           )}
           
         </div>

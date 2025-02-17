@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from '../user_components/Navbar';
 import Footer from '../user_components/Footer';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, replace, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
 
@@ -35,12 +35,12 @@ function SP_LoginForm() {
 
             if (res.ok) {
                 console.log("Login successful:", data);
-                storeSPToken(data.token, data);
+                storeSPToken(data.token, data.serviceProvider);
                 showPopup('Login Successful !', 'success')
                 // setUser(data.user);
                 setSp_email('');
                 setSp_password('');
-                navigate('/dashboard')
+                navigate('/dashboard', { replace: true })
 
             } else {
                 showPopup('Login Failed: ' + (data.message || "Unknown error"), 'error');
@@ -104,7 +104,7 @@ function SP_LoginForm() {
                                             value={sp_password}
                                             onChange={(e) => setSp_password(e.target.value)}
                                             placeholder="Enter your password"
-                                             className="w-full outline-none text-black placeholder:text-gray-700"
+                                            className="w-full outline-none text-black placeholder:text-gray-700"
                                         />
                                         <button
                                             type="button"

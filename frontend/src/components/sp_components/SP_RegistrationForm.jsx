@@ -25,7 +25,7 @@ const SP_RegistrationForm = () => {
         sp_contact: "",
         sp_shop_name: "",
         sp_category: "",
-        sp_desc:"",
+        sp_desc: "",
         sp_area: "",
         sp_pincode: "",
         sp_block_no: "",
@@ -37,12 +37,20 @@ const SP_RegistrationForm = () => {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
-        const { name, value, type, files } = e.target;
+        const { name, value, type, files, checked } = e.target;
+    
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "file" ? files[0] : value,
+            [name]: type === "file"
+                ? files[0]  // Handle file upload
+                : name === "sp_category"
+                ? checked
+                    ? [...(prev.sp_category || []), value]  // Add checked category
+                    : (prev.sp_category || []).filter((item) => item !== value)  // Remove unchecked category
+                : value,  // Handle other input types
         }));
     };
+    
 
     // *** SP Registration 
     const handleSubmit = async (e) => {
@@ -156,35 +164,42 @@ const SP_RegistrationForm = () => {
                         <p className="text-gray-400 flex items-center gap-2">
                             <FaStar />Shop Information<FaStar />
                         </p>
-                        <div className="flex gap-5">
-                            {/* SP Shop Name  */}
-                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                                <GiShop className="mr-2 text-gray-500" />
-                                <input
-                                    type="text"
-                                    name="sp_shop_name"
-                                    placeholder="Enter shop name"
-                                    value={formData.sp_shop_name}
-                                    onChange={handleChange}
-                                    className="w-full outline-none text-black placeholder:text-gray-700"
-                                    required
-                                />
-                            </div>
+                        {/* SP Shop Name  */}
+                        <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                            <GiShop className="mr-2 text-gray-500" />
+                            <input
+                                type="text"
+                                name="sp_shop_name"
+                                placeholder="Enter shop name"
+                                value={formData.sp_shop_name}
+                                onChange={handleChange}
+                                className="w-full outline-none text-black placeholder:text-gray-700"
+                                required
+                            />
+                        </div>
 
-                            {/* SP Category  */}
-                            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                                <BiSolidCategoryAlt className="mr-2 text-gray-500" />
-                                <input
-                                    type="text"
-                                    name="sp_category"
-                                    placeholder="Enter category"
-                                    value={formData.sp_category}
-                                    onChange={handleChange}
-                                    className="w-full outline-none text-black placeholder:text-gray-700"
-                                    required
-                                />
+                        {/* SP Category  */}
+                        <div className="flex flex-col border border-gray-700 p-2 rounded-md">
+                            <p className="text-gray-500 mb-2">Select Service Category:</p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {["Electric", "Hair", "Beauty", "Car Wash", "Plumbing", "Cleaning", "Painting"].map((category) => (
+                                    <label key={category} className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            name="sp_category"
+                                            value={category}
+                                            checked={formData.sp_category.includes(category)}
+                                            onChange={handleChange}
+                                            className="accent-purple-600"
+                                        />
+                                        <span className="text-gray-700">{category}</span>
+                                    </label>
+                                ))}
                             </div>
                         </div>
+
+
+
                         <div className="flex border items-center border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
                             {/* <BiSolidCategoryAlt className="mr-2 text-gray-500" /> */}
                             <textarea

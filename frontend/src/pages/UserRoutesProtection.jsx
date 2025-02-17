@@ -2,17 +2,16 @@ import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const SPProtectedRoute = () => {
+const UserRoutesProtection = () => {
     const { serviceprovider } = useAuth();
-    const spToken = localStorage.getItem('SP_token');
     const location = useLocation();
 
-    // Agar service provider login nahi hai, toh usko login page pe bhejo
-    if (!serviceprovider || !spToken) {
+    // Agar service provider logged in hai aur user routes pe aane ki koshish kar raha hai, toh dashboard pe bhejo
+    if (serviceprovider) {
         return <Navigate to="/dashboard" replace />;
     }
 
     return <Outlet />;
 };
 
-export default SPProtectedRoute;
+export default UserRoutesProtection;
