@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 
 const Dashboard = () => {
@@ -18,8 +19,6 @@ const Dashboard = () => {
             delay:0.3
         })
     })
-
-    
 
     return (
         <>

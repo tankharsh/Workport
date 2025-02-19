@@ -6,3 +6,9 @@
  ****** Service Provider APIs ******
  SERVICE_PROVIDER_LOGIN_API_URI = "http://localhost:4000/api/sp/sp_login"
  SERVICE_PROVIDER_REGISTER_API = 'http://localhost:4000/api/sp/sp_register'
+
+Task -->
+ 1. logout in sp :✅
+ 2. Category In SP register form and selected Checkbox Display ✅
+ 3. Contact page 
+ 4. SP --> profile and Shop CRUD

@@ -32,24 +32,13 @@ const Navbar = () => {
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex space-x-8 items-center">
           <NavLink to="/" className="hover:text-gray-400 text-lg font-semibold">Home</NavLink>
-          <NavLink to="/#about" className="hover:text-gray-400 text-lg font-semibold">About</NavLink>
-          <NavLink to="/#contact" className="hover:text-gray-400 text-lg font-semibold">Contact</NavLink>
+          <NavLink to="/Aboutpage" className="hover:text-gray-400 text-lg font-semibold">About</NavLink>
+          <NavLink to="/contactpage" className="hover:text-gray-400 text-lg font-semibold">Contact</NavLink>
 
           {user ? (
             
             <div className='flex gap-10 items-center'>
               <NavLink to="/User-Dashboard" className="hover:text-gray-400 text-lg font-semibold">Services</NavLink>
-              <NavLink
-                to="/cart"
-                className="relative hover:text-gray-400 text-lg font-semibold"
-              >
-                <FaCartArrowDown />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-2 -right-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                    {cartItems.length}
-                  </span>
-                )}
-              </NavLink>
 
               <button
                 onClick={() => setShowLogoutPopup(true)}
@@ -98,9 +87,9 @@ const Navbar = () => {
         {/* Mobile Menu */}
         <div className={`${isMenuOpen ? "block" : "hidden"} md:hidden font-semibold text-white space-y-4 p-4`}>
           <NavLink to="/" className="block hover:text-gray-400" onClick={closeMenu}>Home</NavLink>
-          <NavLink to="/#services" className="block hover:text-gray-400" onClick={closeMenu}>Services</NavLink>
-          <NavLink to="/#about" className="block hover:text-gray-400" onClick={closeMenu}>About</NavLink>
-          <NavLink to="/#contact" className="block hover:text-gray-400" onClick={closeMenu}>Contact</NavLink>
+          <NavLink to="/User-Dashboard" className="block hover:text-gray-400" onClick={closeMenu}>Services</NavLink>
+          <NavLink to="/Aboutpage" className="block hover:text-gray-400" onClick={closeMenu}>About</NavLink>
+          <NavLink to="/contactpage" className="block hover:text-gray-400" onClick={closeMenu}>Contact</NavLink>
 
           {/* Mobile Login / Logout Button */}
           {user ? (

@@ -9,7 +9,8 @@ body {
 }
 
 body {
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
+    overflow: auto;
     background-color: #2F3E46;
     color: #fff;
 }
