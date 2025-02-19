@@ -9,9 +9,9 @@ const AdminAllCategory = () => {
   const [editCategory, setEditCategory] = useState(null);
   const [newCategory, setNewCategory] = useState({
     id: null,
-    name: "",
-    description: "",
-    image: "",
+    categoryName: "",
+    categoryDescription: "",
+    categoryImage: "",
     file: null,
   });
 
@@ -32,9 +32,9 @@ const AdminAllCategory = () => {
     setEditCategory(category);
     setNewCategory({
       id: category._id,
-      name: category.name,
-      description: category.description,
-      image: category.image, // Retaining the existing image URL for the form
+      categoryName: category.categoryName,
+      categoryDescription: category.categoryDescription,
+      categoryImage: category.categoryImage, // Retaining the existing categoryImage URL for the form
       file: null, // No new file selected yet
     });
   };
@@ -52,15 +52,15 @@ const AdminAllCategory = () => {
   // Handle Create or Edit Category
   const handleSaveCategory = async () => {
     const formData = new FormData();
-    formData.append("name", newCategory.name);
-    formData.append("description", newCategory.description);
+    formData.append("categoryName", newCategory.categoryName);
+    formData.append("categoryDescription", newCategory.categoryDescription);
 
-    // Only append the image if it's changed
+    // Only append the categoryImage if it's changed
     if (newCategory.file) {
-      formData.append("image", newCategory.file);
+      formData.append("categoryImage", newCategory.file);
     } else {
-      // If no new image is provided, use the old image
-      formData.append("image", newCategory.image);
+      // If no new categoryImage is provided, use the old categoryImage
+      formData.append("categoryImage", newCategory.categoryImage);
     }
 
     try {
@@ -87,7 +87,7 @@ const AdminAllCategory = () => {
         setCategories([...categories, response.data]);
       }
       setEditCategory(null); // Close edit modal
-      setNewCategory({ name: "", description: "", image: "", file: null }); // Reset form
+      setNewCategory({ categoryName: "", categoryDescription: "", categoryImage: "", file: null }); // Reset form
     } catch (error) {
       console.error("Error saving category:", error);
     }
@@ -108,7 +108,7 @@ const AdminAllCategory = () => {
       <AdminSidebar />
       <main className="flex-1 lg:ml-64 py-2 mt-20">
         <div className="container mx-auto p-5">
-          <h2 className="text-2xl font-bold text-center text-gray-700 mb-5">
+          <h2 className="text-2xl font-bold text-center text-white mb-5">
             All Categories
           </h2>
 
@@ -133,12 +133,12 @@ const AdminAllCategory = () => {
                 {categories.length > 0 ? (
                   categories.map((category, index) => (
                     <tr key={category._id} className="hover:bg-gray-200 transition">
-                      <td className="px-4 py-2 border-t border-gray-200">{index + 1}</td>
-                      <td className="px-4 py-2 border-t border-gray-200">{category.name}</td>
-                      <td className="px-4 py-2 border-t border-gray-200">{category.description}</td>
-                      <td className="px-4 py-2 border-t border-gray-200">
+                      <td className="px-4 py-2 border-t border-gray-200 text-black">{index + 1}</td>
+                      <td className="px-4 py-2 border-t border-gray-200  text-black">{category.categoryName}</td>
+                      <td className="px-4 py-2 border-t border-gray-200  text-black">{category.categoryDescription}</td>
+                      <td className="px-4 py-2 border-t border-gray-200  text-black">
                         <img
-                          src={`http://localhost:4000/uploads/${category.image}`}
+                          src={`http://localhost:4000/uploads/${category.categoryImage}`}
                           alt="Category"
                           className="w-16 h-16 rounded-md"
                         />
@@ -180,21 +180,21 @@ const AdminAllCategory = () => {
                     <label className="block text-gray-700 font-medium">Category Name</label>
                     <input
                       type="text"
-                      name="name"
-                      value={newCategory.name}
+                      name="categoryName"
+                      value={newCategory.categoryName}
                       onChange={handleCategoryChange}
-                      className="border p-2 w-full rounded focus:ring focus:ring-blue-300 outline-none"
-                      placeholder="Enter category name"
+                      className="border p-2 w-full rounded focus:ring text-black outline-none"
+                      placeholder="Enter category categoryName"
                     />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-medium">Description</label>
                     <textarea
-                      name="description"
-                      value={newCategory.description}
+                      name="categoryDescription"
+                      value={newCategory.categoryDescription}
                       onChange={handleCategoryChange}
-                      className="border p-2 w-full rounded focus:ring focus:ring-blue-300 outline-none"
-                      placeholder="Enter category description"
+                      className="border p-2 w-full rounded focus:ring text-black outline-none"
+                      placeholder="Enter category categoryDescription"
                     ></textarea>
                   </div>
                   <div>
@@ -204,9 +204,9 @@ const AdminAllCategory = () => {
                       onChange={handleFileChange}
                       className="border p-2 w-full rounded focus:ring focus:ring-blue-300 outline-none"
                     />
-                    {newCategory.image && !newCategory.file && (
+                    {newCategory.categoryImage && !newCategory.file && (
                       <img
-                        src={`http://localhost:4000/uploads/${newCategory.image}`}
+                        src={`http://localhost:4000/uploads/${newCategory.categoryImage}`}
                         alt="Preview"
                         className="mt-3 w-16 h-16 object-cover rounded-md"
                       />

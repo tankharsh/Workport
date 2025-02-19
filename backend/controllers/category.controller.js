@@ -5,21 +5,48 @@ const path = require("path");
 // Create a category
 exports.createCategory = async (req, res) => {
   try {
-    const { Category_Name, Category_Description } = req.body;
-    const Category_Image = req.file ? req.file.filename : null;
+      console.log("Received Data:", req.body);
+      console.log("Received File:", req.file);
 
-    const newCategory = new Category({
-      Category_Name,
-      Category_Description,
-      Category_Image,
-    });
+      // Ensure categoryName is not empty
+      const { categoryName, categoryDescription } = req.body;
+      if (!categoryName || categoryName.trim() === "") {
+          return res.status(400).json({ message: "Category name is required and cannot be empty." });
+      }
 
-    await newCategory.save();
-    res.status(201).json(newCategory);
+      // Validate that categoryDescription is provided
+      if (!categoryDescription || categoryDescription.trim() === "") {
+          return res.status(400).json({ message: "Category description is required and cannot be empty." });
+      }
+
+      if (!req.file) {
+          return res.status(400).json({ message: "Category image is required." });
+      }
+
+      const categoryImage = req.file.filename;
+
+      // 🚀 **Check if Category already exists**
+      const existingCategory = await Category.findOne({ categoryName });
+      if (existingCategory) {
+          return res.status(400).json({ message: "Category already exists." });
+      }
+
+      const newCategory = new Category({
+          categoryName,
+          categoryDescription,
+          categoryImage,
+      });
+
+      await newCategory.save();
+
+      res.status(201).json({ message: "Category successfully added!", category: newCategory });
   } catch (error) {
-    res.status(500).json({ message: "Error creating category", error });
+      console.error("Database Save Error:", error);
+      res.status(500).json({ message: "Error creating category", error: error.message });
   }
 };
+
+
 
 // Get all categories
 exports.getAllCategories = async (req, res) => {
@@ -34,16 +61,16 @@ exports.getAllCategories = async (req, res) => {
 // Update category
 exports.updateCategory = async (req, res) => {
   try {
-    const { Category_Name, Category_Description, Category_Image } = req.body;
+    const { categoryName, categoryDescription, categoryImage } = req.body;
 
-    let updatedCategoryData = { Category_Name, Category_Description };
+    let updatedCategoryData = { categoryName, categoryDescription };
 
     if (req.file) {
-      // If a new Category_Image is uploaded, add the new Category_Image URL
-      updatedCategoryData.Category_Image = req.file.filename;
-    } else if (Category_Image) {
-      // If no new Category_Image is uploaded, keep the existing Category_Image URL
-      updatedCategoryData.Category_Image = Category_Image;
+      // If a new categoryImage is uploaded, add the new categoryImage URL
+      updatedCategoryData.categoryImage = req.file.filename;
+    } else if (categoryImage) {
+      // If no new categoryImage is uploaded, keep the existing categoryImage URL
+      updatedCategoryData.categoryImage = categoryImage;
     }
 
     const updatedCategory = await Category.findByIdAndUpdate(req.params.id, updatedCategoryData, { new: true });
@@ -63,9 +90,9 @@ exports.deleteCategory = async (req, res) => {
     // Delete the category from the database
     const deletedCategory = await Category.findByIdAndDelete(id);
 
-    // Optionally, delete the Category_Image file if it exists
-    if (deletedCategory && deletedCategory.Category_Image) {
-      fs.unlinkSync(path.join(__dirname, "../uploads", deletedCategory.Category_Image));
+    // Optionally, delete the categoryImage file if it exists
+    if (deletedCategory && deletedCategory.categoryImage) {
+      fs.unlinkSync(path.join(__dirname, "../uploads", deletedCategory.categoryImage));
     }
 
     res.status(200).json({ message: "Category deleted successfully" });

@@ -43,3 +43,16 @@ exports.addService = async (req, res) => {
       res.status(500).json({ message: "Server error", error: error.message });
     }
   };
+
+
+  exports.getInquiries = async (req, res) => {
+    try {
+        const inquiries = await Inquiry.find({ serviceProvider: req.params.spId })
+            .populate("user", "name email")
+            .populate("service", "services_name");
+
+        res.status(200).json({ inquiries });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};

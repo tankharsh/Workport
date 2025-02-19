@@ -5,9 +5,7 @@ const Service = require("../models/services.model");
 const { blacklistToken } = require("../services/tokenService");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const multer = require("multer");
-const upload = require("../multer/multer");
-const path = require("path");
+
 
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -70,14 +68,13 @@ const JWT_SECRET = process.env.JWT_SECRET;
 //         next(error);
 //     }
 // };
-
 exports.registerSP = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    console.log(req.files); // Debugging: Check the files received
+    console.log(req.files); // Debugging: Check uploaded files
 
     const {
         sp_name,
@@ -89,22 +86,22 @@ exports.registerSP = async (req, res, next) => {
         sp_pincode,
         sp_city,
         sp_password,
-        sp_category,  // ✅ New field: Expecting an array of categories
-        services   // ✅ New field: Expecting an array of service ObjectIds
+        sp_category,  
+        services   
     } = req.body;
 
     try {
-        // Check if files were uploaded
+        // Ensure required images are uploaded
         if (!req.files || !req.files["sp_shop_img"] || !req.files["sp_shop_banner_img"]) {
             return res.status(400).json({ message: "Shop image and banner image are required" });
         }
 
-        // Hash the password before saving
-        const hashedPassword = await ServiceProvider.hashpassword(sp_password);
+        // ✅ Hash the password before saving
+        const hashedPassword = await bcrypt.hash(sp_password, 10);
 
-        // Convert `category` and `services` from string to JSON (if sent as stringified data)
-        const parsedCategories = sp_category ? JSON.parse(sp_category) : [];
-        const parsedServices = services ? JSON.parse(services) : [];
+        // ✅ Ensure category & services are arrays
+        const parsedCategories = Array.isArray(sp_category) ? sp_category : JSON.parse(sp_category || "[]");
+        const parsedServices = Array.isArray(services) ? services : JSON.parse(services || "[]");
 
         const sp = await ServiceProvider.create({
             sp_name,
@@ -116,13 +113,14 @@ exports.registerSP = async (req, res, next) => {
             sp_pincode,
             sp_city,
             sp_password: hashedPassword,
-            sp_shop_img: req.files["sp_shop_img"][0].path, // Path to the uploaded shop image
-            sp_shop_banner_img: req.files["sp_shop_banner_img"][0].path, // Path to the uploaded banner image
-            sp_category: parsedCategories,  // ✅ Storing category references
-            services: parsedServices     // ✅ Storing service references
+            sp_shop_img: req.files["sp_shop_img"]?.[0]?.path || "", 
+            sp_shop_banner_img: req.files["sp_shop_banner_img"]?.[0]?.path || "",
+            sp_category: parsedCategories,  
+            services: parsedServices     
         });
 
-        const token = jwt.sign({ id: sp._id, sp_name: sp.sp_name, sp_email: sp.sp_email }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        // ✅ Generate JWT Token
+        const token = sp.generateAuthToken();
 
         res.status(201).json({
             message: "Service Provider registered successfully",
@@ -138,10 +136,9 @@ exports.registerSP = async (req, res, next) => {
 };
 
 
-// Service Provider Login
+// Login Service Provider Function
 module.exports.loginSP = async (req, res, next) => {
     const errors = validationResult(req);
-
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
@@ -149,19 +146,25 @@ module.exports.loginSP = async (req, res, next) => {
     const { sp_email, sp_password } = req.body;
 
     try {
-        const sp = await ServiceProvider.findOne({ sp_email }).select('+sp_password');
+        const sp = await ServiceProvider.findOne({ sp_email }).select("+sp_password");
         if (!sp) {
-            return res.status(400).json({ message: "Invalid email or password" });
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
         const isMatch = await sp.comparePassword(sp_password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid email or password" });
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        const token = sp.generateAuthToken();
+        const token = jwt.sign(
+            { id: sp._id, sp_email: sp.sp_email },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
         res.status(200).json({
             message: "Login successful",
+            token,
             serviceProvider: {
                 id: sp._id,
                 sp_name: sp.sp_name,
@@ -174,12 +177,15 @@ module.exports.loginSP = async (req, res, next) => {
                 sp_pincode: sp.sp_pincode,
                 sp_city: sp.sp_city,
             },
-            token,
         });
     } catch (error) {
         next(error);
     }
 };
+
+
+
+  
 
 // Get Service Provider Profile
 module.exports.getProfile = (req, res) => {
@@ -198,12 +204,12 @@ module.exports.getProfile = (req, res) => {
 // Get all Service Providers
 exports.getAllSP = async (req, res) => {
     try {
-      const SP = await ServiceProvider.find(); // Fetch all service providers from DB
-      res.json(SP); // Send the users as JSON response
+        const SP = await ServiceProvider.find(); // Fetch all service providers from DB
+        res.json(SP); // Send the users as JSON response
     } catch (err) {
-      res.status(500).json({ message: 'Error fetching ServiceProvider', error: err });
+        res.status(500).json({ message: 'Error fetching ServiceProvider', error: err });
     }
-  };
+};
 
 // Service Provider Logout
 module.exports.logoutSP = async (req, res) => {
@@ -212,7 +218,7 @@ module.exports.logoutSP = async (req, res) => {
 
     // Use the blacklistToken function to check and insert the token into the blacklist
     const result = await blacklistToken(token);  // result will have status and message
-    
+
     if (result.status === "error") {
         return res.status(500).json({ message: result.message });
     }
@@ -270,11 +276,11 @@ exports.deleteServiceProvider = async (req, res) => {
 
 
 // Get all service providers with categories and services
-  exports.getAllServiceProviders = async (req, res) => {
+exports.getAllServiceProviders = async (req, res) => {
     try {
         // Fetch all service providers and populate categories
         const providers = await ServiceProvider.find()
-            .populate("category.categoryId", "name description categoryImage") // Populate Category model fields
+            .populate("category.categoryId", "categoryName categoryDescription categoryImage")// Populate Category model fields
             .lean(); // Convert to plain JS objects
 
         // Fetch all services
@@ -295,9 +301,9 @@ exports.deleteServiceProvider = async (req, res) => {
             sp_shop_banner_img: provider.sp_shop_banner_img,
             category: (provider.category || []).map((cat) => ({
                 categoryId: cat.categoryId?._id || cat.categoryId, // Handle populated or direct ID
-                Category_Name: cat.categoryId?.name || cat.Category_Name, // Use populated or stored name
-                Category_Description: cat.categoryId?.Category_Description || "", // Ensure description exists
-                Category_Image: cat.categoryId?.Category_Image || "", // Ensure image exists
+                categoryName: cat.categoryId?.categoryName || cat.categoryName, // Use populated or stored name
+                categoryDescription: cat.categoryId?.categoryDescription || "", // Ensure description exists
+                categoryImage: cat.categoryId?.categoryImage || "", // Ensure image exists
             })),
             services: services
                 .filter((service) => service.service_provider?.toString() === provider._id.toString())
@@ -324,19 +330,23 @@ exports.deleteServiceProvider = async (req, res) => {
 
 exports.getServiceProviderById = async (req, res) => {
     try {
-        const { id } = req.params; // Get ID from URL params
+        const { id } = req.params;
 
-        // Find service provider by ID and populate categories
+        // Find service provider by ID and populate categories and services
         const provider = await ServiceProvider.findById(id)
-            .populate("category.categoryId", "name description categoryImage") // Populate category details
-            .lean(); // Convert to plain JS object
+            .populate("sp_category", "categoryName categoryDescription categoryImage")
+            .populate("services", "services_name services_description services_price services_duration services_img")
+            .lean(); // Convert to plain JavaScript object
+
+        console.log("Service Provider: ", provider);  // Print the entire provider object for debugging
 
         if (!provider) {
             return res.status(404).json({ message: "Service Provider not found" });
         }
 
-        // Fetch all services for this provider
-        const services = await Service.find({ service_provider: id }).lean();
+        // Print categories and services for debugging
+        console.log("Categories: ", provider.sp_category); // Print the populated categories
+        console.log("Services: ", provider.services); // Print the populated services
 
         // Format response
         const formattedProvider = {
@@ -351,15 +361,14 @@ exports.getServiceProviderById = async (req, res) => {
             sp_city: provider.sp_city,
             sp_shop_img: provider.sp_shop_img,
             sp_shop_banner_img: provider.sp_shop_banner_img,
-            category: (provider.category || []).map((cat) => ({
-                categoryId: cat.categoryId?._id || cat.categoryId,
-                Category_Name: cat.categoryId?.name || cat.categoryName,
-                Category_Description: cat.categoryId?.description || "",
-                Category_Image: cat.categoryId?.categoryImage || "",
+            category: (provider.sp_category || []).map((cat) => ({
+                categoryId: cat._id, // Handle populated or direct ID
+                categoryName: cat.categoryName, // Use populated or stored name
+                categoryDescription: cat.categoryDescription, // Ensure description exists
+                categoryImage: cat.categoryImage, // Ensure image exists
             })),
-            services: services.map((service) => ({
+            services: (provider.services || []).map((service) => ({
                 _id: service._id,
-                categoryId: service.categoryId,
                 services_name: service.services_name,
                 services_description: service.services_description,
                 services_price: service.services_price,
@@ -370,6 +379,8 @@ exports.getServiceProviderById = async (req, res) => {
 
         res.status(200).json({ provider: formattedProvider });
     } catch (error) {
+        console.error(error); // Log error for debugging
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+

@@ -43,9 +43,11 @@ const AdminAddCategory = () => {
         setMessage("");
 
         const formDataToSend = new FormData();
-        formDataToSend.append("name", formData.categoryName);
-        formDataToSend.append("description", formData.categoryDescription);
-        formDataToSend.append("image", formData.categoryImage);
+        formDataToSend.append("categoryName", formData.categoryName); // Ensure this is correctly passed as categoryName
+        formDataToSend.append("categoryDescription", formData.categoryDescription);
+        formDataToSend.append("categoryImage", formData.categoryImage);
+
+        // console.log("formDataToSend:", formDataToSend);        
 
         try {
             const response = await axios.post("http://localhost:4000/api/categories", formDataToSend, {
@@ -53,7 +55,7 @@ const AdminAddCategory = () => {
             });
 
             setMessage("Category successfully created!", response.data.message);
-            console.log("Category added:", response.data);
+            // console.log("Category added:", response.data);
 
                
             setRedirect(true);
@@ -95,7 +97,7 @@ const AdminAddCategory = () => {
                                 name="categoryName"
                                 value={formData.categoryName}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-2 border rounded-md focus:ring-2 text-black"
                                 placeholder="Enter category name"
                                 required
                             />
@@ -108,7 +110,7 @@ const AdminAddCategory = () => {
                                 name="categoryDescription"
                                 value={formData.categoryDescription}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-2 border rounded-md focus:ring-2 text-black"
                                 placeholder="Enter category description"
                                 rows="3"
                                 required
@@ -122,7 +124,7 @@ const AdminAddCategory = () => {
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                className="w-full px-4 py-2 border rounded-md"
+                                className="w-full px-4 py-2 border rounded-md text-black"
                                 required
                             />
                             {previewImage && (
@@ -137,7 +139,7 @@ const AdminAddCategory = () => {
                         {/* Submit Button */}
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
+                            className="w-full bg-blue-600 text-white py-2 rounded-md text-black transition duration-200"
                             disabled={loading}
                         >
                             {loading ? "Adding..." : "Add Category"}
