@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaEnvelope, FaLock, FaPhone, FaUser, FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
 import { GiShop } from "react-icons/gi";
 import { BiSolidCategoryAlt, BiSolidCity } from "react-icons/bi";
@@ -9,6 +9,8 @@ import Navbar from "../user_components/Navbar";
 import Footer from "../user_components/Footer";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import axios from 'axios';
+
 
 
 const SP_RegistrationForm = () => {
@@ -18,13 +20,13 @@ const SP_RegistrationForm = () => {
     const { showPopup } = useAuth();
 
     const navigate = useNavigate()
-
+    const [categories, setCategories] = useState([]);
     const [formData, setFormData] = useState({
         sp_name: "",
         sp_email: "",
         sp_contact: "",
         sp_shop_name: "",
-        sp_category: "",
+        sp_category: [],
         sp_desc: "",
         sp_area: "",
         sp_pincode: "",
@@ -36,51 +38,80 @@ const SP_RegistrationForm = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
 
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get("http://localhost:4000/api/categories");
+                setCategories(response.data);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+
     const handleChange = (e) => {
         const { name, value, type, files, checked } = e.target;
-    
+
         setFormData((prev) => ({
             ...prev,
             [name]: type === "file"
                 ? files[0]  // Handle file upload
                 : name === "sp_category"
-                ? checked
-                    ? [...(prev.sp_category || []), value]  // Add checked category
-                    : (prev.sp_category || []).filter((item) => item !== value)  // Remove unchecked category
-                : value,  // Handle other input types
+                    ? checked
+                        ? [...(prev.sp_category || []), value]  // Add checked category
+                        : (prev.sp_category || []).filter((item) => item !== value)  // Remove unchecked category
+                    : value,  // Handle other input types
         }));
     };
-    
+
 
     // *** SP Registration 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
         const data = new FormData();
+    
+        // Append form fields (stringify arrays)
         Object.keys(formData).forEach((key) => {
-            data.append(key, formData[key]);
+            if (Array.isArray(formData[key])) {
+                data.append(key, JSON.stringify(formData[key]));
+            } else if (formData[key]) {
+                data.append(key, formData[key]);
+            }
         });
-
+    
         try {
             const res = await fetch(SERVICE_PROVIDER_REGISTER_API, {
-                method: 'POST',
-                body: data, // Sending FormData with the request
+                method: "POST",
+                body: data,
             });
-            const responseData = await res.json();
-
-            if (res.ok) {
-                showPopup('Registration Successful!', 'success');
-                console.log("Registration successful:", responseData.message);
-                setFormData('');
-                navigate('/sp-provider-login')
+    
+            // Check if the response is JSON
+            const contentType = res.headers.get("content-type");
+            let responseData;
+    
+            if (contentType && contentType.includes("application/json")) {
+                responseData = await res.json();
             } else {
-                showPopup('Registration failed!', 'error');
-                console.error("Registration failed:", responseData.message);
+                const rawText = await res.text();
+                console.error("Non-JSON Response:", rawText);
+                throw new Error("Unexpected server response. Please try again later.");
+            }
+    
+            if (res.ok) {
+                showPopup("Registration Successful!", "success");
+                navigate("/sp-provider-login");
+            } else {
+                showPopup(responseData.message || "Registration failed!", "error");
             }
         } catch (error) {
-            console.log("Error:", error);
-            showPopup('Registration failed!', 'error');
+            console.error("Error during registration:", error);
+            showPopup("Registration failed! Please try again.", "error");
         }
     };
+    
     // *** SP Registration Ends
 
     return (
@@ -182,17 +213,17 @@ const SP_RegistrationForm = () => {
                         <div className="flex flex-col border border-gray-700 p-2 rounded-md">
                             <p className="text-gray-500 mb-2">Select Service Category:</p>
                             <div className="grid grid-cols-3 gap-2">
-                                {["Electric", "Hair", "Beauty", "Car Wash", "Plumbing", "Cleaning", "Painting"].map((category) => (
-                                    <label key={category} className="flex items-center space-x-2">
+                                {categories.map((category) => (
+                                    <label key={category._id} className="flex items-center space-x-2">
                                         <input
                                             type="checkbox"
                                             name="sp_category"
-                                            value={category}
-                                            checked={formData.sp_category.includes(category)}
+                                            value={category._id}
+                                            checked={formData.sp_category.includes(category._id)}
                                             onChange={handleChange}
                                             className="accent-purple-600"
                                         />
-                                        <span className="text-gray-700">{category}</span>
+                                        <span className="text-gray-700">{category.categoryName}</span>
                                     </label>
                                 ))}
                             </div>

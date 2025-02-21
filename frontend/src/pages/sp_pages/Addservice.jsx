@@ -1,168 +1,187 @@
-import React, { useState } from 'react';
-import Sidebar from '../../components/sp_components/Sidebar';
-import { FaPlus } from "react-icons/fa6";
-import { MdAccessTime, MdDriveFileRenameOutline, MdImage, MdEdit, MdDelete } from "react-icons/md";
-import { FaRupeeSign } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import Sidebar from "../../components/sp_components/Sidebar";
 
-const Addservice = () => {
+const AddServicePopup = () => {
   const [showPopup, setShowPopup] = useState(false);
-  const [selectedService, setSelectedService] = useState("");
-  const [image, setImage] = useState(null);
-  const [serviceName, setServiceName] = useState("");
-  const [duration, setDuration] = useState("");
-  const [price, setPrice] = useState("");
-  const [services, setServices] = useState([]);
-  const [editingService, setEditingService] = useState(null);
+  const storedUser = JSON.parse(localStorage.getItem("SP_LoggedInUser"));
+  const [useid, setUseid] = useState(storedUser?.id || "");
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file));
+  const [formData, setFormData] = useState({
+    services_name: "",
+    services_price: "",
+    services_description: "",
+    services_duration: "",
+    categoryId: "",
+    service_provider: storedUser?.id || "",
+    services_img: null,
+  });
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    if (!storedUser || !storedUser.id) {
+      alert("Error: Service provider not found. Please log in again.");
+      return;
     }
+
+    setFormData((prev) => ({
+      ...prev,
+      service_provider: storedUser.id,
+    }));
+
+    // Fetch categories
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/categories");
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!serviceName || !selectedService || !duration || !price || !image) return;
-    
-    if (editingService) {
-      setServices(services.map(service => 
-        service.id === editingService.id ? { ...editingService, serviceName, selectedService, duration, price, image } : service
-      ));
-      setEditingService(null);
-    } else {
-      const newService = {
-        id: Date.now(),
-        serviceName,
-        selectedService,
-        duration,
-        price,
-        image,
-      };
-      setServices([...services, newService]);
+    if (!formData.service_provider) {
+      alert("Error: Service provider ID is missing.");
+      return;
     }
-    
-    setShowPopup(false);
-    setServiceName("");
-    setSelectedService("");
-    setDuration("");
-    setPrice("");
-    setImage(null);
-  };
 
-  const handleDelete = (id) => {
-    setServices(services.filter(service => service.id !== id));
-  };
+    console.log("Form Data: ", formData);
 
-  const handleEdit = (service) => {
-    setServiceName(service.serviceName);
-    setSelectedService(service.selectedService);
-    setDuration(service.duration);
-    setPrice(service.price);
-    setImage(service.image);
-    setEditingService(service);
-    setShowPopup(true);
+    try {
+      const formDataToSend = new FormData();
+      for (const key in formData) {
+        formDataToSend.append(key, formData[key]);
+      }
+
+      const response = await fetch("http://localhost:4000/api/services/add", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        alert("Service added successfully!");
+        setShowPopup(false);
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Failed to add service. Please try again.");
+    }
   };
 
   return (
     <>
       <Sidebar />
-      <main className="flex-1 lg:ml-64 min-h-screen mt-16 p-4">
-        <div className="flex flex-col items-center justify-start min-h-screen">
-          <button
-            onClick={() => setShowPopup(true)}
-            className="px-4 py-2 flex items-center justify-center gap-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600"
-          >
-            <FaPlus /> {editingService ? "Edit Service" : "Add Service"}
-          </button>
+      <div className="flex justify-center items-center p-80">
+        <button
+          onClick={() => setShowPopup(true)}
+          className="bg-purple-600 text-white px-4 py-2 rounded-lg"
+        >
+          Add Service
+        </button>
 
-          {showPopup && (
-            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-                <h2 className="text-xl font-semibold text-black mb-4">{editingService ? "Edit Service" : "Add New Service"}</h2>
-                <form onSubmit={handleSubmit}>
-                  <div className="flex items-center border border-gray-700 p-2 rounded-md">
-                    <MdDriveFileRenameOutline className="text-gray-500 mr-3" />
-                    <input
-                      type="text"
-                      placeholder="Enter your service name"
-                      className="w-full outline-none text-black placeholder:text-gray-700"
-                      value={serviceName}
-                      onChange={(e) => setServiceName(e.target.value)}
-                    />
-                  </div>
+        {showPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-8 rounded-lg w-full max-w-lg">
+              <h2 className="text-2xl mb-4 text-black">Add Service</h2>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  name="services_name"
+                  value={formData.services_name}
+                  onChange={handleChange}
+                  placeholder="Service Name"
+                  className="w-full p-2 border rounded text-black"
+                  required
+                />
 
-                  <div className="flex mt-3 items-center border border-gray-700 p-2 rounded-md">
-                    <select
-                      className="w-full outline-none text-black bg-white"
-                      value={selectedService}
-                      onChange={(e) => setSelectedService(e.target.value)}
-                    >
-                      <option value="" disabled>Select your service</option>
-                      <option value="photography">Photography</option>
-                      <option value="videography">Videography</option>
-                      <option value="editing">Editing</option>
-                    </select>
-                  </div>
+                <input
+                  type="number"
+                  name="services_price"
+                  value={formData.services_price}
+                  onChange={handleChange}
+                  placeholder="Service Price"
+                  className="w-full p-2 border rounded text-black"
+                  required
+                />
 
-                  <div className="flex mt-3 items-center border border-gray-700 p-2 rounded-md">
-                    <MdAccessTime className="text-gray-500 mr-3" />
-                    <input
-                      type="text"
-                      placeholder="Enter duration (e.g., 30 min, 1 hr)"
-                      className="w-full outline-none text-black placeholder:text-gray-700"
-                      value={duration}
-                      onChange={(e) => setDuration(e.target.value)}
-                    />
-                  </div>
+                <textarea
+                  name="services_description"
+                  value={formData.services_description}
+                  onChange={handleChange}
+                  placeholder="Service Description"
+                  className="w-full p-2 border rounded text-black"
+                  required
+                />
 
-                  <div className="flex mt-3 items-center border border-gray-700 p-2 rounded-md">
-                    <FaRupeeSign className="text-gray-500 mr-3" />
-                    <input
-                      type="number"
-                      placeholder="Enter price"
-                      className="w-full outline-none text-black placeholder:text-gray-700"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                    />
-                  </div>
+                <input
+                  type="text"
+                  name="services_duration"
+                  value={formData.services_duration}
+                  onChange={handleChange}
+                  placeholder="Service Duration (e.g., 2 hours)"
+                  className="w-full p-2 border rounded text-black"
+                  required
+                />
 
-                  <div className="border mt-3 border-gray-700 p-3 rounded-md">
-                    <label className="flex items-center cursor-pointer">
-                      <MdImage className="text-gray-500 mr-3" />
-                      <span className="text-gray-700">Upload Image</span>
-                      <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
-                    </label>
-                    {image && <img src={image} alt="Preview" className="mt-3 w-32 h-32 object-cover rounded-md border" />}
-                  </div>
+                <select
+                  name="categoryId"
+                  value={formData.categoryId}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded text-black"
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((category) => (
+                    <option key={category._id} value={category._id} className="text-black">
+                      {category.categoryName}
+                    </option>
+                  ))}
+                </select>
 
-                  <button type="submit" className="w-full mt-3 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600">
-                    {editingService ? "Update" : "Submit"}
+                <input
+                  type="file"
+                  name="services_img"
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded text-black"
+                  required
+                />
+
+                <input type="hidden" name="service_provider" value={formData.service_provider} />
+
+                <div className="flex justify-end gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowPopup(false)}
+                    className="bg-gray-400 text-black px-4 py-2 rounded-lg"
+                  >
+                    Cancel
                   </button>
-                </form>
-              </div>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            {services.map((service) => (
-              <div key={service.id} className="bg-white p-4 rounded-lg shadow-md">
-                <img src={service.image} alt={service.serviceName} className="w-full h-40 object-cover rounded-md" />
-                <h3 className="text-lg font-semibold text-black mt-2">Service : {service.serviceName}</h3>
-                <p className='text-black'>Category : {service.selectedService}</p>
-                <p className='text-black'>Duration : {service.duration}</p>
-                <p className="text-green-500 font-bold">&#8377; Price : {service.price}</p>
-                <div className="flex justify-between mt-3">
-                  <button onClick={() => handleEdit(service)} className="text-white px-2 py-2 rounded-md bg-green-600"><MdEdit /></button>
-                  <button onClick={() => handleDelete(service.id)} className="text-white px-2 py-2 rounded-md bg-red-600"><MdDelete /></button>
+                  <button type="submit" className="bg-purple-600 text-black px-4 py-2 rounded-lg">
+                    Submit
+                  </button>
                 </div>
-              </div>
-            ))}
+              </form>
+            </div>
           </div>
-        </div>
-      </main>
+        )}
+      </div>
     </>
   );
 };
 
-export default Addservice;
+export default AddServicePopup;
