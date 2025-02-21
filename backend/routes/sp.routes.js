@@ -1,8 +1,8 @@
-const { body } = require("express-validator");
+// const { body } = require("express-validator");
 const spController = require("../controllers/sp.controller");
 const authmiddleware = require("../middlewares/auth.middleware");
 const router = require("express").Router();
-const multer = require("multer");
+// const multer = require("multer");
 const upload = require("../multer/multer");
 const { validateRegisterSP, validateLoginSP } = require("../validators/sp.validator");
 
