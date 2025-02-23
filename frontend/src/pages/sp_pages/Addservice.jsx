@@ -65,7 +65,7 @@ const AddServicePopup = () => {
         formDataToSend.append(key, formData[key]);
       }
 
-      const response = await fetch("http://localhost:4000/api/services/add", {
+      const response = await fetch("http://localhost:4000/api/services/add-service", {
         method: "POST",
         body: formDataToSend,
       });
