@@ -67,6 +67,23 @@ exports.getAllServices = async (req, res) => {
   }
 };
 
+// Get get All ServiceProviders With Services  if need then use that controller 
+exports.getAllServiceProvidersWithServices = async (req, res) => {
+  try {
+    const providers = await ServiceProvider.find().populate({
+      path: "services",
+      model: "Service",
+      populate: {
+        path: "categoryId",
+      },
+    });
+
+    res.status(200).json(providers);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Get a single service by ID
 exports.getServiceById = async (req, res) => {
   try {

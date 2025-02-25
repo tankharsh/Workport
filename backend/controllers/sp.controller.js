@@ -278,13 +278,18 @@ exports.deleteServiceProvider = async (req, res) => {
 // Get all service providers with categories and services
 exports.getAllServiceProviders = async (req, res) => {
     try {
-        // Fetch all service providers and populate categories
-        const providers = await ServiceProvider.find()
-            .populate("category.categoryId", "categoryName categoryDescription categoryImage")// Populate Category model fields
-            .lean(); // Convert to plain JS objects
+        const { category } = req.query; // Extract category ID from query params
 
-        // Fetch all services
-        const services = await Service.find().lean();
+        let filter = {};
+        if (category) {
+            filter.sp_category = category; // Match service providers with selected category
+        }
+
+        // Fetch service providers based on filter
+        const providers = await ServiceProvider.find(filter)
+            .populate("sp_category", "categoryName categoryDescription categoryImage")
+            .populate("services", "services_name services_description services_price services_duration services_img")
+            .lean();
 
         // Format the response
         const formattedProviders = providers.map((provider) => ({
@@ -299,35 +304,31 @@ exports.getAllServiceProviders = async (req, res) => {
             sp_city: provider.sp_city,
             sp_shop_img: provider.sp_shop_img,
             sp_shop_banner_img: provider.sp_shop_banner_img,
-            category: (provider.category || []).map((cat) => ({
-                categoryId: cat.categoryId?._id || cat.categoryId, // Handle populated or direct ID
-                categoryName: cat.categoryId?.categoryName || cat.categoryName, // Use populated or stored name
-                categoryDescription: cat.categoryId?.categoryDescription || "", // Ensure description exists
-                categoryImage: cat.categoryId?.categoryImage || "", // Ensure image exists
+            category: (provider.sp_category || []).map((cat) => ({
+                categoryId: cat._id,
+                categoryName: cat.categoryName, 
+                categoryDescription: cat.categoryDescription || "", 
+                categoryImage: cat.categoryImage || "", 
             })),
-            services: services
-                .filter((service) => service.service_provider?.toString() === provider._id.toString())
-                .map((service) => ({
-                    _id: service._id,
-                    categoryId: service.categoryId,
-                    services_name: service.services_name,
-                    services_description: service.services_description,
-                    services_price: service.services_price,
-                    services_duration: service.services_duration,
-                    services_img: service.services_img,
-                })),
+            services: (provider.services || []).map((service) => ({
+                _id: service._id,
+                services_name: service.services_name,
+                services_description: service.services_description,
+                services_price: service.services_price,
+                services_duration: service.services_duration,
+                services_img: service.services_img,
+            })),
         }));
 
         res.status(200).json({ providers: formattedProviders });
     } catch (error) {
+        console.error("❌ Error fetching providers:", error);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
 
-
 // Get particular service provider id  with categories and services 
-
 exports.getServiceProviderById = async (req, res) => {
     try {
         const { id } = req.params;

@@ -54,6 +54,8 @@ const SP_RegistrationForm = () => {
     const handleChange = (e) => {
         const { name, value, type, files, checked } = e.target;
 
+        
+
         setFormData((prev) => ({
             ...prev,
             [name]: type === "file"
@@ -161,11 +163,16 @@ const SP_RegistrationForm = () => {
                             <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
                                 <FaPhone className="mr-2 text-gray-500" />
                                 <input
-                                    type="tel"
+                                    type="text"
                                     name="sp_contact"
                                     placeholder="Enter your contact no"
+                                    minLength={10}
+                                     maxLength={10}
                                     value={formData.sp_contact}
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                        const onlyNumbers = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                                        setFormData((prev) => ({ ...prev, sp_contact: onlyNumbers }));
+                                    }}
                                     className="w-full outline-none text-black placeholder:text-gray-700"
                                     required
                                 />
