@@ -230,32 +230,47 @@ module.exports.logoutSP = async (req, res) => {
 exports.updateServiceProvider = async (req, res) => {
     try {
         const { id } = req.params;
-        const updates = req.body;
+        let updateData = { ...req.body };
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid Service Provider ID" });
+        // ✅ Parse category and services if they exist and are strings
+        try {
+            if (updateData.sp_category) {
+                updateData.sp_category = JSON.parse(updateData.sp_category);
+            }
+            if (updateData.services) {
+                updateData.services = JSON.parse(updateData.services);
+            }
+        } catch (error) {
+            console.error("❌ Error parsing JSON fields:", error);
         }
 
-        if (Object.keys(updates).length === 0) {
-            return res.status(400).json({ message: "No fields provided for update" });
+        // ✅ Process image uploads, keeping only filenames
+        if (req.files) {
+            if (req.files.sp_shop_img?.length > 0) {
+                updateData.sp_shop_img = req.files.sp_shop_img[0].path.split("/").pop(); // Extract filename only
+            }
+            if (req.files.sp_shop_banner_img?.length > 0) {
+                updateData.sp_shop_banner_img = req.files.sp_shop_banner_img[0].path.split("/").pop(); // Extract filename only
+            }
         }
 
-        if (updates.sp_password) {
-            updates.sp_password = await bcrypt.hash(updates.sp_password, 10);
+        const updatedSP = await ServiceProvider.findByIdAndUpdate(id, updateData, { new: true });
+
+        if (!updatedSP) {
+            return res.status(404).json({ success: false, message: "Service Provider not found" });
         }
 
-        const updatedProvider = await ServiceProvider.findByIdAndUpdate(id, updates, { new: true });
-
-        if (!updatedProvider) {
-            return res.status(404).json({ message: "Service Provider not found" });
-        }
-
-        res.json({ message: "Updated successfully", data: updatedProvider });
+        return res.status(200).json({ success: true, message: "Profile updated successfully", data: updatedSP });
     } catch (error) {
-        console.error("Update Error:", error);
-        res.status(500).json({ message: "Error updating service provider", error: error.message });
+        console.error("❌ Error updating service provider:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
     }
 };
+
+
+
+
+
 
 
 // Delete Service Provider

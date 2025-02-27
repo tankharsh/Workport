@@ -10,7 +10,8 @@ import Footer from '../../components/user_components/Footer';
 // import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import { FaRupeeSign } from "react-icons/fa";
-import { MdPhone } from "react-icons/md";
+// import { MdPhone } from "react-icons/md";
+import { IoIosSend } from "react-icons/io";
 import { FaCheckCircle, FaWhatsapp } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
@@ -81,7 +82,7 @@ const Shop_Dashboard = () => {
       // console.log("Server Response:", data);
 
       if (response.ok) {
-        toast.success(`✅ Inquiry Sent Successfully to ${shopData.sp_name}!`, {
+        toast.success(`Inquiry Sent Successfully to ${shopData.sp_name}!`, {
           position: "bottom-right",
           autoClose: 1500,
         });
@@ -192,7 +193,7 @@ const Shop_Dashboard = () => {
                   </a>
 
                   <button onClick={() => handleInquiry(service)} className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-yellow-500 text-white text-lg rounded-lg hover:bg-yellow-400 transition-all shadow-md">
-                    <FaCheckCircle /> <span className="ml-2">Check Inquiry</span>
+                  <IoIosSend /> <span className="ml-2">Send Inquiry</span>
                   </button>
                 </div>
               </div>

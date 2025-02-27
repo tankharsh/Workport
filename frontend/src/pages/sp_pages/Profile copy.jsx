@@ -7,7 +7,6 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { TbMapPinCode } from "react-icons/tb";
 import { PiMapPinAreaFill } from "react-icons/pi";
 import axios from 'axios';
-import Swal from "sweetalert2";
 
 const Profile = () => {
 
@@ -31,14 +30,14 @@ const Profile = () => {
   const [shopBannerPreview, setShopBannerPreview] = useState(null);
   const [categories, setCategories] = useState([]);
   const storedUser = JSON.parse(localStorage.getItem("SP_LoggedInUser"));
-  const SPId = storedUser?.id || "";
+  const userId = storedUser?.id || "";
 
   useEffect(() => {
-    if (!SPId) return;
+    if (!userId) return;
     
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/sp/providers/${SPId}`);
+        const response = await axios.get(`http://localhost:4000/api/sp/providers/${userId}`);
         setFormData(response.data);
       } catch (error) {
         console.error("Error fetching service details:", error);
@@ -56,7 +55,7 @@ const Profile = () => {
 
     fetchData();
     fetchCategories();
-  }, [SPId]);
+  }, [userId]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -88,56 +87,32 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-  
-    // Flatten formData if it's nested under `provider`
-    const flattenedData = formData.provider ? formData.provider : formData;
-  
-    Object.keys(flattenedData).forEach((key) => {
-      if (Array.isArray(flattenedData[key])) {
-        data.append(key, JSON.stringify(flattenedData[key]));
-      } else if (flattenedData[key] instanceof File) {
-        data.append(key, flattenedData[key]); // Append file correctly
+    
+    Object.keys(formData).forEach((key) => {
+      if (Array.isArray(formData[key])) {
+        data.append(key, JSON.stringify(formData[key]));
       } else {
-        data.append(key, flattenedData[key]);
+        data.append(key, formData[key]);
       }
     });
-  
-    // Ensure images are appended as files (not just strings)
-    if (flattenedData.sp_shop_img instanceof File) {
-      data.append("sp_shop_img", flattenedData.sp_shop_img);
-    }
-    if (flattenedData.sp_shop_banner_img instanceof File) {
-      data.append("sp_shop_banner_img", flattenedData.sp_shop_banner_img);
-    }
-  
+
     try {
-      const response = await axios.put(`http://localhost:4000/api/sp/update/${SPId}`, data, {
+      const response = await axios.put(`http://localhost:4000/api/sp/update/${userId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
-      if (response?.status === 200 && response?.data?.success) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Profile updated successfully!",
-        });
+      
+      if (response.status === 200) {
+        alert("Profile updated successfully!");
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: response?.data?.message || "Update failed! Try again.",
-        });
+        alert("Update failed! Try again.");
       }
     } catch (error) {
-      console.error("❌ Error updating profile:", error.response?.data || error.message);
-      console.log("🔍 Full error object:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.response?.data?.message || "Update failed! Try again.",
-      });
+      console.error("Error updating profile:", error);
+      alert("Update failed! Try again.");
     }
   };
+
+
 
   return (
     <>

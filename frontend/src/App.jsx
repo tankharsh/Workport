@@ -28,6 +28,7 @@ import Addservice from './pages/sp_pages/Addservice';
 import About from './pages/user_pages/About';
 import UserRoutesProtection from './pages/UserRoutesProtection';
 import Contact from './pages/user_pages/Contact';
+import UserServicesView from './pages/user_pages/UserServicesView';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -86,6 +87,7 @@ function App() {
               <Route path='/user-login' element={<UserLogin />} />
               <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
               <Route path='/User-Dashboard' element={<User_Dashboard />} />
+              <Route path='//User-Serivices-history' element={<UserServicesView />} />
               <Route path='/Shop-Dashboard/:providerId' element={<Shop_Dashboard />} />
               <Route path='/Aboutpage' element={<About />} />
               <Route path='/contactpage' element={<Contact />} />

@@ -1,6 +1,7 @@
 const Service = require("../models/services.model");
 const ServiceProvider = require("../models/sp.model");
 const Category = require("../models/category.model");
+const mongoose = require("mongoose");
 
 // Add a new service
 // Add Service function
@@ -67,6 +68,32 @@ exports.getAllServices = async (req, res) => {
   }
 };
 
+
+// New controller for latest 8 services
+exports.getRecentServices = async (req, res) => {
+  try {
+    const services = await Service.find()
+      .sort({ createdAt: -1 }) // Sort by createdAt in descending order (newest first)
+      .limit(8) // Limit to 8 services
+      .populate("service_provider categoryId"); // Populate related fields
+
+    // Check if any service has invalid references
+    const invalidServices = services.filter(
+      (service) =>
+        !mongoose.isValidObjectId(service.service_provider) ||
+        !mongoose.isValidObjectId(service.categoryId)
+    );
+
+    if (invalidServices.length > 0) {
+      return res.status(400).json({ message: "Invalid service ID format in references" });
+    }
+
+    res.status(200).json(services);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Get get All ServiceProviders With Services  if need then use that controller 
 exports.getAllServiceProvidersWithServices = async (req, res) => {
   try {
@@ -105,57 +132,80 @@ exports.getServiceById = async (req, res) => {
 // Update a service
 exports.updateService = async (req, res) => {
   try {
-    let { services_name, services_price, services_description, services_duration, categoryId, services_img } = req.body;
+    const { id } = req.params;
 
-    // Ensure categoryId is a valid ObjectId string
-    if (Array.isArray(categoryId)) {
-      categoryId = categoryId[0];
-    }
-
-    // Validate category existence
-    if (categoryId && !categoryId.match(/^[0-9a-fA-F]{24}$/)) {
-      return res.status(400).json({ message: "Invalid category ID format" });
-    }
-
-    const updatedService = await Service.findByIdAndUpdate(
-      req.params.id,
-      { services_name, services_price, services_description, services_duration, categoryId, services_img },
-      { new: true }
-    );
-
-    if (!updatedService) {
-      return res.status(404).json({ message: "Service not found!" });
-    }
-
-    res.status(200).json({ message: "Service updated successfully!", updatedService });
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
-
-// Delete a service
-exports.deleteService = async (req, res) => {
-  try {
-    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({ message: "Invalid service ID format" });
     }
 
-    const service = await Service.findById(req.params.id);
+    let service = await Service.findById(id);
     if (!service) {
       return res.status(404).json({ message: "Service not found!" });
     }
 
-    // Remove service ID from service provider's list
-    await ServiceProvider.findByIdAndUpdate(service.service_provider, {
-      $pull: { services: service._id },
-    });
+    // Prepare updated data
+    const updatedData = {
+      services_name: req.body.services_name,
+      services_price: req.body.services_price,
+      services_description: req.body.services_description,
+      services_duration: req.body.services_duration,
+      categoryId: req.body.categoryId,
+      service_provider: req.body.service_provider,
+    };
 
-    await service.deleteOne();
-    res.status(200).json({ message: "Service deleted successfully!" });
+    // If image is uploaded, update it
+    if (req.file) {
+      updatedData.services_img = req.file.filename;
+    }
+
+    // Update service
+    const updatedService = await Service.findByIdAndUpdate(id, updatedData, { new: true });
+
+    if (!updatedService) {
+      return res.status(500).json({ message: "Failed to update service" });
+    }
+
+    res.status(200).json({ message: "Service updated successfully!", updatedService });
   } catch (error) {
+    console.error("Update error:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
+
+// Delete a service
+exports.deleteService = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate ID format
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: "Invalid service ID format" });
+    }
+
+    // Find the service by ID
+    const service = await Service.findById(id);
+    if (!service) {
+      return res.status(404).json({ message: "Service not found!" });
+    }
+
+    // Remove service ID from the ServiceProvider's services array
+    await ServiceProvider.updateOne(
+      { _id: service.service_provider },
+      { $pull: { services: id } }
+    );
+
+    // Delete the service
+    await Service.deleteOne({ _id: id });
+
+    res.status(200).json({ message: "Service deleted successfully!" });
+  } catch (error) {
+    console.error("Delete error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 
 // Get inquiries for a service provider
 exports.getInquiries = async (req, res) => {
@@ -173,3 +223,9 @@ exports.getInquiries = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+
+
+
+
+
