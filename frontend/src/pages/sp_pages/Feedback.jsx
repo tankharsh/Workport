@@ -6,10 +6,10 @@ import { Tooltip } from 'react-tooltip';
 const Feedback = () => {
   return (
     <>
-    <Sidebar />
+      <Sidebar />
       <main className="flex-1 lg:ml-64 py-2 mt-20">
-      <div className='text-3xl text-center font-bold '>Feedback</div>
-      <div className="overflow-x-auto mt-3">
+        <div className='text-3xl text-center font-bold '>Feedback</div>
+        <div className="overflow-x-auto mt-3">
           <table className="min-w-full bg-[#354f52] border border-gray-200">
             <thead>
               <tr className="bg-gray-100">
