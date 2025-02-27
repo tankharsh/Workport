@@ -22,7 +22,11 @@ router.post(
 router.post("/sp_login", validateLoginSP, spController.loginSP);
 
 // Update Service Provider
-router.put("/update/:id", spController.updateServiceProvider);
+router.put("/update/:id",
+    upload.fields([
+        { name: "sp_shop_img", maxCount: 1 },
+        { name: "sp_shop_banner_img", maxCount: 1 },
+    ]), spController.updateServiceProvider);
 
 // Delete Service Provider
 router.delete("/delete/:id", spController.deleteServiceProvider); 

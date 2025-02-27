@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import logo from '../../assets/logo.png';
-import logoo from '../../assets/logo.png';
 import { useAuth } from '../../context/AuthContext';
 import { FaCartArrowDown } from "react-icons/fa";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false); // State for logout confirmation
-  const { user, logout, cartItems, serviceprovider } = useAuth();
+  const { user, logout } = useAuth();
 
   // Function to close the mobile menu when a link is clicked
   const closeMenu = () => setIsMenuOpen(false);
@@ -38,7 +37,7 @@ const Navbar = () => {
           {user ? (
             
             <div className='flex gap-10 items-center'>
-              <NavLink to="/User-Dashboard" className="hover:text-gray-400 text-lg font-semibold">Services</NavLink>
+              <NavLink to="/User-Serivices-history" className="hover:text-gray-400 text-lg font-semibold">Services</NavLink>
 
               <button
                 onClick={() => setShowLogoutPopup(true)}

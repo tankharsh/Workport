@@ -5,8 +5,8 @@ const path = require("path");
 // Create a category
 exports.createCategory = async (req, res) => {
   try {
-      console.log("Received Data:", req.body);
-      console.log("Received File:", req.file);
+      // console.log("Received Data:", req.body);
+      // console.log("Received File:", req.file);
 
       // Ensure categoryName is not empty
       const { categoryName, categoryDescription } = req.body;

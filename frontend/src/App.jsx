@@ -28,6 +28,7 @@ import Addservice from './pages/sp_pages/Addservice';
 import About from './pages/user_pages/About';
 import UserRoutesProtection from './pages/UserRoutesProtection';
 import Contact from './pages/user_pages/Contact';
+import UserServicesView from './pages/user_pages/UserServicesView';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -86,7 +87,8 @@ function App() {
               <Route path='/user-login' element={<UserLogin />} />
               <Route path='/user-registrationFrom' element={<UserRegistrationFrom />} />
               <Route path='/User-Dashboard' element={<User_Dashboard />} />
-              <Route path='/Shop-Dashboard' element={<Shop_Dashboard />} />
+              <Route path='//User-Serivices-history' element={<UserServicesView />} />
+              <Route path='/Shop-Dashboard/:providerId' element={<Shop_Dashboard />} />
               <Route path='/Aboutpage' element={<About />} />
               <Route path='/contactpage' element={<Contact />} />
               <Route path='/cart' element={<Cartpage />} />
@@ -121,3 +123,9 @@ function App() {
 }
 
 export default App;
+
+
+
+// muje ab asa karna he ki jab me contact button ke alava card me click karu to new page opne hona chahi a or usme all deatile hogi like provider ka pura information or all provides ki sari service dikhe gi mene statiac page bana diya he ab hame dynamically banana he a sab kuch 
+
+// - or jis bhi provider ko clcik karenge sirf uska hio data ana chahi he to me tumko files dunga tumhe jo jo need ho uske abhi me frountend ka code de raha hu jisme user_dashboard me providers ke shop ki list a rahi he usme clcik karte hi redirect hona chahi a 

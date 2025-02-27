@@ -124,7 +124,7 @@ const Sidebar = () => {
                             }
                         >
                             <span className="flex px-2 gap-3 justify-start items-center">
-                                <FaCartShopping className="text-2xl" /> Orders
+                                <FaCartShopping className="text-2xl" /> Inquiry
                             </span>
                         </NavLink>
 
