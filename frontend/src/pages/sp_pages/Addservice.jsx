@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "../../components/sp_components/Sidebar";
 import Swal from "sweetalert2";
 
+
 const AddServicePopup = () => {
   const [showPopup, setShowPopup] = useState(false);
   const storedUser = JSON.parse(localStorage.getItem("SP_LoggedInUser"));
@@ -65,14 +66,115 @@ const AddServicePopup = () => {
     fetchServices();
   }, []);
 
+  // const handleChange = (e) => {
+  //   const { name, value, files } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: files ? files[0] : value,
+  //   }));
+  // };
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+  
     setFormData((prev) => ({
       ...prev,
-      [name]: files ? files[0] : value,
+      [name]: name === "categoryId" 
+        ? categories.find(cat => cat.categoryId === value)?.categoryId || "" 
+        : files ? files[0] : value,
     }));
   };
+  
+  
 
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  
+  //   console.log("🔹 Submitting Form Data:", formData); // ✅ Debugging log
+  
+  //   if (!formData.service_provider) {
+  //     console.error("❌ Error: Service provider ID is missing.");
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "Service provider ID is missing.",
+  //     });
+  //     return;
+  //   }
+  
+  //   const formDataToSend = new FormData();
+  //   for (const key in formData) {
+  //     if (key === "services_img" && formData[key] instanceof File) {
+  //       formDataToSend.append(key, formData[key]);
+  //     } else {
+  //       formDataToSend.append(key, formData[key]);
+  //     }
+  //   }
+  
+  //   const url = isEditing
+  //     ? `http://localhost:4000/api/services/update/${editServiceId}`
+  //     : "http://localhost:4000/api/services/add-service";
+  
+  //   try {
+  //     const response = await fetch(url, {
+  //       method: isEditing ? "PUT" : "POST",
+  //       body: formDataToSend,
+  //     });
+  
+  //     const result = await response.json();
+  
+  //     if (response.ok) {
+  //       if (isEditing) {
+  //         setServices((prevServices) =>
+  //           prevServices.map((service) =>
+  //             service._id === editServiceId ? { ...service, ...result.updatedService } : service
+  //           )
+  //         );
+  //       } else {
+  //         const res = await fetch("http://localhost:4000/api/services/");
+  //         const data = await res.json();
+  //         setServices(
+  //           data.filter((service) => service.service_provider._id === storedUser.id)
+  //         );
+  //       }
+  
+  //       Swal.fire({
+  //         icon: "success",
+  //         title: "Success",
+  //         text: isEditing ? "Service updated successfully!" : "Service added successfully!",
+  //       });
+  
+  //       setShowPopup(false);
+  //       setIsEditing(false);
+  
+  //       // ✅ Ensure service_provider is always retained
+  //       setFormData({
+  //         services_name: "",
+  //         services_price: "",
+  //         services_description: "",
+  //         services_duration: "",
+  //         categoryId: "",
+  //         service_provider: storedUser?.id || "",
+  //         services_img: null,
+  //       });
+  
+  //     } else {
+  //       Swal.fire({
+  //         icon: "error",
+  //         title: "Error",
+  //         text: result.message,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "Failed to submit service. Please try again.",
+  //     });
+  //   }
+  // };
+  
 
 
   const handleSubmit = async (e) => {
@@ -80,12 +182,24 @@ const AddServicePopup = () => {
   
     console.log("🔹 Submitting Form Data:", formData); // ✅ Debugging log
   
+    // ✅ Ensure service provider ID is present
     if (!formData.service_provider) {
       console.error("❌ Error: Service provider ID is missing.");
       Swal.fire({
         icon: "error",
         title: "Error",
         text: "Service provider ID is missing.",
+      });
+      return;
+    }
+  
+    // ✅ Ensure categoryId is a valid ObjectId, not a category name
+    if (!formData.categoryId || formData.categoryId.length !== 24) {
+      console.error("❌ Error: Invalid category ID format.");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Invalid category ID format.",
       });
       return;
     }
@@ -98,6 +212,12 @@ const AddServicePopup = () => {
         formDataToSend.append(key, formData[key]);
       }
     }
+  
+    // // ✅ Debugging: Log FormData to see what's being sent
+    // console.log("📝 FormDataToSend:");
+    // for (let pair of formDataToSend.entries()) {
+    //   console.log(`${pair[0]}:`, pair[1]);
+    // }
   
     const url = isEditing
       ? `http://localhost:4000/api/services/update/${editServiceId}`
@@ -135,7 +255,7 @@ const AddServicePopup = () => {
         setShowPopup(false);
         setIsEditing(false);
   
-        // ✅ Ensure service_provider is always retained
+        // ✅ Reset form but keep service_provider ID
         setFormData({
           services_name: "",
           services_price: "",
@@ -154,7 +274,7 @@ const AddServicePopup = () => {
         });
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("❌ Error submitting form:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -162,6 +282,7 @@ const AddServicePopup = () => {
       });
     }
   };
+  
   
 
   const handleEdit = (service) => {
@@ -279,12 +400,21 @@ const AddServicePopup = () => {
                 <input type="number" name="services_price" value={formData.services_price} onChange={handleChange} placeholder="Service Price" className="w-full p-2 border rounded text-black" required />
                 <textarea name="services_description" value={formData.services_description} onChange={handleChange} placeholder="Service Description" className="w-full p-2 border rounded text-black" required />
                 <input type="text" name="services_duration" value={formData.services_duration} onChange={handleChange} placeholder="Service Duration" className="w-full p-2 border rounded text-black" required />
-                <select name="categoryId" value={formData.categoryId} onChange={handleChange} className="w-full p-2 border rounded text-black" required>
-                  <option value="" >Select Category</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>{category.categoryName}</option>
-                  ))}
-                </select>
+                <select
+  name="categoryId"
+  value={formData.categoryId}
+  onChange={handleChange}
+  className="w-full p-2 border rounded text-black"
+  required
+>
+  <option value="">Select Category</option>
+  {categories.map((category) => (
+    <option key={category.categoryId} value={category.categoryId}>
+      {category.categoryName}
+    </option>
+  ))}
+</select>
+
 
                 {isEditing ? (formData.services_img && (
                   <div className="mb-4">
