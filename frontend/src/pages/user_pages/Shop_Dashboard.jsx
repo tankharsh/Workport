@@ -109,29 +109,29 @@ const Shop_Dashboard = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full flex flex-col lg:flex-row mt-8">
+      <div className="w-full flex flex-col lg:flex-row mt-14">
         <div className="lg:w-1/2 w-full h-auto p-4 lg:p-10">
           <h1 className="uppercase text-2xl lg:text-4xl font-bold">{shopData.sp_shop_name}</h1>
           <div className="flex items-center mt-5 gap-2">
-            <IoIosPerson />
+            <IoIosPerson className='bg-[#FFA901] rounded-full text-3xl p-1'/>
             <span className="font-bold text-xl">Owner Name : <span className='text-lg font-medium'>{shopData.sp_name}</span></span>
           </div>
-          <hr className='h-5 mt-2' />
+          <hr className='h-[2px] mt-3 mb-2 bg-black' />
           <div className="flex items-center gap-2">
-            <FaPhone />
+            <FaPhone className='bg-[#FFA901] rounded-full text-3xl p-1'/>
             <span className="font-bold">Contact No: {shopData.sp_contact}</span>
           </div>
-          <hr className='h-5 mt-2' />
+          <hr className='h-[2px] mt-3 mb-2 bg-black' />
           <div className="flex items-center gap-2">
-            <FaEnvelope />
+            <FaEnvelope className='bg-[#FFA901] rounded-full text-3xl p-1' />
             <span className="font-bold">Email: {shopData.sp_email}</span>
           </div>
-          <hr className='h-5 mt-2' />
+          <hr className='h-[2px] mt-3 mb-2 bg-black' />
           <div className="flex items-center gap-2 flex-wrap">
-            <FaAddressCard />
+            <FaAddressCard className='bg-[#FFA901] rounded-full text-3xl p-1'/>
             <span className="font-bold">Address : {shopData.sp_block_no}, {shopData.sp_area}, {shopData.sp_city} - {shopData.sp_pincode}</span>
           </div>
-          <hr className='h-5 mt-2' />
+          <hr className='h-[2px] mt-3 mb-2 bg-black' />
         </div>
 
         {/* Images */}
@@ -153,12 +153,12 @@ const Shop_Dashboard = () => {
         </div>
       </div>
 
-      <div className="h-auto p-4 lg:p-10">
-        <div className="h-full pt-5 border-2 border-white rounded-lg">
-          <h1 className="uppercase px-4 lg:px-10 text-2xl lg:text-4xl font-bold">Services</h1>
-          <div className="grid px-4 lg:px-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-6">
+      <div className="h-auto">
+        <div className="h-full pt-5  rounded">
+          <h1 className="uppercase px-4 lg:px-10 text-2xl lg:text-4xl font-bold text-[#FFA901]">Our <span className='text-black'>Services</span></h1>
+          <div className="grid pb-5 px-4 lg:px-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-6">
             {shopData.services.map((service) => (
-              <div key={service._id} className="bg-[#52796F] hover:scale-105 transition-all duration-300 border border-gray-500 p-3 text-center text-lg rounded-lg">
+              <div key={service._id} className="bg-[#115D33] hover:scale-105 transition-all duration-300  p-3 text-center text-lg rounded-lg">
 
                 <img
                   src={`http://localhost:4000/uploads/${service.services_img}`}
@@ -168,13 +168,13 @@ const Shop_Dashboard = () => {
                 />
 
                 <div className='flex justify-between'>
-                  <p className="font-semibold text-left text-2xl">{service.services_name}</p>
-                  <p className="text-2xl font-bold flex justify-center items-center gap-1">
+                  <p className="font-semibold text-left text-stone-100 capitalize text-2xl">{service.services_name}</p>
+                  <p className="text-2xl font-bold flex text-white justify-center items-center gap-1">
                     <FaRupeeSign /> {service.services_price}
                   </p>
                 </div>
 
-                <p className="font-medium mt-2 text-sm text-left">
+                <p className="font-medium mt-2 text-sm text-white text-left">
                   {(service.services_description).substr(0, 300) + "..."}
                   <span className='text-black cursor-pointer'> read more</span>
                 </p>

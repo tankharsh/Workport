@@ -70,17 +70,17 @@ export default function LoginPopup() {
 
     return (
         <div className="relative">
-            {showPopupp && !user && !serviceprovider && ( // Only show popup if not logged in
-                <div className="z-50 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-                    <div className="bg-white p-8 rounded-lg shadow-xl w-96 animate-fade-in relative">
+            {showPopupp && !user && !serviceprovider && (
+                <div className="z-50 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4 sm:p-6 md:p-8">
+                    <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-sm sm:max-w-md md:max-w-lg animate-fade-in relative">
                         <button onClick={closePopup} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900">
-                            <IoMdCloseCircle className="text-3xl" />
+                            <IoMdCloseCircle className="text-2xl sm:text-3xl" />
                         </button>
-                        <h2 className="text-3xl font-semibold mb-6 text-center text-gray-700">Login</h2>
-                        {/* user login email */}
-                        <form onSubmit={handleSubmit}>
-                            <div className="flex items-center mt-2">
-                                <FaEnvelope className="text-gray-500 mr-3" />
+                        <h2 className="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-center text-gray-700">Login</h2>
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="flex items-center">
+                                <FaEnvelope className="text-gray-500 mr-2 sm:mr-3" />
                                 <input
                                     type="email"
                                     id="email"
@@ -88,11 +88,11 @@ export default function LoginPopup() {
                                     value={useremail}
                                     onChange={(e) => setUseremail(e.target.value)}
                                     placeholder="Enter your email"
-                                    className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
+                                    className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
                                 />
                             </div>
-                            <div className="flex items-center mt-2 relative">
-                                <FaLock className="text-gray-500 mr-3" />
+                            <div className="flex items-center relative">
+                                <FaLock className="text-gray-500 mr-2 sm:mr-3" />
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     id="password"
@@ -100,7 +100,7 @@ export default function LoginPopup() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Enter your password"
-                                    className="p-2  w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
+                                    className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 pr-10 transition-all duration-200"
                                 />
                                 <button
                                     type="button"
@@ -111,15 +111,14 @@ export default function LoginPopup() {
                                 </button>
                             </div>
 
-                            <button type="submit" className="w-full mt-5 bg-purple-600 text-white p-2 rounded">
+                            <button type="submit" className="w-full bg-purple-600 text-white p-2 rounded-md hover:bg-purple-700 transition-all duration-300">
                                 Login
                             </button>
                         </form>
 
-                        {/* Registration Link */}
                         <div className="mt-4 text-center">
-                            <p className="text-gray-600">
-                                Don't have an account?{" "}
+                            <p className="text-gray-600 text-sm sm:text-base">
+                                Don't have an account? {" "}
                                 <NavLink to="/user-login" className="text-purple-600 hover:underline">
                                     Register here
                                 </NavLink>
@@ -129,5 +128,6 @@ export default function LoginPopup() {
                 </div>
             )}
         </div>
+
     );
 }

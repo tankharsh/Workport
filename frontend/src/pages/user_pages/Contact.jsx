@@ -30,7 +30,7 @@ const Contact = () => {
 
                 <div className='flex flex-col md:flex-row items-center justify-between gap-8'>
                     {/* Left side */}
-                    <div className='w-full md:w-1/2 bg-white p-6 md:p-10 rounded-xl shadow-lg'>
+                    <div className='w-full md:w-1/2 bg-white border border-black p-6 md:p-10 rounded-xl shadow-lg'>
                         <form onSubmit={handleSubmit} className='space-y-6'>
                             <h2 className='capitalize text-gray-500 text-xl md:text-2xl font-bold'>Contact Us</h2>
                             <h2 className='capitalize text-gray-900 text-3xl md:text-4xl font-bold'>Get in touch</h2>
@@ -78,7 +78,7 @@ const Contact = () => {
 
                             <button
                                 type='submit'
-                                className='w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 transition-all duration-300'
+                                className='w-full bg-[#FFA901] text-white p-3 rounded-lg hover:bg-[#df9706] transition-all duration-300'
                             >
                                 Send Message
                             </button>
@@ -100,7 +100,7 @@ const Contact = () => {
                 </div>
             </div>
 
-            <div className="overflow-hidden w-full bg-gray-900 flex items-center h-12 md:h-16">
+            <div className="overflow-hidden w-full bg-[#2D4E35] flex items-center h-12 md:h-16">
                 <motion.div
                     className="flex space-x-4 md:space-x-8"
                     initial={{ x: "-100%" }}
@@ -108,7 +108,7 @@ const Contact = () => {
                     transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
                 >
                     {[...Array(10)].map((_, index) => (
-                        <div key={index} className="text-white text-xl md:text-4xl font-semibold px-3 md:px-6 py-2 rounded-lg">
+                        <div key={index} className="text-[#FFA901] text-xl md:text-4xl font-semibold px-3 md:px-6 py-2 rounded-lg">
                             WORKPORTS
                         </div>
                     ))}
@@ -123,7 +123,7 @@ const Contact = () => {
                     {/* Text on top */}
                     <div className="absolute inset-0 flex items-center justify-center flex-col text-center">
                         <h1 className="text-white text-2xl md:text-4xl font-bold">Start Now</h1>
-                        <NavLink to='/user-login' className='bg-gray-900 px-6 md:px-8 text-lg md:text-xl font-semibold py-2 rounded-lg mt-3'>Login</NavLink>
+                        <NavLink to='/user-login' className='bg-[#FFA901] text-white font-bold px-6 md:px-8 text-lg md:text-xl  py-2 rounded-lg mt-3'>Login</NavLink>
                     </div>
                 </div>
             </div>
