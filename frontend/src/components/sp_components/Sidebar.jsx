@@ -101,7 +101,7 @@ const Sidebar = () => {
                         </NavLink>
 
                         {/* Myshop Link  */}
-                        <NavLink
+                        {/* <NavLink
                             to="/myshop"
                             className={({ isActive }) =>
                                 isActive
@@ -112,7 +112,7 @@ const Sidebar = () => {
                             <span className="flex px-2 gap-3 justify-start items-center">
                                 <BsShop className="text-2xl" /> My Shop
                             </span>
-                        </NavLink>
+                        </NavLink> */}
 
                         {/* Order Link  */}
                         <NavLink

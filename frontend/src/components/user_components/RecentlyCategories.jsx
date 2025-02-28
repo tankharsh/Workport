@@ -50,23 +50,6 @@ const RecentlyCategories = () => {
 
 const RcCat = ({ service }) => {
 
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("http://localhost:4000/api/services/recentlyservices")
-      .then((res) => res.json())
-      .then((data) => {
-        setServices(data);
-        // console.log(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching services:", error);
-        setLoading(false);
-      });
-  }, []);
-
   const { user } = useAuth();
   const navigate = useNavigate();
   // const [showPopup, setShowPopup] = useState(false);
@@ -93,7 +76,7 @@ const RcCat = ({ service }) => {
   }
 
   const handleInquiry = async (service) => {
-    console.log("AA CHHE : ", service.service_provider._id)
+    // console.log("AA CHHE : ", service.service_provider._id)
     if (!user || !user.id) {
       setShowPopup(true);
       return;

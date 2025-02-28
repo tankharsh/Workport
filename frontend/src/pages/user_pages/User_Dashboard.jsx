@@ -91,7 +91,7 @@ const User_Dashboard = () => {
     {serviceProviders.length > 0 ? (
       serviceProviders.map((provider) => (
         <Link to={`/Shop-Dashboard/${provider._id}`} key={provider._id}>
-          <div className="border border-black p-4 rounded-lg shadow-md flex flex-col md:flex-row gap-4 items-center md:items-start">
+          <div className="border border-black p-4 rounded-lg shadow-md flex flex-col md:flex-row gap-4 items-center md:items-center">
             <img src={`http://localhost:4000/${provider.sp_shop_banner_img}`} className="bg-gray-300 w-full sm:w-80 md:w-72 md:h-64 object-cover rounded-lg" alt={provider.sp_shop_name} />
             <div className="flex-1 text-center flex-wrap md:text-left">
               <h2 className="text-2xl font-bold text-black">{provider.sp_shop_name}</h2>
@@ -99,7 +99,7 @@ const User_Dashboard = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
                 {provider.services.length > 0 ? (
                   provider.services.map((service) => (
-                    <div key={service._id} className="bg-stone-100 border border-gray-300 p-3 text-center text-lg rounded-lg w-full sm:w-48">
+                    <div key={service._id} className="bg-stone-100 border border-gray-300 p-3 text-center text-lg rounded-lg w-full">
                       <p className="font-semibold capitalize">{service.services_name || "No Name"}</p>
                       <p className="text-gray-700 font-bold flex justify-center items-center gap-1">
                         <FaRupeeSign /> {service.services_price || "N/A"}

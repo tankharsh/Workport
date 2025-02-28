@@ -81,7 +81,7 @@ export default function UserLogin() {
           setUsercontactno(''),
           setPassword('')
       } else {
-        showPopup('Registration failed !', 'error')
+        showPopup(data.message || "Enter The Details")
         console.error("Registration failed:", data.message);
       }
     } catch (error) {
