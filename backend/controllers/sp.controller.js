@@ -74,7 +74,7 @@ exports.registerSP = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    console.log(req.files); // Debugging: Check uploaded files
+    // console.log(req.files); // Debugging: Check uploaded files
 
     const {
         sp_name,
@@ -85,6 +85,7 @@ exports.registerSP = async (req, res, next) => {
         sp_area,
         sp_pincode,
         sp_city,
+        sp_description,
         sp_password,
         sp_category,  
         services   
@@ -112,6 +113,7 @@ exports.registerSP = async (req, res, next) => {
             sp_area,
             sp_pincode,
             sp_city,
+            sp_description,
             sp_password: hashedPassword,
             sp_shop_img: req.files["sp_shop_img"]?.[0]?.path || "", 
             sp_shop_banner_img: req.files["sp_shop_banner_img"]?.[0]?.path || "",
@@ -176,6 +178,7 @@ module.exports.loginSP = async (req, res, next) => {
                 sp_area: sp.sp_area,
                 sp_pincode: sp.sp_pincode,
                 sp_city: sp.sp_city,
+                sp_description: sp.sp_description,
             },
         });
     } catch (error) {
@@ -317,6 +320,7 @@ exports.getAllServiceProviders = async (req, res) => {
             sp_area: provider.sp_area,
             sp_pincode: provider.sp_pincode,
             sp_city: provider.sp_city,
+            sp_description: provider.sp_description,
             sp_shop_img: provider.sp_shop_img,
             sp_shop_banner_img: provider.sp_shop_banner_img,
             category: (provider.sp_category || []).map((cat) => ({
@@ -375,6 +379,7 @@ exports.getServiceProviderById = async (req, res) => {
             sp_area: provider.sp_area,
             sp_pincode: provider.sp_pincode,
             sp_city: provider.sp_city,
+            sp_description: provider.sp_description,
             sp_shop_img: provider.sp_shop_img,
             sp_shop_banner_img: provider.sp_shop_banner_img,
             category: (provider.sp_category || []).map((cat) => ({

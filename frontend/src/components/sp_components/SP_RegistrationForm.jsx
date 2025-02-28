@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEnvelope, FaLock, FaPhone, FaUser, FaEye, FaEyeSlash, FaStar } from "react-icons/fa";
 import { GiShop } from "react-icons/gi";
-import { BiSolidCategoryAlt, BiSolidCity } from "react-icons/bi";
+import {  BiSolidCity } from "react-icons/bi";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { TbMapPinCode } from "react-icons/tb";
 import { PiMapPinAreaFill } from "react-icons/pi";
@@ -27,11 +27,11 @@ const SP_RegistrationForm = () => {
         sp_contact: "",
         sp_shop_name: "",
         sp_category: [],
-        sp_desc: "",
         sp_area: "",
         sp_pincode: "",
         sp_block_no: "",
         sp_city: "",
+        sp_description:"",
         sp_password: "",
         sp_shop_img: null,
         sp_shop_banner_img: null,
@@ -74,6 +74,9 @@ const SP_RegistrationForm = () => {
         e.preventDefault();
     
         const data = new FormData();
+
+        
+        
     
         // Append form fields (stringify arrays)
         Object.keys(formData).forEach((key) => {
@@ -83,7 +86,7 @@ const SP_RegistrationForm = () => {
                 data.append(key, formData[key]);
             }
         });
-    
+
         try {
             const res = await fetch(SERVICE_PROVIDER_REGISTER_API, {
                 method: "POST",
@@ -214,6 +217,7 @@ const SP_RegistrationForm = () => {
                                 className="w-full outline-none text-black placeholder:text-gray-700"
                                 required
                             />
+                            
                         </div>
 
                         {/* SP Category  */}
@@ -241,9 +245,10 @@ const SP_RegistrationForm = () => {
                         <div className="flex border items-center border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
                             {/* <BiSolidCategoryAlt className="mr-2 text-gray-500" /> */}
                             <textarea
-                                name="sp_desc"
+                                type="text"
+                                name="sp_description"
                                 placeholder="Enter Shop Description ..."
-                                value={formData.sp_desc}
+                                value={formData.sp_description}
                                 onChange={handleChange}
                                 className="w-full outline-none text-black placeholder-gray-700 placeholder:flex placeholder:items-center"
                                 rows={3}

@@ -10,6 +10,9 @@ const AddServicePopup = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editServiceId, setEditServiceId] = useState(null);
 
+  const providerId = storedUser ? storedUser.id : null;
+
+
   const [formData, setFormData] = useState({
     services_name: "",
     services_price: "",
@@ -35,9 +38,12 @@ const AddServicePopup = () => {
 
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/categories");
+        const response = await fetch(`http://localhost:4000/api/sp/providers/${providerId}`);
         const data = await response.json();
-        setCategories(data);
+
+        if (data.provider && data.provider.category) {
+            setCategories(data.provider.category); // Only setting provider's categories
+        }
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -274,7 +280,7 @@ const AddServicePopup = () => {
                 <textarea name="services_description" value={formData.services_description} onChange={handleChange} placeholder="Service Description" className="w-full p-2 border rounded text-black" required />
                 <input type="text" name="services_duration" value={formData.services_duration} onChange={handleChange} placeholder="Service Duration" className="w-full p-2 border rounded text-black" required />
                 <select name="categoryId" value={formData.categoryId} onChange={handleChange} className="w-full p-2 border rounded text-black" required>
-                  <option value="">Select Category</option>
+                  <option value="" >Select Category</option>
                   {categories.map((category) => (
                     <option key={category._id} value={category._id}>{category.categoryName}</option>
                   ))}

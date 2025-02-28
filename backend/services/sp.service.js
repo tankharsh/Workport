@@ -10,6 +10,7 @@ module.exports.createServiceProvider = async ({
     sp_area,
     sp_pincode,
     sp_city,
+    sp_description,
     sp_password,
     sp_shop_img,
     sp_shop_banner_img,
@@ -25,6 +26,7 @@ module.exports.createServiceProvider = async ({
         !sp_area ||
         !sp_pincode ||
         !sp_city ||
+        !sp_description ||
         !sp_password
     ) {
         throw new Error('All fields are required');
@@ -41,6 +43,7 @@ module.exports.createServiceProvider = async ({
         sp_area,
         sp_pincode,
         sp_city,
+        sp_description,
         sp_password,
         sp_shop_img,
         sp_shop_banner_img,
