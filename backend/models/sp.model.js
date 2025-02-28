@@ -14,6 +14,7 @@ const spSchema = new mongoose.Schema({
     sp_area: { type: String, required: true },
     sp_pincode: { type: String, required: true },
     sp_city: { type: String, required: true },
+    sp_description: { type: String, required: true ,default: "No description provided"},
     sp_password: { type: String, required: true, select: false },
     sp_shop_img: { type: String },
     sp_shop_banner_img: { type: String },
