@@ -12,10 +12,10 @@ const Footer = () => {
   return (
     <>
     <footer className=" p-8 md:p-16 bg-[#2D4E35] text-white">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
         {/* Our Services Section */}
         <div>
-          <h2 className="text-lg font-bold mb-4">Our Services</h2>
+          <h2 className="text-lg font-bold mb-4 text-[#FFA901]">Our Services</h2>
           <ul className="space-y-2">
             <li>Local Shops</li>
             <li>Home Service</li>
@@ -28,7 +28,7 @@ const Footer = () => {
 
         {/* Company Section */}
         <div>
-          <h2 className="text-lg font-bold mb-4">Company</h2>
+          <h2 className="text-lg font-bold mb-4 text-[#FFA901]">Company</h2>
           <ul className="space-y-2">
             <li>About Us</li>
             <li>Services</li>
@@ -40,7 +40,7 @@ const Footer = () => {
 
         {/* Contact Details Section */}
         <div>
-          <h2 className="text-lg font-bold mb-4">Contact Details</h2>
+          <h2 className="text-lg font-bold mb-4 text-[#FFA901]">Contact Details</h2>
           <ul className="space-y-2">
             <li className="flex items-center gap-2">
               <span className="material-icons">call</span>
