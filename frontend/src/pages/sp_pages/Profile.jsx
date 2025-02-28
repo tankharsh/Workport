@@ -143,7 +143,7 @@ const Profile = () => {
     <>
       <Sidebar />
       <main className="flex-1 lg:ml-64 min-h-screen mt-16 p-10">
-        <form onSubmit={handleSubmit} className="p-4 bg-white rounded w-full mx-auto">
+        <form onSubmit={handleSubmit} className="p-4 bg-white shadow-xl rounded w-full mx-auto">
           <h2 className="text-xl font-bold text-black mb-4">Edit Provider Details</h2>
 
           <div className="flex gap-5">

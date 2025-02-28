@@ -21,7 +21,7 @@ const Navbar = () => {
   return (<>
 
     <nav className="tinos-txt bg-white p-4 top-0 w-full shadow-lg fixed z-50">
-      <div className="max-w-7xl  flex items-center justify-between">
+      <div className="max-w-9xl flex items-center justify-between">
         {/* Logo */}
         <NavLink to="/" className="flex items-center text-3xl font-bold">
           <img src={logo} alt="Workport Logo" className="h-12 w-20" />

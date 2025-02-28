@@ -54,7 +54,7 @@ const SP_RegistrationForm = () => {
     const handleChange = (e) => {
         const { name, value, type, files, checked } = e.target;
 
-        
+
 
         setFormData((prev) => ({
             ...prev,
@@ -78,7 +78,7 @@ const SP_RegistrationForm = () => {
         
         
     
-        // Append form fields (stringify arrays)
+        // Append form fields (stringify arrays if needed)
         Object.keys(formData).forEach((key) => {
             if (Array.isArray(formData[key])) {
                 data.append(key, JSON.stringify(formData[key]));
@@ -93,30 +93,43 @@ const SP_RegistrationForm = () => {
                 body: data,
             });
     
-            // Check if the response is JSON
+            // Debugging: Log raw response
+            console.log("Raw Response:", res);
+    
+            // Check if response is JSON
             const contentType = res.headers.get("content-type");
             let responseData;
     
             if (contentType && contentType.includes("application/json")) {
                 responseData = await res.json();
+                console.log("Parsed JSON Response:", responseData);
             } else {
                 const rawText = await res.text();
                 console.error("Non-JSON Response:", rawText);
                 throw new Error("Unexpected server response. Please try again later.");
             }
     
+            // Handle success case
             if (res.ok) {
                 showPopup("Registration Successful!", "success");
                 navigate("/sp-provider-login");
             } else {
-                showPopup(responseData.message || "Registration failed!", "error");
+                // Ensure errors exist before trying to access them
+                if (responseData.errors && Array.isArray(responseData.errors)) {
+                    const errorMessages = responseData.errors.map(err => err.msg).join(", ");
+                    showPopup(errorMessages, "error");
+                    console.log("Validation Errors:", errorMessages);
+                } else {
+                    showPopup(responseData.message || "Something went wrong!", "error");
+                }
             }
         } catch (error) {
             console.error("Error during registration:", error);
             showPopup("Registration failed! Please try again.", "error");
         }
     };
-    
+        
+
     // *** SP Registration Ends
 
     return (
@@ -170,7 +183,7 @@ const SP_RegistrationForm = () => {
                                     name="sp_contact"
                                     placeholder="Enter your contact no"
                                     minLength={10}
-                                     maxLength={10}
+                                    maxLength={10}
                                     value={formData.sp_contact}
                                     onChange={(e) => {
                                         const onlyNumbers = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
