@@ -30,8 +30,8 @@ const Layout = () => {
       ></div>
       <div className="absolute top-80 container mx-auto px-6 md:px-12 lg:px-20">
         <div className="max-w-xl text-white space-y-20">
-          <p className="font-extrabold font-[Roboto] text-black text-4xl md:text-7xl tracking-wide leading-loose mb-8">
-            Simplify Your Search, Amplify Your Choices.
+          <p className="font-extrabold font-[Roboto] text-white text-4xl md:text-7xl tracking-wide leading-loose mb-8">
+            <span className='text-[#FFA901]'>Simplify</span> Your Search, <span className='text-[#28a491]'>Amplify</span> Your Choices.
           </p>
 
           {serviceprovider ? (
