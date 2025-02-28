@@ -47,7 +47,7 @@ const Profile = () => {
     
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/categories");
+        const response = await axios.get("http://localhost:4000/ai/categories");
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -59,7 +59,7 @@ const Profile = () => {
   }, [SPId]);
 
  const handleChange = (e) => {
-  const { name, value, type, checked } = e.target;
+  const { name, value, type, checked } = e.target;p
 
   setFormData((prevData) => {
     // Agar checkbox "sp_category" hai to category array ko update karega
@@ -117,63 +117,63 @@ const Profile = () => {
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const data = new FormData();
-
-  // Flatten formData if it's nested under `provider`
-  const flattenedData = formData.provider ? formData.provider : formData;
-
-  Object.keys(flattenedData).forEach((key) => {
-    if (key === "category") {
-      // Ensure category array is properly sent as JSON
-      data.append("category", JSON.stringify(flattenedData[key]));
-    } else if (Array.isArray(flattenedData[key])) {
-      data.append(key, JSON.stringify(flattenedData[key]));
-    } else if (flattenedData[key] instanceof File) {
-      data.append(key, flattenedData[key]); // Append file correctly
-    } else {
-      data.append(key, flattenedData[key]);
-    }
-  });
-
-  // Ensure images are appended as files (not just strings)
-  if (flattenedData.sp_shop_img instanceof File) {
-    data.append("sp_shop_img", flattenedData.sp_shop_img);
-  }
-  if (flattenedData.sp_shop_banner_img instanceof File) {
-    data.append("sp_shop_banner_img", flattenedData.sp_shop_banner_img);
-  }
-
-  try {
-    const response = await axios.put(`http://localhost:4000/api/sp/update/${SPId}`, data, {
-      headers: { "Content-Type": "multipart/form-data" },
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData();
+  
+    // Flatten formData if it's nested under `provider`
+    const flattenedData = formData.provider ? formData.provider : formData;
+  
+    Object.keys(flattenedData).forEach((key) => {
+      if (key === "category") {
+        // Ensure category array is properly sent as JSON
+        data.append("category", JSON.stringify(flattenedData[key]));
+      } else if (Array.isArray(flattenedData[key])) {
+        data.append(key, JSON.stringify(flattenedData[key]));
+      } else if (flattenedData[key] instanceof File) {
+        data.append(key, flattenedData[key]); // Append file correctly
+      } else {
+        data.append(key, flattenedData[key]);
+      }
     });
-
-    if (response?.status === 200 && response?.data?.success) {
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Profile updated successfully!",
+  
+    // Ensure images are appended as files (not just strings)
+    if (flattenedData.sp_shop_img instanceof File) {
+      data.append("sp_shop_img", flattenedData.sp_shop_img);
+    }
+    if (flattenedData.sp_shop_banner_img instanceof File) {
+      data.append("sp_shop_banner_img", flattenedData.sp_shop_banner_img);
+    }
+  
+    try {
+      const response = await axios.put(`http://localhost:4000/api/sp/update/${SPId}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-    } else {
+  
+      if (response?.status === 200 && response?.data?.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Profile updated successfully!",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response?.data?.message || "Update failed! Try again.",
+        });
+      }
+    } catch (error) {
+      console.error("❌ Error updating profile:", error.response?.data || error.message);
+      console.log("🔍 Full error object:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: response?.data?.message || "Update failed! Try again.",
+        text: error.response?.data?.message || "Update failed! Try again.",
       });
     }
-  } catch (error) {
-    console.error("❌ Error updating profile:", error.response?.data || error.message);
-    console.log("🔍 Full error object:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error.response?.data?.message || "Update failed! Try again.",
-    });
-  }
-};
-
+  };
+  
 
   return (
     <>
@@ -266,9 +266,9 @@ const handleSubmit = async (e) => {
           <div className="flex mt-3 border items-center border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
             {/* <BiSolidCategoryAlt className="mr-2 text-gray-500" /> */}
             <textarea
-              name="sp_description"
+              name="sp_desc"
               placeholder="Enter Shop Description ..."
-              value={formData?.provider?.sp_description}
+              value={formData?.provider?.sp_desc}
               onChange={handleChange}
               className="w-full outline-none text-black placeholder-gray-700 placeholder:flex placeholder:items-center"
               rows={3}

@@ -230,18 +230,63 @@ module.exports.logoutSP = async (req, res) => {
 };
 
 // Update Service Provider
+// exports.updateServiceProvider = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         let updateData = { ...req.body };
+
+//         // ✅ Parse category and services if they exist and are strings
+//         try {
+//             if (updateData.sp_category) {
+//                 updateData.sp_category = JSON.parse(updateData.sp_category);
+//             }
+//             if (updateData.services) {
+//                 updateData.services = JSON.parse(updateData.services);
+//             }
+//         } catch (error) {
+//             console.error("❌ Error parsing JSON fields:", error);
+//         }
+
+//         // ✅ Process image uploads, keeping only filenames
+//         if (req.files) {
+//             if (req.files.sp_shop_img?.length > 0) {
+//                 updateData.sp_shop_img = req.files.sp_shop_img[0].path.split("/").pop(); // Extract filename only
+//             }
+//             if (req.files.sp_shop_banner_img?.length > 0) {
+//                 updateData.sp_shop_banner_img = req.files.sp_shop_banner_img[0].path.split("/").pop(); // Extract filename only
+//             }
+//         }
+
+//         const updatedSP = await ServiceProvider.findByIdAndUpdate(id, updateData, { new: true });
+
+//         if (!updatedSP) {
+//             return res.status(404).json({ success: false, message: "Service Provider not found" });
+//         }
+
+//         return res.status(200).json({ success: true, message: "Profile updated successfully", data: updatedSP });
+//     } catch (error) {
+//         console.error("❌ Error updating service provider:", error);
+//         return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
+//     }
+// };
+
+
 exports.updateServiceProvider = async (req, res) => {
     try {
         const { id } = req.params;
         let updateData = { ...req.body };
 
+        console.log("📥 Received Update Data:", updateData); // Debugging
+
         // ✅ Parse category and services if they exist and are strings
         try {
-            if (updateData.sp_category) {
-                updateData.sp_category = JSON.parse(updateData.sp_category);
+            if (updateData.category) {
+                updateData.category = JSON.parse(updateData.category);
+                console.log("📌 Parsed Category:", updateData.category); // Debugging
             }
             if (updateData.services) {
                 updateData.services = JSON.parse(updateData.services);
+                console.log("📌 Parsed Services:", updateData.services); // Debugging
             }
         } catch (error) {
             console.error("❌ Error parsing JSON fields:", error);
@@ -250,25 +295,31 @@ exports.updateServiceProvider = async (req, res) => {
         // ✅ Process image uploads, keeping only filenames
         if (req.files) {
             if (req.files.sp_shop_img?.length > 0) {
-                updateData.sp_shop_img = req.files.sp_shop_img[0].path.split("/").pop(); // Extract filename only
+                updateData.sp_shop_img = req.files.sp_shop_img[0].path.split("/").pop();
             }
             if (req.files.sp_shop_banner_img?.length > 0) {
-                updateData.sp_shop_banner_img = req.files.sp_shop_banner_img[0].path.split("/").pop(); // Extract filename only
+                updateData.sp_shop_banner_img = req.files.sp_shop_banner_img[0].path.split("/").pop();
             }
         }
 
+        // 🔴 IMPORTANT: Check if category field is properly updated
         const updatedSP = await ServiceProvider.findByIdAndUpdate(id, updateData, { new: true });
 
         if (!updatedSP) {
             return res.status(404).json({ success: false, message: "Service Provider not found" });
         }
 
+        console.log("✅ Updated Service Provider:", updatedSP); // Debugging
         return res.status(200).json({ success: true, message: "Profile updated successfully", data: updatedSP });
+
     } catch (error) {
         console.error("❌ Error updating service provider:", error);
         return res.status(500).json({ success: false, message: "Internal Server Error", error: error.message });
     }
 };
+
+
+
 
 
 
