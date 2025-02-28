@@ -23,12 +23,12 @@ const User_Dashboard = () => {
       return;
     }
 
-    console.log("📌 Selected Category:", selectedCategory);
+    // console.log("📌 Selected Category:", selectedCategory);
 
     axios
       .get(`http://localhost:4000/api/sp/providers?category=${selectedCategory}`)
       .then((response) => {
-        console.log("✅ Full API Response:", response.data);
+        // console.log("✅ Full API Response:", response.data);
         setServiceProviders(response.data.providers || []);
       })
       .catch((error) => console.error("❌ Error fetching data:", error));
