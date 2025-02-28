@@ -20,7 +20,7 @@ const About = () => {
                 </div>
             </div>
 
-            <div className="overflow-hidden mt-3 w-full bg-gray-900 flex items-center h-12 md:h-16">
+            <div className="overflow-hidden mt-3 w-full bg-[#2D4E35] flex items-center h-12 md:h-16">
                 <motion.div
                     className="flex space-x-4 md:space-x-8"
                     initial={{ x: "-100%" }}
@@ -28,7 +28,7 @@ const About = () => {
                     transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
                 >
                     {[...Array(10)].map((_, index) => (
-                        <div key={index} className="text-white text-xl md:text-4xl font-semibold px-3 md:px-6 py-2 rounded-lg">
+                        <div key={index} className="text-[#FFA901] text-xl md:text-4xl font-semibold px-3 md:px-6 py-2 rounded-lg">
                             WORKPORTS
                         </div>
                     ))}
@@ -43,7 +43,7 @@ const About = () => {
                     {/* Text on top */}
                     <div className="absolute inset-0 flex items-center justify-center flex-col text-center">
                         <h1 className="text-white text-2xl md:text-4xl font-bold">Start Now</h1>
-                        <NavLink to='/user-login' className='bg-gray-900 px-6 md:px-8 text-lg md:text-xl font-semibold py-2 rounded-lg mt-3'>Login</NavLink>
+                        <NavLink to='/user-login' className='bg-[#FFA901] text-white font-bold px-6 md:px-8 text-lg md:text-xl  py-2 rounded-lg mt-3'>Login</NavLink>
                     </div>
                 </div>
             </div>

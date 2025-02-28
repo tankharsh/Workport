@@ -29,8 +29,8 @@ const Categories = () => {
     };
 
     return (
-        <div className="text-white mt-6 h-auto relative">
-            <h1 className="bg-txt text-center pt-5 text-3xl sm:text-4xl lg:text-5xl font-semibold">
+        <div className="text-black mt-6 h-auto relative">
+            <h1 className="bg-txt  text-center pt-5 text-3xl sm:text-4xl lg:text-5xl font-semibold">
                 Top Categories
             </h1>
 
@@ -66,20 +66,20 @@ const Categories = () => {
 
 const CatCard = ({ category }) => {
     return (
-        <div className="txt flex justify-center items-center cursor-pointer">
-            <div className="w-80 bg-[#52796F] rounded-xl shadow-lg overflow-hidden">
-                <div className="flex justify-center">
-                    <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-pink-100 shadow-md">
+        <div className="txt flex justify-center items-center cursor-pointer hover:scale-95 duration-200  transition-all">
+            <div className="group h-[400px] w-80 bg-gray-300 hover:bg-[#2D4E35] duration-200 transition-colors rounded-xl shadow-lg overflow-hidden ">
+                <div className="flex justify-center peer">
+                        <div className="w-full h-40 rounded-xl p-3 overflow-hidden">
                         <img
                             src={`http://localhost:4000/uploads/${category.categoryImage}`}
                             alt={category.categoryName}
-                            className="object-cover w-full h-full"
+                            className="object-cover  w-full h-full"
                         />
                     </div>
                 </div>
-                <div className="px-6 py-8">
-                    <h2 className="text-2xl font-bold text-center text-white mb-4">{category.categoryName}</h2>
-                    <p className="text-white text-center text-sm leading-relaxed">
+                <div className="px-6 py-8 group-hover:text-[#FFA901]">
+                    <h2 className="text-2xl capitalize text-black font-bold text-center  group-hover:text-[#FFA901] mb-4">{category.categoryName}</h2>
+                    <p className="text-black text-center group-hover:text-white text-sm leading-relaxed">
                         {category.categoryDescription}
                     </p>
                 </div>

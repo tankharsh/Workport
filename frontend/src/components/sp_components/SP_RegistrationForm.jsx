@@ -119,7 +119,7 @@ const SP_RegistrationForm = () => {
     return (
         <>
             <Navbar />
-            <div className="min-h-screen flex items-center justify-center p-6">
+            <div className="min-h-screen flex items-center justify-center p-6 mt-16">
                 <div className="bg-white max-w-5xl shadow-lg rounded-lg p-6 w-full">
                     <h2 className="text-2xl font-bold text-gray-900 text-center mb-4">Service Provider Registration</h2>
 
@@ -228,9 +228,9 @@ const SP_RegistrationForm = () => {
                                             value={category._id}
                                             checked={formData.sp_category.includes(category._id)}
                                             onChange={handleChange}
-                                            className="accent-purple-600"
+                                            className="accent-purple-600 "
                                         />
-                                        <span className="text-gray-700">{category.categoryName}</span>
+                                        <span className="text-gray-700 capitalize">{category.categoryName}</span>
                                     </label>
                                 ))}
                             </div>

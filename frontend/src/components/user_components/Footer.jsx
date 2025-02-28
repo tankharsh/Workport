@@ -11,7 +11,7 @@ import { NavLink } from "react-router-dom";
 const Footer = () => {
   return (
     <>
-    <footer className=" p-8 md:p-16">
+    <footer className=" p-8 md:p-16 bg-[#2D4E35] text-white">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Our Services Section */}
         <div>
