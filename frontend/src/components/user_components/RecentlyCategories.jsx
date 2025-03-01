@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { FaWhatsapp } from "react-icons/fa6";
 import { IoIosSend } from "react-icons/io";
-import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
-import axios from "axios";
+
 
 const RecentlyCategories = () => {
   const [services, setServices] = useState([]);
@@ -57,7 +57,7 @@ const RcCat = ({ service }) => {
 
 
 
-  const handleWP = (event, service) => {
+  const handleWP = (event) => {
     if (!user) {
       event.preventDefault(); // Prevent default link behavior
       setShowPopup(true);
