@@ -62,9 +62,9 @@ const Layout = () => {
           mollitia harum, numquam libero consectetur voluptatem magnam sed, doloremque
           id impedit aspernatur a quam.
         </p>
-        <button className="txt w-48 mt-6 bg-[#FFA901] hover:bg-[#28a491] py-2 px-6 text-center rounded-3xl mb-6 transition-all duration-300">
+        <NavLink to='Aboutpage' className="txt w-48 mt-6 bg-[#FFA901] hover:bg-[#28a491] py-2 px-6 text-center rounded-3xl mb-6 transition-all duration-300">
           Learn More
-        </button>
+        </NavLink>
       </div>
 
 

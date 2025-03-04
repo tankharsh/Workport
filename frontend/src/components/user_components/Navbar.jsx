@@ -30,12 +30,12 @@ const Navbar = () => {
 
         {/* Desktop Navigation Links */}
         <div className="hidden md:flex space-x-8 items-center">
-          <NavLink to="/" className="hover:text-gray-400 text-lg font-semibold">Home</NavLink>
-          <NavLink to="/Aboutpage" className="hover:text-gray-400 text-lg font-semibold">About</NavLink>
-          <NavLink to="/contactpage" className="hover:text-gray-400 text-lg font-semibold">Contact</NavLink>
+          <NavLink to="/" className={({ isActive }) => isActive ? `text-orange-600 font-bold text-lg` : `hover:text-gray-400 text-lg font-semibold`}>Home</NavLink>
+          <NavLink to="/Aboutpage" className={({isActive}) => isActive ? `text-orange-600 font-bold text-lg`:`hover:text-gray-400 text-lg font-semibold`}>About</NavLink>
+          <NavLink to="/contactpage" className={({isActive}) => isActive ? `text-orange-600 font-bold text-lg`:`hover:text-gray-400 text-lg font-semibold`}>Contact</NavLink>
           {user ? (
             <div className="flex gap-6 items-center">
-              <NavLink to="/User-Serivices-history" className="hover:text-gray-400 text-lg font-semibold">Services</NavLink>
+              <NavLink to="/User-Serivices-history" className={({isActive}) => isActive ? `text-orange-600 font-bold text-lg`:`hover:text-gray-400 text-lg font-semibold`}>Services</NavLink>
               <button
                 onClick={() => setShowLogoutPopup(true)}
                 className="bg-red-500 text-lg font-semibold text-white px-4 py-2 rounded hover:bg-red-700 transition-all duration-300"
@@ -76,14 +76,14 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div className={`${isMenuOpen ? "block" : "hidden"} md:hidden bg-white shadow-lg absolute w-full left-0 top-16 p-4 space-y-4`}>
-        <NavLink to="/" className="block hover:text-gray-400" onClick={closeMenu}>Home</NavLink>
-        <NavLink to="/User-Dashboard" className="block hover:text-gray-400" onClick={closeMenu}>Services</NavLink>
-        <NavLink to="/Aboutpage" className="block hover:text-gray-400" onClick={closeMenu}>About</NavLink>
-        <NavLink to="/contactpage" className="block hover:text-gray-400" onClick={closeMenu}>Contact</NavLink>
+        <NavLink to="/" className={({isActive}) => isActive ? `text-orange-600 block`:`block hover:text-gray-400`} onClick={closeMenu}>Home</NavLink>
+        <NavLink to="/User-Dashboard" className={({isActive}) => isActive ? `text-orange-600 block`:`block hover:text-gray-400`} onClick={closeMenu}>Services</NavLink>
+        <NavLink to="/Aboutpage" className={({isActive}) => isActive ? `text-orange-600 block`:`block hover:text-gray-400`} onClick={closeMenu}>About</NavLink>
+        <NavLink to="/contactpage" className={({isActive}) => isActive ? `text-orange-600 block`:`block hover:text-gray-400`} onClick={closeMenu}>Contact</NavLink>
         {user ? (
           <div className="flex flex-col gap-4">
-            <NavLink to="/#contact" className="hover:text-gray-400 text-lg font-semibold flex items-center gap-2">
-              <FaCartArrowDown /> Cart
+            <NavLink to="/User-Serivices-history" className={({isActive}) => isActive ? `text-orange-600 block`:`block hover:text-gray-400`}>
+            Services
             </NavLink>
             <button
               onClick={() => setShowLogoutPopup(true)}

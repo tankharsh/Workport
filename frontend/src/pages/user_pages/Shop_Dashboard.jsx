@@ -109,50 +109,63 @@ const Shop_Dashboard = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full flex flex-col lg:flex-row mt-14">
-        <div className="lg:w-1/2 w-full h-auto p-4 lg:p-10">
-          <h1 className="uppercase text-2xl lg:text-4xl font-bold">{shopData.sp_shop_name}</h1>
-          <div className="flex items-center mt-5 gap-2">
-            <IoIosPerson className='bg-[#FFA901] rounded-full text-3xl p-1'/>
-            <span className="font-bold text-xl">Owner Name : <span className='text-lg font-medium'>{shopData.sp_name}</span></span>
+      <div className='mt-16 '>
+
+        <div className="relative h-48 lg:h-60 w-full ">
+          {/* Background Image */}
+          <img
+            src={`http://localhost:4000/${shopData.sp_shop_banner_img.replace(/\\/g, '/')}`}
+            alt="Shop Image"
+            className="absolute top-0 left-0 w-full h-full object-cover"
+          />
+
+          {/* Centered Text */}
+          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-40">
+            <h2 className="text-white text-xl lg:text-2xl capitalize font-bold text-center">
+              {shopData.sp_shop_name}
+            </h2>
           </div>
-          <hr className='h-[2px] mt-3 mb-2 bg-black' />
-          <div className="flex items-center gap-2">
-            <FaPhone className='bg-[#FFA901] rounded-full text-3xl p-1'/>
-            <span className="font-bold">Contact No: {shopData.sp_contact}</span>
-          </div>
-          <hr className='h-[2px] mt-3 mb-2 bg-black' />
-          <div className="flex items-center gap-2">
-            <FaEnvelope className='bg-[#FFA901] rounded-full text-3xl p-1' />
-            <span className="font-bold">Email: {shopData.sp_email}</span>
-          </div>
-          <hr className='h-[2px] mt-3 mb-2 bg-black' />
-          <div className="flex items-center gap-2 flex-wrap">
-            <FaAddressCard className='bg-[#FFA901] rounded-full text-3xl p-1'/>
-            <span className="font-bold">Address : {shopData.sp_block_no}, {shopData.sp_area}, {shopData.sp_city} - {shopData.sp_pincode}</span>
-          </div>
-          <hr className='h-[2px] mt-3 mb-2 bg-black' />
         </div>
 
-        {/* Images */}
-        <div className="lg:w-1/2 w-full h-auto flex flex-col lg:flex-row justify-center gap-4 lg:gap-10 p-4 lg:p-10">
-          <div className="h-48 lg:h-60 w-full lg:w-1/2">
-            <img
-              src={`http://localhost:4000/${shopData.sp_shop_img.replace(/\\/g, '/')}`}
-              alt="Shop Image"
-              className="w-full h-full object-cover rounded-3xl"
-            />
+
+
+        <div className="w-full flex flex-col lg:flex-row ">
+          <div className="lg:w-1/2 w-full h-auto p-4 lg:p-10">
+            <div className="flex items-center mt-5 gap-2">
+              <IoIosPerson className='bg-[#FFA901] rounded-full text-3xl p-1' />
+              <span className="font-bold text-xl">Owner Name : <span className='text-lg font-medium'>{shopData.sp_name}</span></span>
+            </div>
+            <hr className='h-[2px] mt-3 mb-2 bg-black' />
+            <div className="flex items-center gap-2">
+              <FaPhone className='bg-[#FFA901] rounded-full text-3xl p-1' />
+              <span className="font-bold">Contact No: {shopData.sp_contact}</span>
+            </div>
+            <hr className='h-[2px] mt-3 mb-2 bg-black' />
+            <div className="flex items-center gap-2">
+              <FaEnvelope className='bg-[#FFA901] rounded-full text-3xl p-1' />
+              <span className="font-bold">Email: {shopData.sp_email}</span>
+            </div>
+            <hr className='h-[2px] mt-3 mb-2 bg-black' />
+            <div className="flex items-center gap-2 flex-wrap">
+              <FaAddressCard className='bg-[#FFA901] rounded-full text-3xl p-1' />
+              <span className="font-bold">Address : {shopData.sp_block_no},<br/> {shopData.sp_area}, {shopData.sp_city} - {shopData.sp_pincode}</span>
+            </div>
+            <hr className='h-[2px] mt-3 mb-2 bg-black' />
           </div>
-          <div className="h-48 lg:h-60 w-full lg:w-1/2">
-            <img
-              src={`http://localhost:4000/${shopData.sp_shop_banner_img.replace(/\\/g, '/')}`}
-              alt="Shop Image"
-              className="w-full h-full object-cover rounded-3xl"
-            />
+
+          {/* Images */}
+          <div className="lg:w-1/2 w-full h-auto flex flex-col lg:flex-row justify-center gap-4 lg:gap-10 p-4 lg:p-10">
+            <div className="h-48 lg:h-64 w-full lg:w-full">
+              <img
+                src={`http://localhost:4000/${shopData.sp_shop_img.replace(/\\/g, '/')}`}
+                alt="Shop Image"
+                className="w-full h-full object-cover rounded-3xl"
+              />
+            </div>
+
           </div>
         </div>
       </div>
-
       <div className="h-auto">
         <div className="h-full pt-5  rounded">
           <h1 className="uppercase px-4 lg:px-10 text-2xl lg:text-4xl font-bold text-[#FFA901]">Our <span className='text-black'>Services</span></h1>
@@ -193,7 +206,7 @@ const Shop_Dashboard = () => {
                   </a>
 
                   <button onClick={() => handleInquiry(service)} className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-yellow-500 text-white text-lg rounded-lg hover:bg-yellow-400 transition-all shadow-md">
-                  <IoIosSend /> <span className="ml-2">Send Inquiry</span>
+                    <IoIosSend /> <span className="ml-2">Send Inquiry</span>
                   </button>
                 </div>
               </div>
