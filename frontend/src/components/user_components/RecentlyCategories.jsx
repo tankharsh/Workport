@@ -57,18 +57,22 @@ const RcCat = ({ service }) => {
 
 
 
-  const handleWP = (event) => {
+  const handleWP = (service) => {
     if (!user) {
-      event.preventDefault(); // Prevent default link behavior
+      // Prevent default link behavior
       setShowPopup(true);
       return;
     }
 
-
     // If user is logged in, navigate to WhatsApp
-    const phoneNumber = event.service_provider.sp_contact.startsWith("+")
-      ? event.service_provider.sp_contact.replace("+", "")
-      : "91" + event.service_provider.sp_contact;
+    if (!service || !service.service_provider || !service.service_provider.sp_contact) {
+      toast.error("❌ Contact information missing!");
+      return;
+    }
+
+    const phoneNumber = service.service_provider.sp_contact.startsWith("+")
+      ? service.service_provider.sp_contact.replace("+", "")
+      : "91" + service.service_provider.sp_contact;
 
     const whatsappURL = `https://wa.me/${phoneNumber}?text=Hello%2C%20I%20am%20interested%20in%20your%20services.`;
 
@@ -157,20 +161,37 @@ const RcCat = ({ service }) => {
         </div>
 
         {/* Description */}
-        <p className="text-sm mt-1 text-gray-600 text-justify break-words "> {(service.services_description).substr(0, 200) + " ..."}<span className="cursor-pointer">Read more</span></p>
+        <p className="text-sm mt-1 text-gray-600 text-justify break-words "> 
+          {service.services_description 
+            ? (service.services_description.substr(0, 200) + " ...") 
+            : "No description available"
+          }
+          {service.services_description && service.services_description.length > 200 && 
+            <span className="cursor-pointer">Read more</span>
+          }
+        </p>
 
         {/* Additional Info */}
         <div className="mt-4 flex justify-between items-center">
-          <Link key={service.service_provider._id} to={`/Shop-Dashboard/${service.service_provider._id}`} className="text-md text-gray-700 cursor-pointer font-bold underline">Shop: {service.service_provider.sp_shop_name}</Link>
-          <p className="text-sm text-black">Duration: {service.services_duration}</p>
+          {service.service_provider ? (
+            <Link 
+              to={`/Shop-Dashboard/${service.service_provider._id}`} 
+              className="text-md text-gray-700 cursor-pointer font-bold underline"
+            >
+              Shop: {service.service_provider.sp_shop_name || 'Unknown Shop'}
+            </Link>
+          ) : (
+            <span className="text-md text-gray-700 font-bold">Shop: Not Available</span>
+          )}
+          <p className="text-sm text-black">Duration: {service.services_duration || 'N/A'}</p>
         </div>
 
         <div className="flex flex-nowrap justify-center gap-3 mt-6 ">
 
-          <a href="#" onClick={() => handleWP(service)}
-            rel="noopener noreferrer" className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-green-600 text-white text-lg rounded-lg hover:bg-green-500 transition-all shadow-md">
+          <button onClick={() => handleWP(service)}
+            className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-green-600 text-white text-lg rounded-lg hover:bg-green-500 transition-all shadow-md">
             <FaWhatsapp /> <span className="ml-2">WhatsApp</span>
-          </a>
+          </button>
 
           <button onClick={() => handleInquiry(service)} className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-yellow-500 text-white text-lg rounded-lg hover:bg-yellow-400 transition-all shadow-md">
             <IoIosSend /> <span className="ml-2">Send Inquiry</span>

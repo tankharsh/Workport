@@ -6,37 +6,37 @@ const { validationResult } = require('express-validator');
 
 // Define Service Provider Schema
 const spSchema = new mongoose.Schema({
-    sp_name: { type: String, required: true },
-    sp_email: { type: String, required: true, unique: true, index: true },
-    sp_contact: { type: String, required: true },
-    sp_shop_name: { type: String, required: true },
-    sp_block_no: { type: String, required: true },
-    sp_area: { type: String, required: true },
-    sp_pincode: { type: String, required: true },
-    sp_city: { type: String, required: true },
-    sp_description: { type: String, required: true ,default: "No description provided"},
-    sp_password: { type: String, required: true, select: false },
-    sp_shop_img: { type: String },
-    sp_shop_banner_img: { type: String },
-    sp_category: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true }],
-    services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }]
+    spName: { type: String, required: true },
+    spEmail: { type: String, required: true, unique: true, index: true },
+    spContact: { type: String, required: true },
+    spShopName: { type: String, required: true },
+    spBlockNo: { type: String, required: true },
+    spArea: { type: String, required: true },
+    spPincode: { type: String, required: true },
+    spCity: { type: String, required: true },
+    spDescription: { type: String, required: true, default: "No description provided" },
+    spPassword: { type: String, required: true, select: false },
+    spShopImage: { type: String },
+    spShopBannerImage: { type: String },
+    spCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true }],
+    services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }],
+    isVerified: { type: Boolean, default: false }
 }, { timestamps: true });
 
 // Generate Auth Token
 spSchema.methods.generateAuthToken = function() {
     return jwt.sign({ _id: this._id }, process.env.JWT_SECRET, { expiresIn: '24h' });
-
 };
 
 // Compare Password
-spSchema.methods.comparePassword = async function(sp_password) {
-    return await bcrypt.compare(sp_password, this.sp_password);
+spSchema.methods.comparePassword = async function(spPassword) {
+    return await bcrypt.compare(spPassword, this.spPassword);
 };
 
 // Hash Password (Static Method)
-spSchema.statics.hashpassword = async function(sp_password) {
+spSchema.statics.hashpassword = async function(spPassword) {
     const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(sp_password, salt);
+    return bcrypt.hash(spPassword, salt);
 };
 
 // Create and export the ServiceProvider model

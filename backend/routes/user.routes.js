@@ -8,9 +8,9 @@ const authmiddleware = require("../middlewares/auth.middleware");
 router.post(
     "/register",
     [
-        body("username").notEmpty().withMessage("Username is required"),
-        body("useremail").isEmail().withMessage("Valid email is required"),
-        body("usercontactno")
+        body("userName").notEmpty().withMessage("Username is required"),
+        body("userEmail").isEmail().withMessage("Valid email is required"),
+        body("userContact")
             .isLength({ min: 10, max: 10 })
             .withMessage("Contact number must be 10 digits"),
         body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
@@ -23,12 +23,14 @@ router.post(
 router.post(
     "/login",
     [
-        body("useremail").isEmail().withMessage("Valid email is required"),
+        body("userEmail").isEmail().withMessage("Valid email is required"),
         body("password").notEmpty().withMessage("Password is required"),
     ],
     userController.loginUser
 );
 
+// Verify user email
+router.post("/verify-email", userController.verifyEmail);
 
 // Update Service Provider
 router.put("/updateUser/:id", userController.updateUser);

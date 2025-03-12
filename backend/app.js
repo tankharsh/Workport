@@ -13,6 +13,7 @@ const bodyParser = require("body-parser");
 const otpRoutes = require('./routes/otpRoutes');
 const serviceRoutes = require('./routes/service.routes');
 const inquiryRoutes = require('./routes/inquiry.routes');
+const verificationRoutes = require('./routes/verification.routes');
 
 
 connectDB();
@@ -40,6 +41,7 @@ app.use("/api/sp", spRouter);
 app.use('/api/otp', otpRoutes);
 app.use('/api/services',serviceRoutes);
 app.use('/api/inquiries',inquiryRoutes);
+app.use('/api/verification', verificationRoutes);
 
 // Static files for uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

@@ -15,10 +15,10 @@ export default function UserLogin() {
   const USER_REGISTER_API_URI = "http://localhost:4000/api/users/register"
 
   const [isSignup, setIsSignup] = useState(false);
-  const [useremail, setUseremail] = useState('');
+  const [userEmail, setUserEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [usercontactno, setUsercontactno] = useState('');
-  const [username, setUsername] = useState('');
+  const [userContact, setUserContact] = useState('');
+  const [userName, setUserName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate()
@@ -29,7 +29,7 @@ export default function UserLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const credentials = ({ useremail, password })
+    const credentials = ({ userEmail, password })
     try {
       const res = await fetch(USER_LOGIN_API_URI, {
         method: 'POST',
@@ -44,9 +44,13 @@ export default function UserLogin() {
         storeUserToken(data.token, data.user);
         showPopup('Login Successful !', 'success')
         // setUser(data.user);
-        setUseremail('');
+        setUserEmail('');
         setPassword('');
         navigate('/')
+      } else if (res.status === 403 && data.requiresVerification) {
+        // Email not verified, redirect to verification page
+        showPopup('Please verify your email to continue', 'info');
+        navigate(`/verify-email?email=${encodeURIComponent(data.userEmail)}`);
       } else {
         showPopup('Login Failed: ' + (data.message || "Unknown error"), 'error');
         console.log("Login failed:", data.message || "Unknown error");
@@ -62,7 +66,7 @@ export default function UserLogin() {
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
 
-    const details = ({ username, useremail, usercontactno, password })
+    const details = ({ userName, userEmail, userContact, password })
 
     try {
       const res = await fetch(USER_REGISTER_API_URI, {
@@ -74,12 +78,17 @@ export default function UserLogin() {
       const data = await res.json();
 
       if (res.ok) {
-        showPopup('Registration Successful !', 'success')
-        console.log("Registration successful:", data.message);
-        setUsername(''),
-          setUseremail(''),
-          setUsercontactno(''),
-          setPassword('')
+        if (data.requiresVerification) {
+          showPopup('Registration Successful! Please verify your email.', 'success');
+          navigate(`/verify-email?email=${encodeURIComponent(userEmail)}`);
+        } else {
+          showPopup('Registration Successful!', 'success');
+          setUserName('');
+          setUserEmail('');
+          setUserContact('');
+          setPassword('');
+          setIsSignup(false); // Switch back to login form
+        }
       } else {
         showPopup(data.message || "Enter The Details")
         console.error("Registration failed:", data.message);
@@ -98,155 +107,220 @@ export default function UserLogin() {
         <meta name="author" content="My Website Team" />
       </Helmet>
       <Navbar />
-      <div className="flex justify-center items-center h-screen">
-        <div className="relative w-[700px] h-[400px] bg-white shadow-xl rounded-lg overflow-hidden flex">
-          {/* Login Form */}
-          <div
-            className={`w-1/2 p-8 absolute left-0 top-0 h-full transition-all duration-500 ${isSignup ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          >
-            <h2 className="text-2xl font-bold text-black mb-4">Login</h2>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+        <div className="bg-white shadow-lg rounded-lg overflow-hidden w-full max-w-4xl flex flex-col md:flex-row">
+          {/* Left Side - Login Form */}
+          <div className={`w-full md:w-1/2 p-8 transition-all duration-500 ${isSignup ? 'md:translate-x-full hidden md:block' : ''}`}>
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
             <form onSubmit={handleSubmit}>
-              {/* user login email  */}
-              <div className="flex items-center mt-2">
-                <FaEnvelope className="text-gray-500 mr-3" />
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={useremail}
-                  onChange={(e) => setUseremail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
-                />
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                  Email
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <FaEnvelope className="text-gray-500" />
+                  </div>
+                  <input
+                    className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
-
-              {/* user login password  */}
-              <div className="flex items-center mt-2 relative">
-                <FaLock className="text-gray-500 mr-3" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 text-gray-500"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
+              <div className="mb-6">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <FaLock className="text-gray-500" />
+                  </div>
+                  <input
+                    className="w-full pl-10 pr-10 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <div
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="text-gray-500" />
+                    ) : (
+                      <FaEye className="text-gray-500" />
+                    )}
+                  </div>
+                </div>
               </div>
-
-              {/* login submit button  */}
-              <button type="submit" className="w-full mt-5 bg-purple-600 text-white p-2 rounded">Login</button>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                    Remember me
+                  </label>
+                </div>
+                <div className="text-sm">
+                  <a href="#" className="text-blue-600 hover:underline">
+                    Forgot password?
+                  </a>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 px-4 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300"
+              >
+                Sign In
+              </button>
             </form>
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{" "}
+                <button
+                  onClick={() => setIsSignup(true)}
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  Sign up
+                </button>
+              </p>
+            </div>
           </div>
 
-          {/* Signup Form */}
+          {/* Right Side - Sign Up Form */}
           <div
-            className={`w-1/2 p-8 absolute right-0 top-0 h-full transition-all duration-500 ${isSignup ? "opacity-0 pointer-events-none" : "opacity-100"}`}
+            className={`w-full md:w-1/2 bg-gradient-to-r from-blue-500 to-purple-600 p-8 text-white transition-all duration-500 ${!isSignup ? 'md:translate-x-full hidden md:block' : ''
+              }`}
           >
-            <h2 className="text-2xl font-bold mb-4 text-black">Sign Up</h2>
+            <h2 className="text-2xl font-bold text-center mb-6">Create Account</h2>
             <form onSubmit={handleSignUpSubmit}>
-              {/* user name  */}
-              <div className="flex items-center mt-2">
-                <FaUser className="text-gray-500 mr-3" />
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="Enter your name"
-                  className="p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 text-black focus:ring-purple-500 active:scale-95 transition-all duration-200"
-                />
+              <div className="mb-4">
+                <label className="block text-white text-sm font-bold mb-2" htmlFor="name">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <FaUser className="text-blue-800" />
+                  </div>
+                  <input
+                    className="w-full pl-10 pr-3 py-2 rounded-lg border border-blue-400 focus:outline-none focus:ring-2 focus:ring-white text-gray-800"
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={userName}
+                    onChange={(e) => setUserName(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
-
-              {/* user email  */}
-              <div className="flex items-center mt-2">
-                <FaEnvelope className="text-gray-500 mr-3" />
-                <input
-                  type="email"
-                  id="useremail"
-                  name="email"
-                  value={useremail}
-                  onChange={(e) => setUseremail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
-                />
+              <div className="mb-4">
+                <label className="block text-white text-sm font-bold mb-2" htmlFor="signup-email">
+                  Email
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <FaEnvelope className="text-blue-800" />
+                  </div>
+                  <input
+                    className="w-full pl-10 pr-3 py-2 rounded-lg border border-blue-400 focus:outline-none focus:ring-2 focus:ring-white text-gray-800"
+                    id="signup-email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
-
-              {/* user contact  */}
-              <div className="flex items-center mt-2">
-                <FaPhone className="text-gray-500 mr-3" />
-                <input
-                  type="tel"
-                  id="contact"
-                  name="contact"
-                  value={usercontactno}
-                  onChange={(e) => setUsercontactno(e.target.value)}
-                  placeholder="Enter your contact number"
-                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200"
-                />
+              <div className="mb-4">
+                <label className="block text-white text-sm font-bold mb-2" htmlFor="phone">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <FaPhone className="text-blue-800" />
+                  </div>
+                  <input
+                    className="w-full pl-10 pr-3 py-2 rounded-lg border border-blue-400 focus:outline-none focus:ring-2 focus:ring-white text-gray-800"
+                    id="phone"
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    value={userContact}
+                    onChange={(e) => setUserContact(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
-
-              {/* user password  */}
-              <div className="flex items-center mt-2 relative">
-                <FaLock className="text-gray-500 mr-3" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 active:scale-95 transition-all duration-200 pr-10"
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 text-gray-500"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
+              <div className="mb-6">
+                <label className="block text-white text-sm font-bold mb-2" htmlFor="signup-password">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <FaLock className="text-blue-800" />
+                  </div>
+                  <input
+                    className="w-full pl-10 pr-10 py-2 rounded-lg border border-blue-400 focus:outline-none focus:ring-2 focus:ring-white text-gray-800"
+                    id="signup-password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Create a password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <div
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="text-gray-600" />
+                    ) : (
+                      <FaEye className="text-gray-600" />
+                    )}
+                  </div>
+                </div>
               </div>
-
-              <button type="submit" className="w-full mt-5 bg-purple-600 text-white p-2 rounded">Sign Up</button>
+              <button
+                type="submit"
+                className="w-full bg-white text-blue-600 py-2 px-4 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-300"
+              >
+                Sign Up
+              </button>
             </form>
+            <div className="mt-6 text-center">
+              <p className="text-sm text-white">
+                Already have an account?{" "}
+                <button
+                  onClick={() => setIsSignup(false)}
+                  className="text-white hover:underline font-medium"
+                >
+                  Sign in
+                </button>
+              </p>
+            </div>
           </div>
 
-          {/* Animated Image */}
-          <motion.div
-            initial={{ x: 0 }}
-            animate={{ x: isSignup ? "100%" : "0%" }}
-            transition={{ duration: 0.5, ease: 'anticipate' }}
-            style={{ backgroundImage: `url(${Slice})` }}
-            className="absolute bg-cover top-0 left-0 w-1/2 h-full  flex justify-center items-center text-xl font-bold cursor-pointer z-10"
-            onClick={() => setIsSignup(!isSignup)}
-          >
-            {isSignup ? (
-              <div className="flex flex-col justify-center items-center">
-                <h1 className="text-white text-3xl mb-3">Welcome Back</h1>
-                <p className="w-[260px] text-white text-center text-lg mt-2">please sign into your accountwith the given details to continue</p>
-                <p className="text-white mt-5">If you haven't an account! sign up
-                
-                </p>
-                <button className="px-6 py-2 mt-3 text-black bg-transparent border-2 border-black rounded-lg hover:scale-95 transition-all duration-200">Sign up</button>
-              </div>
-            ) : (
-              <div className="flex flex-col justify-center items-center">
-                <h1 className="text-white text-3xl mb-3">Hello Friends</h1>
-                <p className="w-[260px] text-white text-center text-lg mt-2">Please provide the information to register your account!</p>
-                <p className="text-white mt-5">Already have an account ! Sign In</p>
-                <button className="px-6 py-2 mt-3 text-black bg-transparent border-2 border-black rounded-lg hover:scale-95 transition-all duration-200">Sign In</button>
-              </div>
-            )}
-          </motion.div>
+          {/* Mobile View Toggle */}
+          <div className="md:hidden w-full p-4 text-center">
+            <button
+              onClick={() => setIsSignup(!isSignup)}
+              className="text-blue-600 hover:underline font-medium"
+            >
+              {isSignup ? "Already have an account? Sign in" : "Don't have an account? Sign up"}
+            </button>
+          </div>
         </div>
-
       </div>
       <Footer />
     </>

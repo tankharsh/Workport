@@ -5,6 +5,7 @@ const blackListToken = require("../models/blackListToken.model");
 const JWT_SECRET = process.env.JWT_SECRET;
 const mongoose = require("mongoose");
 const bcrypt = require('bcrypt');
+const { createVerification } = require('../services/verification.service');
 
 // Register a new user
 module.exports.registerUser = async (req, res, next) => {
@@ -13,39 +14,58 @@ module.exports.registerUser = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, useremail, usercontactno, password } = req.body;
+    const { userName, userEmail, userContact, userAddress, password } = req.body;
 
     try {
+        // Check if user already exists
+        const existingUser = await userModel.findOne({ userEmail });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email already exists" });
+        }
+
         // Hash the password
         const hashedPassword = await userModel.hashpassword(password);
 
-        // Create the user
+        // Create the user with isVerified set to false
         const user = await userModel.create({
-            username,
-            useremail,
-            usercontactno,
+            userName,
+            userEmail,
+            userContact,
+            userAddress,
             password: hashedPassword,
+            isVerified: false,
             // socketId, // Commented out socketId as per original requirement
         });
 
-        // Generate JWT token
-        const token = jwt.sign(
-            { id: user._id, username: user.username, useremail: user.useremail },
-            JWT_SECRET,
-            { expiresIn: "1h" }
-        );
+        // Send verification email
+        const verificationResult = await createVerification(userEmail, false);
+        
+        if (!verificationResult.success) {
+            // If email sending fails, still create the account but inform the user
+            return res.status(201).json({
+                message: "User registered successfully, but verification email could not be sent. Please try again later.",
+                user: {
+                    id: user._id,
+                    userName: user.userName,
+                    userEmail: user.userEmail,
+                    userContact: user.userContact,
+                    userAddress: user.userAddress,
+                },
+                requiresVerification: true
+            });
+        }
 
         // Send response
         res.status(201).json({
-            message: "User registered successfully",
+            message: "User registered successfully. Please check your email for verification.",
             user: {
                 id: user._id,
-                username: user.username,
-                useremail: user.useremail,
-                usercontactno: user.usercontactno,
-                // socketId: user.socketId, // Commented out socketId as per original requirement
+                userName: user.userName,
+                userEmail: user.userEmail,
+                userContact: user.userContact,
+                userAddress: user.userAddress,
             },
-            token,
+            requiresVerification: true
         });
     } catch (error) {
         if (error.code === 11000) {
@@ -62,11 +82,11 @@ module.exports.loginUser = async (req, res, next) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { useremail, password } = req.body;
+    const { userEmail, password } = req.body;
 
     try {
         // Check if the user exists
-        const user = await userModel.findOne({ useremail }).select("+password");
+        const user = await userModel.findOne({ userEmail }).select("+password");
         if (!user) {
             return res.status(401).json({ message: "Invalid email or password" });
         }
@@ -77,9 +97,21 @@ module.exports.loginUser = async (req, res, next) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
+        // Check if email is verified
+        if (!user.isVerified) {
+            // Send a new verification email
+            await createVerification(userEmail, false);
+            
+            return res.status(403).json({ 
+                message: "Email not verified. A new verification email has been sent.",
+                requiresVerification: true,
+                userEmail: user.userEmail
+            });
+        }
+
         // Generate JWT token
         const token = jwt.sign(
-            { id: user._id, username: user.username, useremail: user.useremail },
+            { id: user._id, userName: user.userName, userEmail: user.userEmail },
             JWT_SECRET,
             { expiresIn: "1h" }
         );
@@ -90,8 +122,10 @@ module.exports.loginUser = async (req, res, next) => {
             token,
             user: {
                 id: user._id,
-                username: user.username,
-                useremail: user.useremail,
+                userName: user.userName,
+                userEmail: user.userEmail,
+                userContact: user.userContact,
+                userAddress: user.userAddress,
                 // socketId: user.socketId, // Commented out socketId as per original requirement
             },
         });
@@ -181,6 +215,48 @@ exports.deleteUser = async (req, res) => {
         res.json({ message: "Deleted successfully" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting service provider", error });
+    }
+};
+
+// Verify user email
+exports.verifyEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+        
+        const user = await userModel.findOne({ userEmail: email });
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        // Update user verification status
+        user.isVerified = true;
+        await user.save();
+        
+        // Generate JWT token
+        const token = jwt.sign(
+            { id: user._id, userName: user.userName, userEmail: user.userEmail },
+            JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+        
+        res.status(200).json({
+            message: "Email verified successfully",
+            token,
+            user: {
+                id: user._id,
+                userName: user.userName,
+                userEmail: user.userEmail,
+                userContact: user.userContact,
+            },
+        });
+    } catch (error) {
+        console.error("Verification Error:", error);
+        res.status(500).json({ message: "Error verifying email", error: error.message });
     }
 };
 

@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('token', token);
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
         localStorage.removeItem('SP_token');
-        localStorage.removeItem('SP_LoggedInUser');
+        localStorage.removeItem('serviceProvider');
         setUser(userData);
     };
 
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const spToken = localStorage.getItem('SP_token');
-        const spData = localStorage.getItem('SP_LoggedInUser');
+        const spData = localStorage.getItem('serviceProvider');
         if (spToken && spData) {
             setServiceprovider(JSON.parse(spData));
         }
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
 
     const storeSPToken = (token, spData) => {
         localStorage.setItem('SP_token', token);
-        localStorage.setItem('SP_LoggedInUser', JSON.stringify(spData));
+        localStorage.setItem('serviceProvider', JSON.stringify(spData));
         localStorage.removeItem('token');
         localStorage.removeItem('loggedInUser')
         setServiceprovider(spData);
@@ -111,12 +111,12 @@ export const AuthProvider = ({ children }) => {
 
     const spLogout = () => {
         localStorage.removeItem('SP_token');
-        localStorage.removeItem('SP_LoggedInUser');
+        localStorage.removeItem('serviceProvider');
         setServiceprovider(null);
         console.log("Service Provider logged out successfully");
         showPopup('Service Provider Logout Successful!', 'success');
 
-        window.location.href = "/sp-provider-login"; 
+        window.location.href = "/sp-provider-login-new"; 
     };
 
     //*----------------------------------------------------------------

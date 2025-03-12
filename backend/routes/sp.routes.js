@@ -11,8 +11,8 @@ const { validateRegisterSP, validateLoginSP } = require("../validators/sp.valida
 router.post(
     "/sp_register",
     upload.fields([
-        { name: "sp_shop_img", maxCount: 1 },
-        { name: "sp_shop_banner_img", maxCount: 1 },
+        { name: "spShopImage", maxCount: 1 },
+        { name: "spShopBannerImage", maxCount: 1 },
     ]),
     validateRegisterSP,
     spController.registerSP
@@ -21,11 +21,14 @@ router.post(
 // Login Service Provider
 router.post("/sp_login", validateLoginSP, spController.loginSP);
 
+// Verify service provider email
+router.post("/verify-email", spController.verifyEmail);
+
 // Update Service Provider
 router.put("/update/:id",
     upload.fields([
-        { name: "sp_shop_img", maxCount: 1 },
-        { name: "sp_shop_banner_img", maxCount: 1 },
+        { name: "spShopImage", maxCount: 1 },
+        { name: "spShopBannerImage", maxCount: 1 },
     ]), spController.updateServiceProvider);
 
 // Delete Service Provider
@@ -40,5 +43,8 @@ router.get("/sp_logout", authmiddleware.authServiceProvider, spController.logout
 router.get("/providers", spController.getAllServiceProviders);
 // get service provider by id 
 router.get("/providers/:id", spController.getServiceProviderById);
+
+// Get dashboard statistics
+router.get("/dashboard-stats/:spId", spController.getDashboardStats);
 
 module.exports = router;

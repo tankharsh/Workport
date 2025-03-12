@@ -1,63 +1,63 @@
 const spModel = require('../models/sp.module');
 
 module.exports.createServiceProvider = async ({
-    sp_name,
-    sp_email,
-    sp_contact,
-    sp_shop_name,
-    sp_category,
-    sp_block_no,
-    sp_area,
-    sp_pincode,
-    sp_city,
-    sp_description,
-    sp_password,
-    sp_shop_img,
-    sp_shop_banner_img,
+    spName,
+    spEmail,
+    spContact,
+    spShopName,
+    spCategories,
+    spBlockNo,
+    spArea,
+    spPincode,
+    spCity,
+    spDescription,
+    spPassword,
+    spShopImage,
+    spShopBannerImage,
 }) => {
     // Validate required fields
     if (
-        !sp_name ||
-        !sp_email ||
-        !sp_contact ||
-        !sp_shop_name ||
-        !sp_category ||
-        !sp_block_no ||
-        !sp_area ||
-        !sp_pincode ||
-        !sp_city ||
-        !sp_description ||
-        !sp_password
+        !spName ||
+        !spEmail ||
+        !spContact ||
+        !spShopName ||
+        !spCategories ||
+        !spBlockNo ||
+        !spArea ||
+        !spPincode ||
+        !spCity ||
+        !spDescription ||
+        !spPassword
     ) {
         throw new Error('All fields are required');
     }
 
     // Create the service provider
     const serviceProvider = await spModel.create({
-        sp_name,
-        sp_email,
-        sp_contact,
-        sp_shop_name,
-        sp_category,
-        sp_block_no,
-        sp_area,
-        sp_pincode,
-        sp_city,
-        sp_description,
-        sp_password,
-        sp_shop_img,
-        sp_shop_banner_img,
+        spName,
+        spEmail,
+        spContact,
+        spShopName,
+        spCategories,
+        spBlockNo,
+        spArea,
+        spPincode,
+        spCity,
+        spDescription,
+        spPassword,
+        spShopImage,
+        spShopBannerImage,
     });
 
     return serviceProvider;
 };
 
-module.exports.findServiceProviderByEmail = async (sp_email) => {
-    if (!sp_email) {
+module.exports.findServiceProviderByEmail = async (spEmail) => {
+    if (!spEmail) {
         throw new Error('Email is required');
     }
 
-    const serviceProvider = await spModel.findOne({ sp_email });
+    const serviceProvider = await spModel.findOne({ spEmail });
     return serviceProvider;
 };
 
@@ -78,7 +78,7 @@ module.exports.updateServiceProvider = async (id, updateData) => {
     const updatedServiceProvider = await spModel.findByIdAndUpdate(
         id,
         { $set: updateData },
-        { new: true } // Return the updated document
+        { new: true }
     );
 
     return updatedServiceProvider;

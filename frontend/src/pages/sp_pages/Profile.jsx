@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Sidebar from '../../components/sp_components/Sidebar';
 import { FaEnvelope, FaPhone, FaUser, FaStar } from "react-icons/fa";
 import { GiShop } from "react-icons/gi";
-import {  BiSolidCity } from "react-icons/bi";
+import { BiSolidCity } from "react-icons/bi";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { TbMapPinCode } from "react-icons/tb";
 import { PiMapPinAreaFill } from "react-icons/pi";
@@ -10,27 +10,25 @@ import axios from 'axios';
 import Swal from "sweetalert2";
 
 const Profile = () => {
-
-
   const [formData, setFormData] = useState({
-    sp_name: "",
-    sp_email: "",
-    sp_contact: "",
-    sp_shop_name: "",
-    shopDescription: "",
-    sp_block_no: "",
-    sp_area: "",
-    sp_pincode: "",
-    sp_city: "",
-    sp_shop_img: "",
-    sp_shop_banner_img: "",
-    categories: [],
+    spName: "",
+    spEmail: "",
+    spContact: "",
+    spShopName: "",
+    spDescription: "",
+    spBlockNo: "",
+    spArea: "",
+    spPincode: "",
+    spCity: "",
+    spShopImage: "",
+    spShopBannerImage: "",
+    spCategories: [],
   });
 
   const [shopImagePreview, setShopImagePreview] = useState(null);
   const [shopBannerPreview, setShopBannerPreview] = useState(null);
   const [categories, setCategories] = useState([]);
-  const storedUser = JSON.parse(localStorage.getItem("SP_LoggedInUser"));
+  const storedUser = JSON.parse(localStorage.getItem("serviceProvider"));
   const SPId = storedUser?.id || "";
 
   useEffect(() => {
@@ -39,7 +37,26 @@ const Profile = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/api/sp/providers/${SPId}`);
-        setFormData(response.data);
+        if (response.data && response.data.provider) {
+          console.log("Provider data:", response.data.provider);
+          
+          // Format the categories data to match our expected structure
+          const formattedData = {
+            ...response.data.provider,
+            spCategories: response.data.provider.category || []
+          };
+          
+          // Extract provider data and set it to formData
+          setFormData(formattedData);
+          
+          // Set image previews if available
+          if (response.data.provider.spShopImage) {
+            setShopImagePreview(`http://localhost:4000/uploads/${response.data.provider.spShopImage}`);
+          }
+          if (response.data.provider.spShopBannerImage) {
+            setShopBannerPreview(`http://localhost:4000/uploads/${response.data.provider.spShopBannerImage}`);
+          }
+        }
       } catch (error) {
         console.error("Error fetching service details:", error);
       }
@@ -58,317 +75,362 @@ const Profile = () => {
     fetchCategories();
   }, [SPId]);
 
- const handleChange = (e) => {
-  const { name, value, type, checked } = e.target;
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
 
-  setFormData((prevData) => {
-    // Agar checkbox "sp_category" hai to category array ko update karega
-    if (name === "sp_category") {
-      let updatedCategories = [...(prevData.provider.category || [])];
-
+    if (name === "spCategories") {
+      // Handle category selection
+      let updatedCategories = [...(formData.spCategories || [])];
+      
       if (checked) {
-        // Agar select ho raha hai to category add karega
-        const selectedCategory = categories.find(cat => cat._id === value);
-        if (selectedCategory) {
-          updatedCategories.push({
-            categoryId: selectedCategory._id,
-            categoryName: selectedCategory.categoryName,
-            categoryDescription: selectedCategory.categoryDescription,
-            categoryImage: selectedCategory.categoryImage
-          });
+        // If category is not already selected, add it
+        if (!updatedCategories.some(cat => cat.categoryId === value)) {
+          const selectedCategory = categories.find(cat => cat._id === value);
+          if (selectedCategory) {
+            updatedCategories.push({
+              categoryId: selectedCategory._id,
+              categoryName: selectedCategory.categoryName,
+              categoryDescription: selectedCategory.categoryDescription || "",
+              categoryImage: selectedCategory.categoryImage || ""
+            });
+          }
         }
       } else {
-        // Agar unselect ho raha hai to category hata dega
+        // Remove the category if unchecked
         updatedCategories = updatedCategories.filter(cat => cat.categoryId !== value);
       }
-
-      return {
-        ...prevData,
-        provider: {
-          ...prevData.provider,
-          category: updatedCategories,
-        },
-      };
-    }
-
-    // Baki sab ke liye wahi purana logic chalega
-    return {
-      ...prevData,
-      provider: {
-        ...prevData.provider,
-        [name]: type === "checkbox" ? checked : value,
-      },
-    };
-  });
-};
-
-
-  const handleFileChange = (e) => {
-    const { name, files } = e.target;
-    if (files.length > 0) {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: files[0],
-      }));
       
-      const previewURL = URL.createObjectURL(files[0]);
-      if (name === "sp_shop_img") setShopImagePreview(previewURL);
-      if (name === "sp_shop_banner_img") setShopBannerPreview(previewURL);
+      setFormData(prev => ({
+        ...prev,
+        spCategories: updatedCategories
+      }));
+    } else {
+      // Handle other form fields
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value
+      }));
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const data = new FormData();
-
-  // Flatten formData if it's nested under `provider`
-  const flattenedData = formData.provider ? formData.provider : formData;
-
-  Object.keys(flattenedData).forEach((key) => {
-    if (key === "category") {
-      // Ensure category array is properly sent as JSON
-      data.append("category", JSON.stringify(flattenedData[key]));
-    } else if (Array.isArray(flattenedData[key])) {
-      data.append(key, JSON.stringify(flattenedData[key]));
-    } else if (flattenedData[key] instanceof File) {
-      data.append(key, flattenedData[key]); // Append file correctly
-    } else {
-      data.append(key, flattenedData[key]);
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    
+    if (files && files[0]) {
+      setFormData(prev => ({
+        ...prev,
+        [name]: files[0]
+      }));
+      
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(files[0]);
+      if (name === "spShopImage") {
+        setShopImagePreview(previewUrl);
+      } else if (name === "spShopBannerImage") {
+        setShopBannerPreview(previewUrl);
+      }
     }
-  });
+  };
 
-  // Ensure images are appended as files (not just strings)
-  if (flattenedData.sp_shop_img instanceof File) {
-    data.append("sp_shop_img", flattenedData.sp_shop_img);
-  }
-  if (flattenedData.sp_shop_banner_img instanceof File) {
-    data.append("sp_shop_banner_img", flattenedData.sp_shop_banner_img);
-  }
-
-  try {
-    const response = await axios.put(`http://localhost:4000/api/sp/update/${SPId}`, data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    if (response?.status === 200 && response?.data?.success) {
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Profile updated successfully!",
-      });
-    } else {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!SPId) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: response?.data?.message || "Update failed! Try again.",
+        text: "Service provider ID not found",
+      });
+      return;
+    }
+    
+    const data = new FormData();
+    
+    // Append all form fields
+    Object.keys(formData).forEach(key => {
+      // Skip the services field to avoid casting errors
+      if (key === 'services') {
+        return;
+      }
+      
+      if (key === "spCategories") {
+        // Extract only the category IDs from the spCategories array
+        const categoryIds = formData[key].map(cat => cat.categoryId || cat._id);
+        data.append(key, JSON.stringify(categoryIds));
+      } else if (key === "spShopImage" || key === "spShopBannerImage") {
+        // Only append file if it's a File object (new upload)
+        if (formData[key] instanceof File) {
+          data.append(key, formData[key]);
+        }
+      } else if (formData[key] !== undefined && formData[key] !== null) {
+        data.append(key, formData[key]);
+      }
+    });
+    
+    try {
+      const response = await axios.put(
+        `http://localhost:4000/api/sp/update/${SPId}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      
+      if (response.status === 200) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Profile updated successfully",
+        });
+        
+        // Refresh the data by fetching again
+        try {
+          const refreshResponse = await axios.get(`http://localhost:4000/api/sp/providers/${SPId}`);
+          if (refreshResponse.data && refreshResponse.data.provider) {
+            // Format the categories data to match our expected structure
+            const formattedData = {
+              ...refreshResponse.data.provider,
+              spCategories: refreshResponse.data.provider.category || []
+            };
+            
+            setFormData(formattedData);
+            
+            // Set image previews if available
+            if (refreshResponse.data.provider.spShopImage) {
+              setShopImagePreview(`http://localhost:4000/uploads/${refreshResponse.data.provider.spShopImage}`);
+            }
+            if (refreshResponse.data.provider.spShopBannerImage) {
+              setShopBannerPreview(`http://localhost:4000/uploads/${refreshResponse.data.provider.spShopBannerImage}`);
+            }
+          }
+        } catch (refreshError) {
+          console.error("Error refreshing data:", refreshError);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.response?.data?.message || "Failed to update profile",
       });
     }
-  } catch (error) {
-    console.error("❌ Error updating profile:", error.response?.data || error.message);
-    console.log("🔍 Full error object:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error.response?.data?.message || "Update failed! Try again.",
-    });
-  }
-};
-
+  };
 
   return (
     <>
       <Sidebar />
-      <main className="flex-1 lg:ml-64 min-h-screen mt-16 p-10">
-        <form onSubmit={handleSubmit} className="p-4 bg-white shadow-xl rounded w-full mx-auto">
-          <h2 className="text-xl font-bold text-black mb-4">Edit Provider Details</h2>
+      <main className="flex-1 lg:ml-64 p-5">
+        <h1 className="text-2xl font-bold mb-6">Profile</h1>
+        
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <p className="text-gray-400 mb-2 flex items-center gap-2">
+                <FaStar />Personal Information<FaStar />
+              </p>
+              
+              {/* SP Name */}
+              <div className="flex w-full items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                <FaUser className="mr-2 text-gray-500" />
+                <input
+                  type="text"
+                  name="spName"
+                  placeholder="Enter your name"
+                  value={formData.spName || ""}
+                  onChange={handleChange}
+                  className="w-full outline-none text-black placeholder:text-gray-700"
+                />
+              </div>
+              
+              {/* SP Contact */}
+              <div className="flex w-full items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                <FaPhone className="mr-2 text-gray-500" />
+                <input
+                  type="tel"
+                  name="spContact"
+                  placeholder="Enter your contact number"
+                  value={formData.spContact || ""}
+                  onChange={handleChange}
+                  className="w-full outline-none text-black placeholder:text-gray-700"
+                />
+              </div>
 
-          <div className="flex gap-5">
-            {/* SP Name  */}
-            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-              <FaUser className="mr-2 text-gray-700" />
-              <input
-                type="text"
-                name="sp_name"
-                placeholder="Enter your name"
-                value={formData?.provider?.sp_name }
-                onChange={handleChange}
-                className="w-full outline-none text-black placeholder:text-gray-700 "
+              {/* SP Email */}
+              <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                <FaEnvelope className="mr-2 text-gray-500" />
+                <input
+                  type="email"
+                  name="spEmail"
+                  placeholder="Enter your email"
+                  value={formData.spEmail || ""}
+                  onChange={handleChange}
+                  className="w-full outline-none text-black placeholder:text-gray-700"
+                />
+              </div>
 
-              />
+              <p className="text-gray-400 mt-3 mb-2 flex items-center gap-2">
+                <FaStar />Shop Information<FaStar />
+              </p>
+
+              {/* Shop Name */}
+              <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                <GiShop className="mr-2 text-gray-500" />
+                <input
+                  type="text"
+                  name="spShopName"
+                  placeholder="Enter shop name"
+                  value={formData.spShopName || ""}
+                  onChange={handleChange}
+                  className="w-full outline-none text-black placeholder:text-gray-700"
+                />
+              </div>
+
+              {/* Categories */}
+              <div className="flex flex-col mt-3 border border-gray-700 p-2 rounded-md">
+                <p className="text-gray-500 mb-2">Select Service Category:</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {categories.map((category) => (
+                    <label key={category._id} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        name="spCategories"
+                        value={category._id}
+                        checked={formData.spCategories?.some(
+                          (cat) => cat.categoryId === category._id || cat._id === category._id
+                        )}
+                        onChange={handleChange}
+                        className="accent-purple-600"
+                      />
+                      <span className="text-gray-700 capitalize">
+                        {category.categoryName}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Shop Description */}
+              <div className="flex flex-col mt-3 border border-gray-700 p-2 rounded-md">
+                <textarea
+                  name="spDescription"
+                  placeholder="Enter shop description"
+                  value={formData.spDescription || ""}
+                  onChange={handleChange}
+                  className="w-full outline-none text-black placeholder:text-gray-700 resize-none"
+                  rows="3"
+                />
+              </div>
+
+              {/* Shop Address Fields */}
+              <div className="grid grid-cols-2 gap-4 mt-3">
+                <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                  <FaMapLocationDot className="mr-2 text-gray-500" />
+                  <input
+                    type="text"
+                    name="spBlockNo"
+                    placeholder="Enter block no"
+                    value={formData.spBlockNo || ""}
+                    onChange={handleChange}
+                    className="w-full outline-none text-black placeholder:text-gray-700"
+                  />
+                </div>
+
+                <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                  <PiMapPinAreaFill className="mr-2 text-gray-500" />
+                  <input
+                    type="text"
+                    name="spArea"
+                    placeholder="Enter area"
+                    value={formData.spArea || ""}
+                    onChange={handleChange}
+                    className="w-full outline-none text-black placeholder:text-gray-700"
+                  />
+                </div>
+
+                <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                  <TbMapPinCode className="mr-2 text-gray-500" />
+                  <input
+                    type="text"
+                    name="spPincode"
+                    placeholder="Enter pincode"
+                    value={formData.spPincode || ""}
+                    onChange={handleChange}
+                    className="w-full outline-none text-black placeholder:text-gray-700"
+                  />
+                </div>
+
+                <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
+                  <BiSolidCity className="mr-2 text-gray-500" />
+                  <input
+                    type="text"
+                    name="spCity"
+                    placeholder="Enter city"
+                    value={formData.spCity || ""}
+                    onChange={handleChange}
+                    className="w-full outline-none text-black placeholder:text-gray-700"
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* contact  */}
-            <div className="flex w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-              <FaPhone className="mr-2 text-gray-500" />
-              <input
-                type="tel"
-                name="sp_contact"
-                placeholder="Enter your contact no"
-                value={formData?.provider?.sp_contact}
-                onChange={handleChange}
-                className="w-full outline-none text-black placeholder:text-gray-700"
+            <div className="space-y-4">
+              <p className="text-gray-400 mb-2 flex items-center gap-2">
+                <FaStar />Shop Images<FaStar />
+              </p>
 
-              />
+              {/* Shop Image */}
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Shop Image</label>
+                <input
+                  type="file"
+                  name="spShopImage"
+                  onChange={handleFileChange}
+                  className="w-full text-gray-700"
+                />
+                {shopImagePreview && (
+                  <div className="mt-2">
+                    <img
+                      src={shopImagePreview}
+                      alt="Shop Preview"
+                      className="w-full h-48 object-cover rounded-md"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Shop Banner Image */}
+              <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Shop Banner Image</label>
+                <input
+                  type="file"
+                  name="spShopBannerImage"
+                  onChange={handleFileChange}
+                  className="w-full text-gray-700"
+                />
+                {shopBannerPreview && (
+                  <div className="mt-2">
+                    <img
+                      src={shopBannerPreview}
+                      alt="Banner Preview"
+                      className="w-full h-48 object-cover rounded-md"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* SP Email  */}
-          <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-            <FaEnvelope className="mr-2 text-gray-500" />
-            <input
-              type="email"
-              name="sp_email"
-              placeholder="Enter your email"
-              value={formData?.provider?.sp_email}
-              onChange={handleChange}
-              className="w-full outline-none text-black placeholder:text-gray-700"
-
-            />
+          <div className="mt-6">
+            <button
+              type="submit"
+              className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition-colors"
+            >
+              Update Profile
+            </button>
           </div>
-
-          <p className="text-gray-400 mt-3 mb-2 flex items-center gap-2">
-            <FaStar />Shop Information<FaStar />
-          </p>
-          {/* SP Shop Name  */}
-          <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-            <GiShop className="mr-2 text-gray-500" />
-            <input
-              type="text"
-              name="sp_shop_name"
-              placeholder="Enter shop name"
-              value={formData?.provider?.sp_shop_name}
-              onChange={handleChange}
-              className="w-full outline-none text-black placeholder:text-gray-700"
-
-            />
-          </div>
-          {/* SP Category  */}
-<div className="flex flex-col mt-3 border border-gray-700 p-2 rounded-md">
-  <p className="text-gray-500 mb-2">Select Service Category:</p>
-  <div className="grid grid-cols-3 gap-2">
-    {categories.map((category) => (
-      <label key={category._id} className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          name="sp_category"
-          value={category._id}
-          checked={formData?.provider?.category?.some(cat => cat.categoryId === category._id)}
-          onChange={handleChange}
-          className="accent-purple-600"
-        />
-        <span className="text-gray-700">{category.categoryName}</span>
-      </label>
-    ))}
-  </div>
-</div>
-
-
-          <div className="flex mt-3 border items-center border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-            {/* <BiSolidCategoryAlt className="mr-2 text-gray-500" /> */}
-            <textarea
-              name="sp_description"
-              placeholder="Enter Shop Description ..."
-              value={formData?.provider?.sp_description}
-              onChange={handleChange}
-              className="w-full outline-none text-black placeholder-gray-700 placeholder:flex placeholder:items-center"
-              rows={3}
-
-            />
-          </div>
-
-          <p className="text-gray-400 mt-3 mb-2 flex items-center gap-2">
-            <FaStar />Shop Address<FaStar />
-          </p>
-          {/* SP Area  */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center border p-2 border-gray-700 rounded-md hover:scale-95 transition-all duration-200">
-              <PiMapPinAreaFill className="mr-2 text-gray-500" />
-              <input
-                type="text"
-                name="sp_area"
-                placeholder="Shop Area"
-                value={formData?.provider?.sp_area}
-                onChange={handleChange}
-                className="w-full outline-none text-black placeholder:text-gray-700"
-
-              />
-            </div>
-            <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-              <FaMapLocationDot className="mr-2 text-gray-500" />
-              <input
-                type="text"
-                name="sp_block_no"
-                placeholder="Block No"
-                value={formData?.provider?.sp_block_no}
-                onChange={handleChange}
-                className="w-full outline-none text-black placeholder:text-gray-700"
-
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 mt-3 gap-4">
-            <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-              <TbMapPinCode className="mr-2 text-gray-500" />
-              <input
-                type="text"
-                name="sp_pincode"
-                placeholder="Pincode"
-                value={formData?.provider?.sp_pincode}
-                onChange={handleChange}
-                className="w-full outline-none text-black placeholder:text-gray-700"
-
-              />
-            </div>
-            <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-              <BiSolidCity className="mr-2 text-gray-500" />
-              <input
-                type="text"
-                name="sp_city"
-                placeholder="City"
-                value={formData.provider?.sp_city}
-                onChange={handleChange}
-                className="w-full outline-none text-black placeholder:text-gray-700"
-
-              />
-            </div>
-          </div>
-
-          <p className="text-gray-400 flex mt-3 mb-2 items-center gap-2">
-            <FaStar /> Shop Images <FaStar />
-          </p>
-          <div className="flex gap-5">
-            {/* SP Shop Image upload fields */}
-            <div className="flex flex-col w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-              <label className="mr-2 text-gray-500">Shop Image</label>
-              <input
-                type="file"
-                name="sp_shop_img"
-                onChange={handleFileChange}
-                className="w-full outline-none text-black"
-                accept="image/*"
-
-              />
-              {shopImagePreview && <img src={shopImagePreview} alt="Shop Preview" width={100} />}
-            </div>
-
-            {/* SP Shop Banner Image upload fields */}
-            <div className="flex flex-col w-1/2 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-              <label className="mr-2 text-gray-500">Shop Banner Image</label>
-              <input
-                type="file"
-                name="sp_shop_banner_img"
-                onChange={handleFileChange}
-                className="w-full outline-none text-black"
-                accept="image/*"
-              />
-              {shopBannerPreview && <img src={shopBannerPreview} alt="Banner Preview" width={100} />}
-            </div>
-          </div>
-
-          <button type="submit" className="bg-blue-500 mt-3 text-white p-2 rounded">
-            Update Details
-          </button>
         </form>
       </main>
     </>

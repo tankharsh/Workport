@@ -7,11 +7,11 @@ const mongoose = require("mongoose");
 // Add Service function
 exports.addService = async (req, res) => {
   try {
-    let { services_name, services_price, services_description, services_duration, categoryId, service_provider } = req.body;
+    let { serviceName, servicePrice, serviceDescription, serviceDuration, categoryId, serviceProviderId } = req.body;
     
-    // If `service_provider` is an array, extract the first element
-    if (Array.isArray(service_provider)) {
-      service_provider = service_provider[0];  
+    // If `serviceProviderId` is an array, extract the first element
+    if (Array.isArray(serviceProviderId)) {
+      serviceProviderId = serviceProviderId[0];  
     }
 
     if (Array.isArray(categoryId)) {
@@ -19,7 +19,7 @@ exports.addService = async (req, res) => {
     }
 
     // Validate Service Provider
-    const providerExists = await ServiceProvider.findById(service_provider);
+    const providerExists = await ServiceProvider.findById(serviceProviderId);
     if (!providerExists) {
       return res.status(404).json({ message: "Service Provider not found!" });
     }
@@ -31,24 +31,24 @@ exports.addService = async (req, res) => {
     }
 
     // Check if file is uploaded
-    const services_img = req.file ? req.file.filename : null;
+    const serviceImage = req.file ? req.file.filename : null;
 
     // Create new Service
     const newService = new Service({
-      services_name,
-      services_price,
-      services_description,
-      services_duration,
+      serviceName,
+      servicePrice,
+      serviceDescription,
+      serviceDuration,
       categoryId,
-      service_provider,
-      services_img,
+      serviceProviderId,
+      serviceImage,
     });
 
     // Save Service
     await newService.save();
 
     // Update Service Provider's services array
-    await ServiceProvider.findByIdAndUpdate(service_provider, {
+    await ServiceProvider.findByIdAndUpdate(serviceProviderId, {
       $push: { services: newService._id },
     });
 
@@ -63,7 +63,7 @@ exports.addService = async (req, res) => {
 // Get all services
 exports.getAllServices = async (req, res) => {
   try {
-    const services = await Service.find().populate("service_provider categoryId");
+    const services = await Service.find().populate("serviceProviderId categoryId");
     res.status(200).json(services);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -77,12 +77,12 @@ exports.getRecentServices = async (req, res) => {
     const services = await Service.find()
       .sort({ createdAt: -1 }) // Sort by createdAt in descending order (newest first)
       .limit(8) // Limit to 8 services
-      .populate("service_provider categoryId"); // Populate related fields
+      .populate("serviceProviderId categoryId"); // Populate related fields
 
     // Check if any service has invalid references
     const invalidServices = services.filter(
       (service) =>
-        !mongoose.isValidObjectId(service.service_provider) ||
+        !mongoose.isValidObjectId(service.serviceProviderId) ||
         !mongoose.isValidObjectId(service.categoryId)
     );
 
@@ -121,7 +121,7 @@ exports.getServiceById = async (req, res) => {
       return res.status(400).json({ message: "Invalid service ID format" });
     }
 
-    const service = await Service.findById(req.params.id).populate("service_provider categoryId");
+    const service = await Service.findById(req.params.id).populate("serviceProviderId categoryId");
     if (!service) {
       return res.status(404).json({ message: "Service not found!" });
     }
@@ -148,17 +148,17 @@ exports.updateService = async (req, res) => {
 
     // Prepare updated data
     const updatedData = {
-      services_name: req.body.services_name,
-      services_price: req.body.services_price,
-      services_description: req.body.services_description,
-      services_duration: req.body.services_duration,
+      serviceName: req.body.serviceName,
+      servicePrice: req.body.servicePrice,
+      serviceDescription: req.body.serviceDescription,
+      serviceDuration: req.body.serviceDuration,
       categoryId: req.body.categoryId,
-      service_provider: req.body.service_provider,
+      serviceProviderId: req.body.serviceProviderId,
     };
 
     // If image is uploaded, update it
     if (req.file) {
-      updatedData.services_img = req.file.filename;
+      updatedData.serviceImage = req.file.filename;
     }
 
     // Update service
@@ -195,7 +195,7 @@ exports.deleteService = async (req, res) => {
 
     // Remove service ID from the ServiceProvider's services array
     await ServiceProvider.updateOne(
-      { _id: service.service_provider },
+      { _id: service.serviceProviderId },
       { $pull: { services: id } }
     );
 
@@ -219,7 +219,7 @@ exports.getInquiries = async (req, res) => {
 
     const inquiries = await Inquiry.find({ serviceProvider: req.params.spId })
       .populate("user", "name email")
-      .populate("service", "services_name");
+      .populate("service", "serviceName");
 
     res.status(200).json({ inquiries });
   } catch (error) {

@@ -191,6 +191,41 @@ const sendEmail = async (to, status, serviceName, providerName, date, time, mess
     }
 };
 
+// Function to send verification email with OTP
+const sendVerificationEmail = async (to, otp, isServiceProvider = false) => {
+    try {
+        const subject = "🔐 Email Verification OTP";
+        const accountType = isServiceProvider ? "Service Provider" : "User";
+        
+        const htmlContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                <h2 style="color: #4a90e2; text-align: center;">Email Verification</h2>
+                <p>Hello,</p>
+                <p>Thank you for registering as a <strong>${accountType}</strong> on our platform. To complete your registration, please verify your email address using the OTP below:</p>
+                
+                <div style="background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0; border-radius: 4px;">
+                    ${otp}
+                </div>
+                
+                <p>This OTP is valid for 10 minutes. If you did not request this verification, please ignore this email.</p>
+                <p>Best Regards,</p>
+                <p><strong>Workport Team</strong></p>
+            </div>
+        `;
 
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to,
+            subject,
+            html: htmlContent
+        });
 
-module.exports = { sendEmail };
+        console.log(`✅ Verification email sent successfully to ${to}`);
+        return true;
+    } catch (error) {
+        console.error(`❌ Error sending verification email: ${error.message}`);
+        return false;
+    }
+};
+
+module.exports = { sendEmail, sendVerificationEmail };

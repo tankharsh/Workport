@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Navbar from '../user_components/Navbar';
 import Footer from '../user_components/Footer';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { NavLink, replace, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
 
@@ -15,20 +15,24 @@ function SP_LoginForm() {
 
     const navigate = useNavigate();
 
-    const [sp_email, setSp_email] = useState("");
-    const [sp_password, setSp_password] = useState("");
+    const [formData, setFormData] = useState({
+        spEmail: "",
+        spPassword: ""
+    });
     const [showPassword, setShowPassword] = useState(false);
 
     // *** SP Login Here 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const credentials = ({ sp_email, sp_password })
         try {
             const res = await fetch(SERVICE_PROVIDER_LOGIN_API_URI, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials),
+                body: JSON.stringify({
+                    spEmail: formData.spEmail,
+                    spPassword: formData.spPassword
+                }),
             });
 
             const data = await res.json();
@@ -37,20 +41,32 @@ function SP_LoginForm() {
                 console.log("Login successful:", data);
                 storeSPToken(data.token, data.serviceProvider);
                 showPopup('Login Successful !', 'success')
-                // setUser(data.user);
-                setSp_email('');
-                setSp_password('');
+                setFormData({
+                    spEmail: "",
+                    spPassword: ""
+                });
                 navigate('/dashboard', { replace: true })
-
+            } else if (res.status === 403 && data.requiresVerification) {
+                // Email not verified, redirect to verification page
+                showPopup('Please verify your email to continue', 'info');
+                navigate(`/verify-email?email=${encodeURIComponent(data.spEmail)}&type=sp`);
             } else {
                 showPopup('Login Failed: ' + (data.message || "Unknown error"), 'error');
                 console.log("Login failed:", data.message || "Unknown error");
             }
-
         } catch (error) {
             console.error("Unexpected error during login:", error);
         }
     };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
     // *** SP Login Ends Here
 
     return (
@@ -66,10 +82,10 @@ function SP_LoginForm() {
                     {/* Left Side: Large Text */}
                     <div className="flex-1 bg-gradient-to-r from-blue-500/75 to-purple-600/75 text-white flex items-center justify-center px-8 flex-col">
                         <h1 className="text-2xl md:text-2xl font-bold text-center p-4">
-                            "Welcome to Registration"
+                            &ldquo;Welcome to Registration&rdquo;
                             <br />
                         </h1>
-                        <NavLink to="/sp-provider" className=" px-6 py-2 rounded-lg hover:scale-95 border-2 border-white">List Your Business</NavLink>
+                        <NavLink to="/sp-provider" className="px-6 py-2 rounded-lg hover:scale-95 border-2 border-white">List Your Business</NavLink>
                     </div>
 
                     {/* Right Side: Form */}
@@ -85,47 +101,47 @@ function SP_LoginForm() {
                                         <FaEnvelope className="text-gray-500 mr-3" />
                                         <input
                                             type="email"
-                                            id="sp_email"
-                                            name="sp_email"
-                                            value={sp_email}
-                                            onChange={(e) => setSp_email(e.target.value)}
-                                            placeholder="Enter your Email"
-                                            className="w-full outline-none text-black placeholder:text-gray-700 "
+                                            name="spEmail"
+                                            value={formData.spEmail}
+                                            onChange={handleChange}
+                                            placeholder="Email"
+                                            className="w-full outline-none"
+                                            required
                                         />
                                     </div>
 
-                                    {/* SP password */}
-                                    <div className="flex mt-3 items-center border border-gray-700 p-2 rounded-md relative hover:scale-95 transition-all duration-200">
+                                    {/* SP Password */}
+                                    <div className="flex items-center border border-gray-700 p-2 rounded-md mt-4 hover:scale-95 transition-all duration-200">
                                         <FaLock className="text-gray-500 mr-3" />
                                         <input
                                             type={showPassword ? "text" : "password"}
-                                            id="sp_password"
-                                            name="sp_password"
-                                            value={sp_password}
-                                            onChange={(e) => setSp_password(e.target.value)}
-                                            placeholder="Enter your password"
-                                            className="w-full outline-none text-black placeholder:text-gray-700"
+                                            name="spPassword"
+                                            value={formData.spPassword}
+                                            onChange={handleChange}
+                                            placeholder="Password"
+                                            className="w-full outline-none"
+                                            required
                                         />
-                                        <button
-                                            type="button"
-                                            className="absolute right-3  text-gray-500"
+                                        <div
                                             onClick={() => setShowPassword(!showPassword)}
+                                            className="cursor-pointer"
                                         >
-                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                        </button>
+                                            {showPassword ? (
+                                                <FaEyeSlash className="text-gray-500" />
+                                            ) : (
+                                                <FaEye className="text-gray-500" />
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
-
-                                {/* Navigation Buttons */}
-                                <div className="flex justify-between items-center mt-6">
+                                <div className="mt-6">
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                                        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-all duration-200"
                                     >
-                                        Submit
+                                        Login
                                     </button>
-
                                 </div>
                             </form>
                         </div>

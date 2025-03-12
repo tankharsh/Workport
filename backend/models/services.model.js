@@ -17,13 +17,13 @@ const mongoose = require("mongoose");
 
 const servicesSchema = new mongoose.Schema(
   {
-    services_img: { type: String, required: true }, // Service Image
-    services_name: { type: String, required: true }, // Service Name
-    services_price: { type: Number, required: true }, // Service Price
-    services_description: { type: String, required: true }, // Service Description
-    services_duration: { type: String, required: true }, // Service Duration (e.g., "30 mins", "1 hour")
+    serviceImage: { type: String, required: true }, // Service Image
+    serviceName: { type: String, required: true }, // Service Name
+    servicePrice: { type: Number, required: true }, // Service Price
+    serviceDescription: { type: String, required: true }, // Service Description
+    serviceDuration: { type: String, required: true }, // Service Duration (e.g., "30 mins", "1 hour")
     categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true }, // Linked Category
-    service_provider: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceProvider", required: true }, // Linked Provider
+    serviceProviderId: { type: mongoose.Schema.Types.ObjectId, ref: "ServiceProvider", required: true }, // Linked Provider
   },
   { timestamps: true }
 );

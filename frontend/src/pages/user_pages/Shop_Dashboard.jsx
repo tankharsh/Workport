@@ -3,7 +3,7 @@ import axios from 'axios';
 import { FaEnvelope, FaPhone, FaRupeeSign } from 'react-icons/fa';
 import { IoIosPerson } from "react-icons/io";
 import { FaAddressCard } from "react-icons/fa";
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 // import { useAuth } from '../../context/AuthContext';
 import Navbar from '../../components/user_components/Navbar';
 import Footer from '../../components/user_components/Footer';
@@ -22,17 +22,98 @@ const Shop_Dashboard = () => {
   // const [showPopup, setShowPopup] = useState(false);
   const [shopData, setShopData] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [showInquiryPopup, setShowInquiryPopup] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+  const [inquiryData, setInquiryData] = useState({
+    userAddress: user?.userAddress || '',
+    preferredDate: '',
+    additionalInfo: ''
+  });
   const { providerId } = useParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const idFromQuery = searchParams.get('id');
+  
+  // Use either the ID from params or from query
+  const shopId = providerId || idFromQuery;
 
   useEffect(() => {
-    axios.get(`http://localhost:4000/api/sp/providers/${providerId}`)
+    if (!shopId) {
+      console.error('No shop ID provided');
+      return;
+    }
+    
+    console.log('Fetching shop data for ID:', shopId);
+    
+    axios.get(`http://localhost:4000/api/sp/providers/${shopId}`)
       .then(response => {
-        setShopData(response.data.provider);
+        console.log('API Response:', response.data);
+        if (response.data && response.data.provider) {
+          // Ensure services and categories are arrays even if they're missing or null
+          const providerData = {
+            ...response.data.provider,
+            services: Array.isArray(response.data.provider.services) 
+              ? response.data.provider.services 
+              : [],
+            spCategories: Array.isArray(response.data.provider.spCategories) 
+              ? response.data.provider.spCategories 
+              : (Array.isArray(response.data.provider.category) 
+                ? response.data.provider.category 
+                : [])
+          };
+          
+          console.log('Processed provider data:', providerData);
+          setShopData(providerData);
+        } else {
+          console.error('Invalid API response format:', response.data);
+          // Set default empty data to prevent rendering errors
+          setShopData({
+            spName: 'Not Available',
+            spEmail: 'Not Available',
+            spContact: 'Not Available',
+            spShopName: 'Shop Not Found',
+            spBlockNo: '',
+            spArea: '',
+            spCity: '',
+            spPincode: '',
+            spDescription: 'No description available',
+            spShopImage: '',
+            spShopBannerImage: '',
+            services: [],
+            spCategories: []
+          });
+        }
       })
       .catch(error => {
         console.error('Error fetching data:', error);
+        // Set default empty data on error
+        setShopData({
+          spName: 'Not Available',
+          spEmail: 'Not Available',
+          spContact: 'Not Available',
+          spShopName: 'Error Loading Shop',
+          spBlockNo: '',
+          spArea: '',
+          spCity: '',
+          spPincode: '',
+          spDescription: 'Could not load shop information',
+          spShopImage: '',
+          spShopBannerImage: '',
+          services: [],
+          spCategories: []
+        });
       });
-  }, []);
+  }, [shopId]);
+
+  // Update inquiry data when user changes
+  useEffect(() => {
+    if (user && user.userAddress) {
+      setInquiryData(prev => ({
+        ...prev,
+        userAddress: user.userAddress
+      }));
+    }
+  }, [user]);
 
   const handleWhatsApp = (event) => {
     if (!user) {
@@ -42,17 +123,16 @@ const Shop_Dashboard = () => {
     }
 
     // If user is logged in, navigate to WhatsApp
-    const phoneNumber = shopData.sp_contact.startsWith("+")
-      ? shopData.sp_contact.replace("+", "")
-      : "91" + shopData.sp_contact;
+    const phoneNumber = shopData.spContact.startsWith("+")
+      ? shopData.spContact.replace("+", "")
+      : "91" + shopData.spContact;
 
     const whatsappURL = `https://wa.me/${phoneNumber}?text=Hello%2C%20I%20am%20interested%20in%20your%20services.`;
 
     window.open(whatsappURL, "_blank"); // Open WhatsApp link in new tab
   }
 
-  const handleInquiry = async (service) => {
-
+  const handleInquiryClick = (service) => {
     if (!user || !user.id) {
       setShowPopup(true);
       return;
@@ -63,9 +143,26 @@ const Shop_Dashboard = () => {
       return;
     }
 
-    try {
-      // console.log("Sending inquiry...", { user: user.id, service: service._id, serviceProvider: shopData._id });
+    // Set the selected service and show the inquiry popup
+    setSelectedService(service);
+    setShowInquiryPopup(true);
+  };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setInquiryData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSendInquiry = async () => {
+    if (!inquiryData.userAddress.trim()) {
+      toast.error("Please provide your address!");
+      return;
+    }
+
+    try {
       const response = await fetch("http://localhost:4000/api/inquiries/send", {
         method: "POST",
         headers: {
@@ -73,18 +170,27 @@ const Shop_Dashboard = () => {
         },
         body: JSON.stringify({
           user: user.id,
-          service: service._id,
+          service: selectedService._id,
           serviceProvider: shopData._id,
+          userAddress: inquiryData.userAddress,
+          preferredDate: inquiryData.preferredDate,
+          additionalInfo: inquiryData.additionalInfo
         }),
       });
 
       const data = await response.json();
-      // console.log("Server Response:", data);
 
       if (response.ok) {
-        toast.success(`Inquiry Sent Successfully to ${shopData.sp_name}!`, {
+        toast.success(`Inquiry Sent Successfully to ${shopData.spName}!`, {
           position: "bottom-right",
           autoClose: 1500,
+        });
+        // Close the popup and reset form
+        setShowInquiryPopup(false);
+        setInquiryData({
+          userAddress: user?.userAddress || '',
+          preferredDate: '',
+          additionalInfo: ''
         });
       } else {
         toast.error(`❌ Failed: ${data.message || "Something went wrong"}`, {
@@ -101,133 +207,226 @@ const Shop_Dashboard = () => {
     }
   };
 
+  const handleLoginRedirect = () => {
+    setShowPopup(false);
+    navigate('/login');
+  };
 
   if (!shopData) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   return (
     <>
       <Navbar />
-      <div className='mt-16 '>
-
-        <div className="relative h-48 lg:h-60 w-full ">
-          {/* Background Image */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Shop Banner */}
+        <div className="relative h-64 md:h-96 rounded-lg overflow-hidden mb-8">
           <img
-            src={`http://localhost:4000/${shopData.sp_shop_banner_img.replace(/\\/g, '/')}`}
-            alt="Shop Image"
-            className="absolute top-0 left-0 w-full h-full object-cover"
+            src={shopData.spShopBannerImage ? `http://localhost:4000/uploads/${shopData.spShopBannerImage}` : "https://via.placeholder.com/1200x400?text=Shop+Banner"}
+            alt="Shop Banner"
+            className="w-full h-full object-cover"
           />
-
-          {/* Centered Text */}
-          <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-40">
-            <h2 className="text-white text-xl lg:text-2xl capitalize font-bold text-center">
-              {shopData.sp_shop_name}
-            </h2>
+          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold text-white mb-2">{shopData.spShopName}</h1>
+              <p className="text-xl text-white">{shopData.spDescription}</p>
+            </div>
           </div>
         </div>
 
-
-
-        <div className="w-full flex flex-col lg:flex-row ">
-          <div className="lg:w-1/2 w-full h-auto p-4 lg:p-10">
-            <div className="flex items-center mt-5 gap-2">
-              <IoIosPerson className='bg-[#FFA901] rounded-full text-3xl p-1' />
-              <span className="font-bold text-xl">Owner Name : <span className='text-lg font-medium'>{shopData.sp_name}</span></span>
-            </div>
-            <hr className='h-[2px] mt-3 mb-2 bg-black' />
-            <div className="flex items-center gap-2">
-              <FaPhone className='bg-[#FFA901] rounded-full text-3xl p-1' />
-              <span className="font-bold">Contact No: {shopData.sp_contact}</span>
-            </div>
-            <hr className='h-[2px] mt-3 mb-2 bg-black' />
-            <div className="flex items-center gap-2">
-              <FaEnvelope className='bg-[#FFA901] rounded-full text-3xl p-1' />
-              <span className="font-bold">Email: {shopData.sp_email}</span>
-            </div>
-            <hr className='h-[2px] mt-3 mb-2 bg-black' />
-            <div className="flex items-center gap-2 flex-wrap">
-              <FaAddressCard className='bg-[#FFA901] rounded-full text-3xl p-1' />
-              <span className="font-bold">Address : {shopData.sp_block_no},<br/> {shopData.sp_area}, {shopData.sp_city} - {shopData.sp_pincode}</span>
-            </div>
-            <hr className='h-[2px] mt-3 mb-2 bg-black' />
-          </div>
-
-          {/* Images */}
-          <div className="lg:w-1/2 w-full h-auto flex flex-col lg:flex-row justify-center gap-4 lg:gap-10 p-4 lg:p-10">
-            <div className="h-48 lg:h-64 w-full lg:w-full">
-              <img
-                src={`http://localhost:4000/${shopData.sp_shop_img.replace(/\\/g, '/')}`}
-                alt="Shop Image"
-                className="w-full h-full object-cover rounded-3xl"
-              />
-            </div>
-
-          </div>
-        </div>
-      </div>
-      <div className="h-auto">
-        <div className="h-full pt-5  rounded">
-          <h1 className="uppercase px-4 lg:px-10 text-2xl lg:text-4xl font-bold text-[#FFA901]">Our <span className='text-black'>Services</span></h1>
-          <div className="grid pb-5 px-4 lg:px-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 my-6">
-            {shopData.services.map((service) => (
-              <div key={service._id} className="bg-[#115D33] hover:scale-105 transition-all duration-300  p-3 text-center text-lg rounded-lg">
-
+        {/* Shop Info and Services */}
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Shop Info */}
+          <div className="md:w-1/3">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="flex items-center mb-6">
                 <img
-                  src={`http://localhost:4000/uploads/${service.services_img}`}
-                  onError={(e) => e.target.src = 'https://via.placeholder.com/300'}
-                  alt={service.services_name}
-                  className="w-full h-40 object-cover rounded-lg mb-3"
+                  src={shopData.spShopImage ? `http://localhost:4000/uploads/${shopData.spShopImage}` : "https://via.placeholder.com/150?text=Shop"}
+                  alt="Shop Logo"
+                  className="w-24 h-24 rounded-full object-cover mr-4"
                 />
-
-                <div className='flex justify-between'>
-                  <p className="font-semibold text-left text-stone-100 capitalize text-2xl">{service.services_name}</p>
-                  <p className="text-2xl font-bold flex text-white justify-center items-center gap-1">
-                    <FaRupeeSign /> {service.services_price}
+                <div>
+                  <h2 className="text-2xl font-bold">{shopData.spShopName}</h2>
+                  <p className="text-gray-600">
+                    {shopData.spCategories && shopData.spCategories.length > 0
+                      ? shopData.spCategories.map(cat => cat.name || cat.categoryName).join(', ')
+                      : 'No categories available'}
                   </p>
                 </div>
+              </div>
 
-                <p className="font-medium mt-2 text-sm text-white text-left">
-                  {(service.services_description).substr(0, 300) + "..."}
-                  <span className='text-black cursor-pointer'> read more</span>
-                </p>
-
-                {/* <button className="bg-green-500 text-white px-6 py-2 rounded-lg mt-3">Book Now</button> */}
-
-                {/* Contact Buttons */}
-                <div className="flex flex-nowrap justify-center gap-3 mt-6 ">
-                  {/* <a href="#" className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-blue-800 text-white text-lg rounded-lg hover:bg-blue-700 transition-all shadow-md">
-                    <MdPhone /> <span className="ml-2">1234567890</span>
-                  </a> */}
-
-                  <a href="#" onClick={handleWhatsApp}
-                    rel="noopener noreferrer" className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-green-600 text-white text-lg rounded-lg hover:bg-green-500 transition-all shadow-md">
-                    <FaWhatsapp /> <span className="ml-2">WhatsApp</span>
-                  </a>
-
-                  <button onClick={() => handleInquiry(service)} className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-yellow-500 text-white text-lg rounded-lg hover:bg-yellow-400 transition-all shadow-md">
-                    <IoIosSend /> <span className="ml-2">Send Inquiry</span>
-                  </button>
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <IoIosPerson className="text-blue-600 mr-2 text-xl" />
+                  <span>{shopData.spName || 'N/A'}</span>
+                </div>
+                <div className="flex items-center">
+                  <FaEnvelope className="text-blue-600 mr-2 text-xl" />
+                  <span>{shopData.spEmail || 'N/A'}</span>
+                </div>
+                <div className="flex items-center">
+                  <FaPhone className="text-blue-600 mr-2 text-xl" />
+                  <span>{shopData.spContact || 'N/A'}</span>
+                </div>
+                <div className="flex items-start">
+                  <FaAddressCard className="text-blue-600 mr-2 text-xl mt-1" />
+                  <span>
+                    {shopData.spBlockNo || 'N/A'}, {shopData.spArea || 'N/A'}, {shopData.spCity || 'N/A'} - {shopData.spPincode || 'N/A'}
+                  </span>
                 </div>
               </div>
-            ))}
+
+              <button
+                onClick={handleWhatsApp}
+                className="mt-6 w-full bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg flex items-center justify-center"
+              >
+                <FaWhatsapp className="mr-2 text-xl" /> Chat on WhatsApp
+              </button>
+            </div>
+          </div>
+
+          {/* Services */}
+          <div className="md:w-2/3">
+            <h2 className="text-2xl font-bold mb-6">Our Services</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {shopData && shopData.services && shopData.services.length > 0 ? (
+                shopData.services.map((service) => (
+                  <div key={service._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img
+                      src={service.serviceImage ? `http://localhost:4000/uploads/${service.serviceImage}` : "https://via.placeholder.com/300x200?text=Service"}
+                      alt={service.serviceName || 'Service'}
+                      className="w-full h-48 object-cover"
+                    />
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold mb-2">{service.serviceName || 'Unnamed Service'}</h3>
+                      <p className="text-gray-600 mb-4">{service.serviceDescription || 'No description available'}</p>
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="flex items-center">
+                          <FaRupeeSign className="text-green-600" />
+                          <span className="font-bold text-lg">{service.servicePrice || 'N/A'}</span>
+                        </div>
+                        <div className="text-sm text-gray-500">{service.serviceDuration || 'N/A'}</div>
+                      </div>
+                      <button
+                        onClick={() => handleInquiryClick(service)}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg flex items-center justify-center"
+                      >
+                        <IoIosSend className="mr-2" /> Send Inquiry
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-8">
+                  <p className="text-gray-500">No services available at the moment.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-
+      {/* Login Popup */}
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
-            <h2 className="text-xl text-black font-bold mb-3">Login Required</h2>
-            <p className="text-gray-700 mb-4">You need to login to book a service.</p>
-            <div className="flex justify-center gap-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg" onClick={() => navigate('/user-login')}>Login</button>
-              <button className="bg-gray-500 text-white px-4 py-2 rounded-lg" onClick={() => setShowPopup(false)}>Close</button>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full">
+            <div className="text-center mb-6">
+              <FaCheckCircle className="text-red-500 text-5xl mx-auto mb-4" />
+              <h2 className="text-2xl font-bold">Login Required</h2>
+              <p className="text-gray-600 mt-2">
+                Please login to your account to send inquiries or contact service providers.
+              </p>
+            </div>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={() => setShowPopup(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-6 rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLoginRedirect}
+                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg"
+              >
+                Login Now
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Inquiry Form Popup */}
+      {showInquiryPopup && selectedService && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold">Send Inquiry</h2>
+              <p className="text-gray-600 mt-2">
+                Please provide additional information for your inquiry about <span className="font-semibold">{selectedService.serviceName}</span>
+              </p>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="userAddress" className="block text-sm font-medium text-gray-700 mb-1">Your Address *</label>
+                <textarea
+                  id="userAddress"
+                  name="userAddress"
+                  value={inquiryData.userAddress}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows="3"
+                  placeholder="Enter your complete address"
+                  required
+                ></textarea>
+              </div>
+              
+              <div>
+                <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-700 mb-1">Preferred Date (Optional)</label>
+                <input
+                  type="date"
+                  id="preferredDate"
+                  name="preferredDate"
+                  value={inquiryData.preferredDate}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 mb-1">Additional Information (Optional)</label>
+                <textarea
+                  id="additionalInfo"
+                  name="additionalInfo"
+                  value={inquiryData.additionalInfo}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows="3"
+                  placeholder="Any specific requirements or questions?"
+                ></textarea>
+              </div>
+            </div>
+            
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                onClick={() => setShowInquiryPopup(false)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-6 rounded-lg"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendInquiry}
+                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg flex items-center"
+              >
+                <IoIosSend className="mr-2" /> Send Inquiry
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );

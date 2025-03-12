@@ -29,6 +29,9 @@ import About from './pages/user_pages/About';
 import UserRoutesProtection from './pages/UserRoutesProtection';
 import Contact from './pages/user_pages/Contact';
 import UserServicesView from './pages/user_pages/UserServicesView';
+import VerificationPage from './components/common/VerificationPage';
+import NewUserAuth from './components/user_components/NewUserAuth';
+import NewSPAuth from './components/sp_components/NewSPAuth';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -89,6 +92,7 @@ function App() {
               <Route path='/User-Dashboard' element={<User_Dashboard />} />
               <Route path='//User-Serivices-history' element={<UserServicesView />} />
               <Route path='/Shop-Dashboard/:providerId' element={<Shop_Dashboard />} />
+              <Route path='/shop/:shopName' element={<Shop_Dashboard />} />
               <Route path='/Aboutpage' element={<About />} />
               <Route path='/contactpage' element={<Contact />} />
               <Route path='/cart' element={<Cartpage />} />
@@ -97,6 +101,7 @@ function App() {
             {/* Service Provider routes  */}
             <Route path='/sp-provider' element={<SP_RegistrationForm />} />
             <Route path='/sp-provider-login' element={<SP_LoginForm />} />
+            <Route path='/sp-provider-login-new' element={<NewSPAuth />} />
             <Route element={<SPProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path='/profile' element={<Profile />} />
@@ -105,6 +110,9 @@ function App() {
               <Route path='/addservice' element={<Addservice />} />
               <Route path='/feedback' element={<Feedback />} />
             </Route>
+
+            {/* Email Verification Route */}
+            <Route path='/verify-email' element={<VerificationPage />} />
 
             {/* Admin routes */}
             <Route path='/Admin-Dashboard' element={<AdminDashboard />} />
@@ -115,6 +123,10 @@ function App() {
 
             {/* Universal routes  */}
             <Route path="*" element={<Navigate to="/" />} />
+
+            {/* New User Authentication routes */}
+            <Route path='/user-login-new' element={<NewUserAuth />} />
+            <Route path='/user-register-new' element={<NewUserAuth />} />
           </Routes>
         </Router>
       </HelmetProvider>

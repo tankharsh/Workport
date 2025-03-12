@@ -37,7 +37,7 @@ const Layout = () => {
           {serviceprovider ? (
             <NavLink to="/Dashboard" className="mt-5 text-3xl font-semibold bg-[#FFA901] hover:bg-[#28a491] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">Dashboard</NavLink>
           ) : (
-            <NavLink to="/sp-provider-login" className="mt-5 text-3xl font-semibold bg-[#FFA901] hover:bg-[#28a491] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">List Your Business</NavLink>
+            <NavLink to="/sp-provider-login-new" className="mt-5 text-3xl font-semibold bg-[#FFA901] hover:bg-[#28a491] text-black px-8 py-2 rounded-3xl hover:pointer transition-all duration-300">List Your Business</NavLink>
           )}
 
         </div>

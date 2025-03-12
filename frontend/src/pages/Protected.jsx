@@ -7,9 +7,9 @@ const SPProtectedRoute = () => {
     const spToken = localStorage.getItem('SP_token');
     const location = useLocation();
 
-    // Agar service provider login nahi hai, toh usko login page pe bhejo
+    // If service provider is not logged in, redirect to login page
     if (!serviceprovider || !spToken) {
-        return <Navigate to="/dashboard" replace />;
+        return <Navigate to="/sp-provider-login" state={{ from: location }} replace />;
     }
 
     return <Outlet />;

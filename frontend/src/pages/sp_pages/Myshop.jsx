@@ -27,45 +27,45 @@ const Myshop = () => {
               {/* Owner Name */}
               <div className="flex w-full items-center border border-gray-700 p-2 rounded-md">
                 <FaUser className="mr-2 text-gray-700" />
-                <input type="text" name="owner_name" placeholder="Owner Name" className="w-full outline-none text-black placeholder-gray-700" required />
+                <input type="text" name="spName" placeholder="Owner Name" className="w-full outline-none text-black placeholder-gray-700" required />
               </div>
 
               {/* Shop Name */}
               <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md">
                 <FaStore className="mr-2 text-gray-700" />
-                <input type="text" name="shop_name" placeholder="Shop Name" className="w-full outline-none text-black placeholder-gray-700" required />
+                <input type="text" name="spShopName" placeholder="Shop Name" className="w-full outline-none text-black placeholder-gray-700" required />
               </div>
 
               {/* Shop Contact */}
               <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md">
                 <FaPhone className="mr-2 text-gray-700" />
-                <input type="tel" name="shop_contact" placeholder="Shop Contact" className="w-full outline-none text-black placeholder-gray-700" required />
+                <input type="tel" name="spContact" placeholder="Shop Contact" className="w-full outline-none text-black placeholder-gray-700" required />
               </div>
 
               {/* Category */}
               <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md">
                 <FaList className="mr-2 text-gray-700" />
-                <input type="text" name="category" placeholder="Shop Category" className="w-full outline-none text-black placeholder-gray-700" required />
+                <input type="text" name="spCategories" placeholder="Shop Category" className="w-full outline-none text-black placeholder-gray-700" required />
               </div>
 
               {/* Shop Description */}
               <div className="mt-3">
-                <textarea name="shop_description" placeholder="Shop Description" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700" rows="3" required></textarea>
+                <textarea name="spDescription" placeholder="Shop Description" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700" rows="3" required></textarea>
               </div>
 
               <p className="text-black font-semibold mt-3">Shop Address</p>
 
               {/* Block No */}
-              <input type="text" name="block_no" placeholder="Block No." className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
+              <input type="text" name="spBlockNo" placeholder="Block No." className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
 
               {/* Area */}
-              <input type="text" name="area" placeholder="Area" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
+              <input type="text" name="spArea" placeholder="Area" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
 
               {/* Pincode */}
-              <input type="text" name="pincode" placeholder="Pincode" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
+              <input type="text" name="spPincode" placeholder="Pincode" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
 
               {/* City */}
-              <input type="text" name="city" placeholder="City" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
+              <input type="text" name="spCity" placeholder="City" className="w-full border border-gray-700 p-2 rounded-md text-black placeholder-gray-700 mt-2" required />
 
               {/* Shop Logo Upload */}
               <p className="text-black font-semibold mt-3">Upload Shop Image</p>
@@ -74,6 +74,7 @@ const Myshop = () => {
                 <input
                   type="file"
                   accept="image/*"
+                  name="spShopImage"
                   onChange={(e) => handleImageChange(e, setShopLogo)} className="hidden"
                   required />
                 <span className="text-black">Choose Image</span>
@@ -86,6 +87,7 @@ const Myshop = () => {
                 <input
                   type="file"
                   accept="image/*"
+                  name="spShopBannerImage"
                   onChange={(e) => handleImageChange(e, setShopBanner)} className="hidden"
                   required
                 />
