@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/user_components/Navbar";
 import Footer from "../../components/user_components/Footer";
-import { FaCheckCircle, FaTimesCircle, FaClock } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle, FaClock, FaRupeeSign, FaMapMarkerAlt } from "react-icons/fa";
 
 const UserServicesView = () => {
     const [inquiries, setInquiries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const user = JSON.parse(localStorage.getItem("loggedInUser"));
-    const userId = user?.id; // Safely access the id
-    
+    const userId = user?.id;
+
     useEffect(() => {
         const fetchUserInquiries = async () => {
             try {
@@ -18,12 +18,6 @@ const UserServicesView = () => {
                 const data = await response.json();
                 
                 if (data.success) {
-                    console.log("Inquiries data:", data.inquiries);
-                    // Check if service and serviceImage exist in the response
-                    if (data.inquiries.length > 0) {
-                        console.log("First inquiry service:", data.inquiries[0].service);
-                        console.log("Service image field:", data.inquiries[0].service?.serviceImage);
-                    }
                     setInquiries(data.inquiries);
                 } else {
                     setError(data.message || "Failed to fetch inquiries");
@@ -41,24 +35,21 @@ const UserServicesView = () => {
         }
     }, [userId]);
 
-    // Function to handle missing images
     const handleImageError = (e) => {
         e.target.src = "https://via.placeholder.com/150?text=No+Image";
     };
 
-    // Function to get status icon
     const getStatusIcon = (status) => {
         switch(status) {
             case "Approved":
-                return <FaCheckCircle className="text-green-500 text-xl" />;
+                return <FaCheckCircle className="text-emerald-500 text-xl" />;
             case "Rejected":
                 return <FaTimesCircle className="text-red-500 text-xl" />;
             default:
-                return <FaClock className="text-yellow-500 text-xl" />;
+                return <FaClock className="text-amber-500 text-xl" />;
         }
     };
 
-    // Function to format price
     const formatPrice = (price) => {
         return price ? `₹${price}` : "N/A";
     };
@@ -66,89 +57,112 @@ const UserServicesView = () => {
     return (
         <>
             <Navbar />
-            <div className="bg-gray-100 min-h-screen py-8 mt-16">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                        <div className="bg-[#2D4E35] py-6">
-                            <h2 className="text-2xl md:text-3xl font-bold text-center text-white">
-                                Your Service Inquiries
-                            </h2>
+            <div className="bg-gray-50 min-h-screen py-12 mt-16 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto">
+                    {/* Header Section */}
+                    <div className="text-center mb-12">
+                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                            Your Service Inquiries
+                        </h1>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            Track and manage all your service requests in one place
+                        </p>
+                    </div>
+
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-20">
+                            <div className="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
+                            <p className="mt-4 text-gray-600 text-lg">Loading your inquiries...</p>
                         </div>
-                        
-                        {loading ? (
-                            <div className="flex justify-center items-center py-20">
-                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#2D4E35]"></div>
+                    ) : error ? (
+                        <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
+                            <div className="text-red-500 text-6xl mb-4">
+                                <FaTimesCircle className="mx-auto" />
                             </div>
-                        ) : error ? (
-                            <div className="text-center py-16">
-                                <div className="text-red-500 text-lg mb-2">Error</div>
-                                <p className="text-gray-600">{error}</p>
-                            </div>
-                        ) : inquiries.length === 0 ? (
-                            <div className="text-center py-16">
-                                <div className="text-gray-400 text-5xl mb-4">📋</div>
-                                <h3 className="text-xl font-semibold text-gray-700 mb-2">No Inquiries Found</h3>
-                                <p className="text-gray-500">You haven&apos;t made any service inquiries yet.</p>
-                            </div>
-                        ) : (
-                            <div className="p-4 md:p-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {inquiries.map((inquiry) => (
-                                        <div key={inquiry._id} className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-                                            <div className="relative h-48 bg-gray-200">
-                                                {inquiry.service && inquiry.service.serviceImage ? (
-                                                    <img 
-                                                        src={`http://localhost:4000/uploads/${inquiry.service.serviceImage}`} 
-                                                        alt={inquiry.service.serviceName || "Service"} 
-                                                        className="w-full h-full object-cover"
-                                                        onError={handleImageError}
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                                                        <span className="text-gray-400 text-lg">No Image Available</span>
-                                                    </div>
-                                                )}
-                                                <div className="absolute top-3 right-3">
-                                                    <div className={`flex items-center justify-center rounded-full w-10 h-10 ${
-                                                        inquiry.status === "Approved" ? "bg-green-100" :
-                                                        inquiry.status === "Rejected" ? "bg-red-100" :
-                                                        "bg-yellow-100"
-                                                    }`}>
-                                                        {getStatusIcon(inquiry.status)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="p-4">
-                                                <h3 className="text-xl font-semibold text-gray-800 mb-2 truncate">
-                                                    {inquiry.service?.serviceName || "Unknown Service"}
-                                                </h3>
-                                                <div className="flex justify-between items-center mb-3">
-                                                    <span className="text-gray-600 text-sm">
-                                                        {inquiry.service?.serviceDuration || "Duration N/A"}
-                                                    </span>
-                                                    <span className="font-bold text-[#2D4E35]">
-                                                        {formatPrice(inquiry.service?.servicePrice)}
-                                                    </span>
-                                                </div>
-                                                <div className="pt-3 border-t border-gray-200">
-                                                    <div className="flex justify-between items-center">
-                                                        <span className="text-sm text-gray-500">Status:</span>
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                            inquiry.status === "Approved" ? "bg-green-100 text-green-800" :
-                                                            inquiry.status === "Rejected" ? "bg-red-100 text-red-800" :
-                                                            "bg-yellow-100 text-yellow-800"
-                                                        }`}>
-                                                            {inquiry.status}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                            <h3 className="text-xl font-semibold text-gray-800 mb-2">Error Loading Inquiries</h3>
+                            <p className="text-gray-600">{error}</p>
+                        </div>
+                    ) : inquiries.length === 0 ? (
+                        <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
+                            <div className="text-gray-400 text-6xl mb-4">📋</div>
+                            <h3 className="text-2xl font-semibold text-gray-800 mb-3">No Inquiries Yet</h3>
+                            <p className="text-gray-600 max-w-md mx-auto">
+                                You haven&apos;t made any service inquiries yet. Browse our services and send your first inquiry!
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {inquiries.map((inquiry) => (
+                                <div key={inquiry._id} className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden">
+                                    {/* Service Image */}
+                                    <div className="relative h-48">
+                                        <img 
+                                            src={inquiry.service?.serviceImage ? `http://localhost:4000/uploads/${inquiry.service.serviceImage}` : "https://via.placeholder.com/400?text=Service"}
+                                            alt={inquiry.service?.serviceName || "Service"}
+                                            className="w-full h-full object-cover"
+                                            onError={handleImageError}
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                                        
+                                        {/* Status Badge */}
+                                        <div className="absolute top-4 right-4">
+                                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${
+                                                inquiry.status === "Approved" ? "bg-emerald-100 text-emerald-700" :
+                                                inquiry.status === "Rejected" ? "bg-red-100 text-red-700" :
+                                                "bg-amber-100 text-amber-700"
+                                            }`}>
+                                                {getStatusIcon(inquiry.status)}
+                                                <span className="text-sm font-medium">{inquiry.status}</span>
                                             </div>
                                         </div>
-                                    ))}
+
+                                        {/* Service Info Overlay */}
+                                        <div className="absolute bottom-0 left-0 right-0 p-4">
+                                            <h3 className="text-xl font-bold text-white mb-1">
+                                                {inquiry.service?.serviceName || "Unknown Service"}
+                                            </h3>
+                                            <div className="flex items-center text-emerald-100 text-sm">
+                                                <FaMapMarkerAlt className="mr-1" />
+                                                <span className="truncate">{inquiry.userAddress || "Address not provided"}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Details Section */}
+                                    <div className="p-4">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center">
+                                                <FaRupeeSign className="text-emerald-600" />
+                                                <span className="text-xl font-bold text-gray-900 ml-1">
+                                                    {formatPrice(inquiry.service?.servicePrice)}
+                                                </span>
+                                            </div>
+                                            <span className="text-sm text-gray-600">
+                                                {inquiry.service?.serviceDuration || "Duration N/A"}
+                                            </span>
+                                        </div>
+
+                                        {/* Additional Info */}
+                                        {inquiry.additionalInfo && (
+                                            <div className="mt-3 p-3 bg-gray-50 rounded-xl">
+                                                <p className="text-sm text-gray-600 line-clamp-2">
+                                                    {inquiry.additionalInfo}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* Preferred Date */}
+                                        {inquiry.preferredDate && (
+                                            <div className="mt-4 flex items-center text-sm text-gray-600">
+                                                <FaClock className="mr-2" />
+                                                <span>Preferred Date: {new Date(inquiry.preferredDate).toLocaleDateString()}</span>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
             <Footer />

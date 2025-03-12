@@ -6,6 +6,7 @@ import { BiSolidCity } from "react-icons/bi";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { TbMapPinCode } from "react-icons/tb";
 import { PiMapPinAreaFill } from "react-icons/pi";
+import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
 import Swal from "sweetalert2";
 
@@ -219,220 +220,327 @@ const Profile = () => {
     }
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.5,
+        when: "beforeChildren",
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const formItemVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 12
+      }
+    }
+  };
+
   return (
     <>
       <Sidebar />
-      <main className="flex-1 lg:ml-64 p-5">
-        <h1 className="text-2xl font-bold mb-6">Profile</h1>
-        
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <p className="text-gray-400 mb-2 flex items-center gap-2">
-                <FaStar />Personal Information<FaStar />
-              </p>
-              
-              {/* SP Name */}
-              <div className="flex w-full items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                <FaUser className="mr-2 text-gray-500" />
-                <input
-                  type="text"
-                  name="spName"
-                  placeholder="Enter your name"
-                  value={formData.spName || ""}
-                  onChange={handleChange}
-                  className="w-full outline-none text-black placeholder:text-gray-700"
-                />
-              </div>
-              
-              {/* SP Contact */}
-              <div className="flex w-full items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                <FaPhone className="mr-2 text-gray-500" />
-                <input
-                  type="tel"
-                  name="spContact"
-                  placeholder="Enter your contact number"
-                  value={formData.spContact || ""}
-                  onChange={handleChange}
-                  className="w-full outline-none text-black placeholder:text-gray-700"
-                />
-              </div>
+      <motion.main 
+        className="flex-1 lg:ml-64 min-h-screen bg-gray-50"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        {/* Header Section - Removed sticky positioning */}
+        <div className="bg-white shadow-sm border-b mt-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 className="text-2xl font-bold text-gray-900">Profile Settings</h1>
+            <p className="text-sm text-gray-500 mt-1">Manage your personal and shop information</p>
+          </div>
+        </div>
 
-              {/* SP Email */}
-              <div className="flex w-full mt-3 items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                <FaEnvelope className="mr-2 text-gray-500" />
-                <input
-                  type="email"
-                  name="spEmail"
-                  placeholder="Enter your email"
-                  value={formData.spEmail || ""}
-                  onChange={handleChange}
-                  className="w-full outline-none text-black placeholder:text-gray-700"
-                />
-              </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <motion.form 
+            onSubmit={handleSubmit} 
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+            variants={containerVariants}
+          >
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Personal Information Section */}
+                <motion.div 
+                  className="space-y-6"
+                  variants={formItemVariants}
+                >
+                  <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
+                    <FaStar className="text-emerald-500" />
+                    <h2 className="text-lg font-semibold text-gray-900">Personal Information</h2>
+                  </div>
+                  
+                  {/* Personal Info Fields */}
+                  <motion.div 
+                    className="space-y-4"
+                    variants={formItemVariants}
+                  >
+                    <div className="group">
+                      <div className="flex w-full items-center border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <FaUser className="mr-3 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                        <input
+                          type="text"
+                          name="spName"
+                          placeholder="Enter your name"
+                          value={formData.spName || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
+                        />
+                      </div>
+                    </div>
 
-              <p className="text-gray-400 mt-3 mb-2 flex items-center gap-2">
-                <FaStar />Shop Information<FaStar />
-              </p>
+                    <div className="group">
+                      <div className="flex w-full items-center border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <FaPhone className="mr-3 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                        <input
+                          type="tel"
+                          name="spContact"
+                          placeholder="Enter your contact number"
+                          value={formData.spContact || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
+                        />
+                      </div>
+                    </div>
 
-              {/* Shop Name */}
-              <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                <GiShop className="mr-2 text-gray-500" />
-                <input
-                  type="text"
-                  name="spShopName"
-                  placeholder="Enter shop name"
-                  value={formData.spShopName || ""}
-                  onChange={handleChange}
-                  className="w-full outline-none text-black placeholder:text-gray-700"
-                />
-              </div>
+                    <div className="group">
+                      <div className="flex w-full items-center border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <FaEnvelope className="mr-3 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                        <input
+                          type="email"
+                          name="spEmail"
+                          placeholder="Enter your email"
+                          value={formData.spEmail || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
 
-              {/* Categories */}
-              <div className="flex flex-col mt-3 border border-gray-700 p-2 rounded-md">
-                <p className="text-gray-500 mb-2">Select Service Category:</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {categories.map((category) => (
-                    <label key={category._id} className="flex items-center space-x-2">
-                      <input
-                        type="checkbox"
-                        name="spCategories"
-                        value={category._id}
-                        checked={formData.spCategories?.some(
-                          (cat) => cat.categoryId === category._id || cat._id === category._id
+                  {/* Shop Information */}
+                  <div className="flex items-center gap-2 pb-2 border-b border-gray-200 mt-8">
+                    <FaStar className="text-emerald-500" />
+                    <h2 className="text-lg font-semibold text-gray-900">Shop Information</h2>
+                  </div>
+
+                  <motion.div 
+                    className="space-y-4"
+                    variants={formItemVariants}
+                  >
+                    <div className="group">
+                      <div className="flex w-full items-center border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <GiShop className="mr-3 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                        <input
+                          type="text"
+                          name="spShopName"
+                          placeholder="Enter shop name"
+                          value={formData.spShopName || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Categories */}
+                    <div className="border border-gray-300 p-4 rounded-lg">
+                      <p className="text-gray-700 font-medium mb-3">Service Categories</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {categories.map((category) => (
+                          <label 
+                            key={category._id} 
+                            className="flex items-center space-x-2 p-2 border border-gray-200 rounded-lg hover:border-emerald-500 transition-colors cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              name="spCategories"
+                              value={category._id}
+                              checked={formData.spCategories?.some(
+                                (cat) => cat.categoryId === category._id || cat._id === category._id
+                              )}
+                              onChange={handleChange}
+                              className="accent-emerald-500"
+                            />
+                            <span className="text-gray-700 capitalize text-sm">
+                              {category.categoryName}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Shop Description */}
+                    <div className="group">
+                      <div className="border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <textarea
+                          name="spDescription"
+                          placeholder="Enter shop description"
+                          value={formData.spDescription || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400 resize-none min-h-[100px]"
+                          rows="4"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Shop Address */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <motion.div className="group" variants={formItemVariants}>
+                      <div className="flex w-full items-center border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <FaMapLocationDot className="mr-3 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                        <input
+                          type="text"
+                          name="spBlockNo"
+                          placeholder="Block No."
+                          value={formData.spBlockNo || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
+                        />
+                      </div>
+                    </motion.div>
+
+                    <motion.div className="group" variants={formItemVariants}>
+                      <div className="flex w-full items-center border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <PiMapPinAreaFill className="mr-3 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                        <input
+                          type="text"
+                          name="spArea"
+                          placeholder="Area"
+                          value={formData.spArea || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
+                        />
+                      </div>
+                    </motion.div>
+
+                    <motion.div className="group" variants={formItemVariants}>
+                      <div className="flex w-full items-center border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <TbMapPinCode className="mr-3 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                        <input
+                          type="text"
+                          name="spPincode"
+                          placeholder="Pincode"
+                          value={formData.spPincode || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
+                        />
+                      </div>
+                    </motion.div>
+
+                    <motion.div className="group" variants={formItemVariants}>
+                      <div className="flex w-full items-center border border-gray-300 p-3 rounded-lg transition-all duration-200 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:border-emerald-500 hover:border-emerald-500">
+                        <BiSolidCity className="mr-3 text-gray-400 group-hover:text-emerald-500 transition-colors" />
+                        <input
+                          type="text"
+                          name="spCity"
+                          placeholder="City"
+                          value={formData.spCity || ""}
+                          onChange={handleChange}
+                          className="w-full outline-none text-gray-700 placeholder:text-gray-400"
+                        />
+                      </div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                {/* Shop Images Section */}
+                <motion.div 
+                  className="space-y-6"
+                  variants={formItemVariants}
+                >
+                  <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
+                    <FaStar className="text-emerald-500" />
+                    <h2 className="text-lg font-semibold text-gray-900">Shop Images</h2>
+                  </div>
+
+                  {/* Shop Image */}
+                  <div className="space-y-4">
+                    <div className="group">
+                      <label className="block text-gray-700 font-medium mb-2">Shop Image</label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 transition-all duration-200 hover:border-emerald-500">
+                        <input
+                          type="file"
+                          name="spShopImage"
+                          onChange={handleFileChange}
+                          className="w-full text-gray-700"
+                        />
+                        {shopImagePreview && (
+                          <motion.div 
+                            className="mt-4"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <img
+                              src={shopImagePreview}
+                              alt="Shop Preview"
+                              className="w-full h-48 object-cover rounded-lg shadow-md"
+                            />
+                          </motion.div>
                         )}
-                        onChange={handleChange}
-                        className="accent-purple-600"
-                      />
-                      <span className="text-gray-700 capitalize">
-                        {category.categoryName}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+                      </div>
+                    </div>
 
-              {/* Shop Description */}
-              <div className="flex flex-col mt-3 border border-gray-700 p-2 rounded-md">
-                <textarea
-                  name="spDescription"
-                  placeholder="Enter shop description"
-                  value={formData.spDescription || ""}
-                  onChange={handleChange}
-                  className="w-full outline-none text-black placeholder:text-gray-700 resize-none"
-                  rows="3"
-                />
-              </div>
-
-              {/* Shop Address Fields */}
-              <div className="grid grid-cols-2 gap-4 mt-3">
-                <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                  <FaMapLocationDot className="mr-2 text-gray-500" />
-                  <input
-                    type="text"
-                    name="spBlockNo"
-                    placeholder="Enter block no"
-                    value={formData.spBlockNo || ""}
-                    onChange={handleChange}
-                    className="w-full outline-none text-black placeholder:text-gray-700"
-                  />
-                </div>
-
-                <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                  <PiMapPinAreaFill className="mr-2 text-gray-500" />
-                  <input
-                    type="text"
-                    name="spArea"
-                    placeholder="Enter area"
-                    value={formData.spArea || ""}
-                    onChange={handleChange}
-                    className="w-full outline-none text-black placeholder:text-gray-700"
-                  />
-                </div>
-
-                <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                  <TbMapPinCode className="mr-2 text-gray-500" />
-                  <input
-                    type="text"
-                    name="spPincode"
-                    placeholder="Enter pincode"
-                    value={formData.spPincode || ""}
-                    onChange={handleChange}
-                    className="w-full outline-none text-black placeholder:text-gray-700"
-                  />
-                </div>
-
-                <div className="flex items-center border border-gray-700 p-2 rounded-md hover:scale-95 transition-all duration-200">
-                  <BiSolidCity className="mr-2 text-gray-500" />
-                  <input
-                    type="text"
-                    name="spCity"
-                    placeholder="Enter city"
-                    value={formData.spCity || ""}
-                    onChange={handleChange}
-                    className="w-full outline-none text-black placeholder:text-gray-700"
-                  />
-                </div>
+                    {/* Shop Banner Image */}
+                    <div className="group">
+                      <label className="block text-gray-700 font-medium mb-2">Shop Banner Image</label>
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 transition-all duration-200 hover:border-emerald-500">
+                        <input
+                          type="file"
+                          name="spShopBannerImage"
+                          onChange={handleFileChange}
+                          className="w-full text-gray-700"
+                        />
+                        {shopBannerPreview && (
+                          <motion.div 
+                            className="mt-4"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <img
+                              src={shopBannerPreview}
+                              alt="Banner Preview"
+                              className="w-full h-48 object-cover rounded-lg shadow-md"
+                            />
+                          </motion.div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <p className="text-gray-400 mb-2 flex items-center gap-2">
-                <FaStar />Shop Images<FaStar />
-              </p>
-
-              {/* Shop Image */}
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Shop Image</label>
-                <input
-                  type="file"
-                  name="spShopImage"
-                  onChange={handleFileChange}
-                  className="w-full text-gray-700"
-                />
-                {shopImagePreview && (
-                  <div className="mt-2">
-                    <img
-                      src={shopImagePreview}
-                      alt="Shop Preview"
-                      className="w-full h-48 object-cover rounded-md"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Shop Banner Image */}
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Shop Banner Image</label>
-                <input
-                  type="file"
-                  name="spShopBannerImage"
-                  onChange={handleFileChange}
-                  className="w-full text-gray-700"
-                />
-                {shopBannerPreview && (
-                  <div className="mt-2">
-                    <img
-                      src={shopBannerPreview}
-                      alt="Banner Preview"
-                      className="w-full h-48 object-cover rounded-md"
-                    />
-                  </div>
-                )}
-              </div>
+            {/* Form Footer */}
+            <div className="bg-gray-50 px-6 py-4 border-t">
+              <motion.button
+                type="submit"
+                className="w-full bg-emerald-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-emerald-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+              >
+                <FaStar className="text-sm" />
+                Update Profile
+                <FaStar className="text-sm" />
+              </motion.button>
             </div>
-          </div>
-
-          <div className="mt-6">
-            <button
-              type="submit"
-              className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition-colors"
-            >
-              Update Profile
-            </button>
-          </div>
-        </form>
-      </main>
+          </motion.form>
+        </div>
+      </motion.main>
     </>
   );
 };

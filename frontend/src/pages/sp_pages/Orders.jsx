@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../../components/sp_components/Sidebar';
-import { MdDataSaverOn, MdDeleteForever, MdCalendarMonth } from "react-icons/md";
+import { MdDataSaverOn, MdDeleteForever, MdCalendarMonth, MdPending, MdCheckCircle, MdCancel, MdSearch } from "react-icons/md";
+import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
 
 const Orders = () => {
@@ -348,241 +349,374 @@ const Orders = () => {
     return acc;
   }, {});
 
+  // Enhanced Animation Variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        duration: 0.5,
+        when: "beforeChildren",
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const tableRowVariants = {
+    hidden: { 
+      opacity: 0,
+      x: -20,
+      scale: 0.95
+    },
+    visible: { 
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 12
+      }
+    },
+    exit: {
+      opacity: 0,
+      x: 20,
+      scale: 0.95,
+      transition: {
+        duration: 0.2
+      }
+    }
+  };
+
+  const statusButtonVariants = {
+    tap: { scale: 0.95 },
+    hover: { scale: 1.05 }
+  };
+
   return (
     <>
       <Sidebar />
-      <main className="flex-1 lg:ml-64 mt-20">
-        <div className='text-3xl text-center font-bold'>Inquiry List</div>
-        
-        <div className="flex justify-center items-center space-x-4 my-6">
-          <div className="flex space-x-4">
-            {["Pending", "Approved", "Rejected"].map((item) => (
-              <button 
-                key={item} 
-                onClick={() => setStatus(item)} 
-                className={`px-4 py-2 rounded ${status === item ? 'bg-blue-600 text-white' : 'bg-gray-300 text-black'}`}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          
-          <button 
-            onClick={openCalendarModal}
-            className="ml-4 bg-green-600 text-white px-4 py-2 rounded flex items-center"
-            title="View Booking Calendar"
-          >
-            <MdCalendarMonth className="mr-2" /> View Calendar
-          </button>
-        </div>
-        
-        <div className="overflow-x-auto mt-3">
-          {isLoading ? (
-            <div className="text-center p-4">Loading inquiries...</div>
-          ) : error ? (
-            <div className="text-center p-4 text-red-500">
-              Error: {error}
-              <button 
-                onClick={() => window.location.reload()} 
-                className="ml-4 bg-blue-500 text-white px-4 py-1 rounded"
-              >
-                Retry
-              </button>
+      <motion.main 
+        className="flex-1 lg:ml-64 min-h-screen bg-gray-50 pt-16"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
+        {/* Modern Header Section */}
+        <div className="bg-white shadow-sm border-b sticky top-16 z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Inquiry Management</h1>
+                <p className="text-sm text-gray-500 mt-1">Manage and track all your service inquiries</p>
+              </div>
+              
+              {/* Search Bar */}
+              <div className="relative w-full sm:w-64">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MdSearch className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                  placeholder="Search inquiries..."
+                />
+              </div>
             </div>
-          ) : (
-            <table className="min-w-full border border-gray-200">
-              <thead>
-                <tr className="bg-[#354f52] text-white">
-                  <th className="px-4 py-2 text-left font-bold">No.</th>
-                  <th className="px-4 py-2 text-left font-bold">User Name</th>
-                  <th className="px-4 py-2 text-left font-bold">Service</th>
-                  <th className="px-4 py-2 text-left font-bold">Address</th>
-                  <th className="px-4 py-2 text-left font-bold">Status</th>
-                  <th className="px-4 py-2 text-left font-bold">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {inquiries && inquiries.length > 0 ? (
-                  inquiries
-                    .filter(inquiry => 
-                      inquiry && (inquiry.status === status || (status === "Pending" && !inquiry.status))
-                    )
-                    .map((inquiry, index) => {
-                      // Extract user and service information
-                      const userName = (() => {
-                        // Based on your database model, userName is the primary field
-                        if (inquiry.user?.userName) return inquiry.user.userName;
-                        
-                        // Fallback options
-                        if (inquiry.userName) return inquiry.userName;
-                        if (inquiry.user?.name) return inquiry.user.name;
-                        
-                        // If we have user ID but couldn't get the name
-                        if (typeof inquiry.user === 'string') {
-                          return "User ID: " + inquiry.user;
-                        }
-                        
-                        if (inquiry.user?._id) {
-                          return "User ID: " + inquiry.user._id;
-                        }
-                        
-                        return "Unknown User";
-                      })();
-                      
-                      const serviceName = (() => {
-                        // Based on your database model, serviceName is the primary field
-                        if (inquiry.service?.serviceName) return inquiry.service.serviceName;
-                        
-                        // Fallback options
-                        if (inquiry.serviceName) return inquiry.serviceName;
-                        if (inquiry.service?.name) return inquiry.service.name;
-                        
-                        // If we have service ID but couldn't get the name
-                        if (typeof inquiry.service === 'string') {
-                          return "Service ID: " + inquiry.service;
-                        }
-                        
-                        if (inquiry.service?._id) {
-                          return "Service ID: " + inquiry.service._id;
-                        }
-                        
-                        return "Unknown Service";
-                      })();
-
-                      // Get user address from inquiry or user object
-                      const userAddress = inquiry.userAddress || 
-                                         inquiry.user?.userAddress || 
-                                         "No address provided";
-                      
-                      return (
-                        <tr key={inquiry._id || index} className="transition-all duration-300 ease-in-out transform hover:bg-gray-500">
-                          <td className="px-4 py-2 border-t border-gray-200">{index + 1}</td>
-                          <td className="px-4 py-2 border-t border-gray-200">{userName}</td>
-                          <td className="px-4 py-2 border-t border-gray-200">{serviceName}</td>
-                          <td className="px-4 py-2 border-t border-gray-200">
-                            {userAddress.length > 20 ? `${userAddress.substring(0, 20)}...` : userAddress}
-                          </td>
-                          <td className="px-4 py-2 border-t border-gray-200">{inquiry.status || "Pending"}</td>
-                          <td className="px-4 py-2 border-t border-gray-200">
-                            <button 
-                              onClick={() => handleAcceptClick(inquiry)} 
-                              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-                              title="Accept/Update Inquiry"
-                            >
-                              <MdDataSaverOn />
-                            </button>
-                            <button 
-                              className="bg-red-500 text-white px-4 py-2 rounded" 
-                              onClick={() => handleDeleteInquiry(inquiry._id)}
-                              title="Delete Inquiry"
-                            >
-                              <MdDeleteForever />
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                ) : (
-                  <tr>
-                    <td colSpan="6" className="px-4 py-2 text-center border-t border-gray-200">
-                      {isLoading ? (
-                        "Loading inquiries..."
-                      ) : error ? (
-                        <div className="text-red-500">
-                          Error: {error}
-                          <button 
-                            onClick={() => window.location.reload()} 
-                            className="ml-4 bg-blue-500 text-white px-4 py-1 rounded"
-                          >
-                            Retry
-                          </button>
-                        </div>
-                      ) : (
-                        `No inquiries found for status: ${status}`
-                      )}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          )}
+          </div>
         </div>
-      </main>
+
+        {/* Status Filters with Enhanced Animations */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-wrap gap-4 justify-center sm:justify-between items-center">
+            <div className="flex flex-wrap gap-3">
+              {[
+                { status: "Pending", icon: MdPending, color: "bg-yellow-500" },
+                { status: "Approved", icon: MdCheckCircle, color: "bg-green-500" },
+                { status: "Rejected", icon: MdCancel, color: "bg-red-500" }
+              ].map((item) => (
+                <motion.button 
+                  key={item.status}
+                  onClick={() => setStatus(item.status)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                    status === item.status 
+                      ? `${item.color} text-white shadow-lg` 
+                      : 'bg-white text-gray-600 hover:bg-gray-50'
+                  }`}
+                  whileHover="hover"
+                  whileTap="tap"
+                  variants={statusButtonVariants}
+                  layout
+                >
+                  <item.icon className={status === item.status ? "text-white" : "text-gray-500"} />
+                  <span>{item.status}</span>
+                  <motion.span 
+                    className="ml-2 bg-white bg-opacity-20 px-2 py-0.5 rounded-full text-sm"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                  >
+                    {inquiries.filter(i => i.status === item.status).length}
+                  </motion.span>
+                </motion.button>
+              ))}
+            </div>
+            
+            <motion.button 
+              onClick={openCalendarModal}
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-200 shadow-sm hover:shadow"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <MdCalendarMonth className="text-xl" />
+              <span>View Calendar</span>
+            </motion.button>
+          </div>
+        </div>
+
+        {/* Table Section with Enhanced Animations */}
+        <motion.div 
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8"
+          layout
+        >
+          <motion.div 
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+            layout
+          >
+            <div className="overflow-x-auto">
+              {isLoading ? (
+                <motion.div 
+                  className="flex items-center justify-center h-64"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
+                </motion.div>
+              ) : error ? (
+                <motion.div 
+                  className="flex flex-col items-center justify-center h-64 text-red-500"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                >
+                  <p className="text-lg mb-4">{error}</p>
+                  <button 
+                    onClick={() => window.location.reload()}
+                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-200"
+                  >
+                    Retry
+                  </button>
+                </motion.div>
+              ) : (
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User Name</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Address</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    <AnimatePresence mode="popLayout">
+                      {inquiries
+                        .filter(inquiry => inquiry && (inquiry.status === status || (status === "Pending" && !inquiry.status)))
+                        .map((inquiry, index) => (
+                          <motion.tr
+                            key={inquiry._id || index}
+                            variants={tableRowVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            layout
+                            className="hover:bg-gray-50 transition-colors duration-200"
+                          >
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm font-medium text-gray-900">
+                                {inquiry.user?.userName || "Unknown User"}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                {inquiry.user?.userEmail || "No email"}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {inquiry.service?.serviceName || "Unknown Service"}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                              {(inquiry.userAddress || inquiry.user?.userAddress || "No address").substring(0, 30)}...
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                inquiry.status === "Approved" ? "bg-green-100 text-green-800" :
+                                inquiry.status === "Rejected" ? "bg-red-100 text-red-800" :
+                                "bg-yellow-100 text-yellow-800"
+                              }`}>
+                                {inquiry.status || "Pending"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                              <div className="flex space-x-2">
+                                <motion.button
+                                  onClick={() => handleAcceptClick(inquiry)}
+                                  className="text-emerald-600 hover:text-emerald-900 transition-colors duration-200"
+                                  title="Manage Inquiry"
+                                  whileHover={{ scale: 1.2 }}
+                                  whileTap={{ scale: 0.9 }}
+                                >
+                                  <MdDataSaverOn className="w-5 h-5" />
+                                </motion.button>
+                                <motion.button
+                                  onClick={() => handleDeleteInquiry(inquiry._id)}
+                                  className="text-red-600 hover:text-red-900 transition-colors duration-200"
+                                  title="Delete Inquiry"
+                                  whileHover={{ scale: 1.2 }}
+                                  whileTap={{ scale: 0.9 }}
+                                >
+                                  <MdDeleteForever className="w-5 h-5" />
+                                </motion.button>
+                              </div>
+                            </td>
+                          </motion.tr>
+                        ))}
+                    </AnimatePresence>
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      </motion.main>
 
       {/* Inquiry Details Modal */}
       {isModalOpen && selectedUser && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 z-10">
-            <h2 className="text-lg font-bold mb-4 text-center bg-green-600 text-white py-2 rounded">Inquiry Details</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-lg mb-2 border-b pb-2">User Information</h3>
-                <p className='text-black'><strong>Name:</strong> {selectedUser.user?.userName || selectedUser.userName || "N/A"}</p>
-                <p className='text-black'><strong>Email:</strong> {selectedUser.user?.userEmail || selectedUser.userEmail || "N/A"}</p>
-                <p className='text-black'><strong>Contact:</strong> {selectedUser.user?.userContact || selectedUser.userContact || "N/A"}</p>
-                
-                {/* User Address from inquiry */}
-                <p className='text-black'><strong>Address:</strong> {selectedUser.userAddress || selectedUser.user?.userAddress || "N/A"}</p>
-              </div>
-              
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="font-bold text-lg mb-2 border-b pb-2">Inquiry Information</h3>
-                {/* Show Preferred Date if available */}
-                <p className='text-black'>
-                  <strong>Preferred Date:</strong> {selectedUser.preferredDate || "Not specified"}
-                </p>
-                
-                {/* Show Additional Information if available */}
-                <p className='text-black'>
-                  <strong>Additional Info:</strong> {selectedUser.additionalInfo || "None provided"}
-                </p>
-                
-                <p className='text-black'>
-                  <strong>Current Status:</strong> <span className={`font-bold ${
-                    selectedUser.status === "Approved" ? "text-green-600" : 
-                    selectedUser.status === "Rejected" ? "text-red-600" : "text-yellow-600"
-                  }`}>{selectedUser.status || "Pending"}</span>
-                </p>
-                
-                <p className='text-black'>
-                  <strong>Submitted:</strong> {new Date(selectedUser.createdAt).toLocaleString() || "N/A"}
-                </p>
-              </div>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg mb-4">
-              <h3 className="font-bold text-lg mb-2 border-b pb-2">Update Inquiry</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Date</label>
-                  <input type="date" className="mt-1 block text-black w-full px-3 py-2 border border-gray-300 rounded-md" value={date} onChange={(e) => setDate(e.target.value)} />
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl my-8">
+            {/* Modal Header - Sticky */}
+            <div className="sticky top-0 bg-white z-20 rounded-t-xl">
+              <div className="bg-emerald-600 text-white p-4 rounded-t-xl">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-bold">Inquiry Details</h2>
+                  <button 
+                    onClick={handleCloseModal}
+                    className="text-white hover:text-gray-200 transition-colors"
+                  >
+                    ✕
+                  </button>
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Time</label>
-                  <input type="time" className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md" value={time} onChange={(e) => setTime(e.target.value)} />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700">Message</label>
-                <textarea rows={3} className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md" value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Enter a message for the user" />
-              </div>
-
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700">Status</label>
-                <select className="mt-1 block w-full text-black px-3 py-2 border border-gray-300 rounded-md" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
-                  <option value="Pending">Pending</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Rejected">Rejected</option>
-                </select>
               </div>
             </div>
 
-            <div className="flex justify-end space-x-4">
-              <button className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded" onClick={handleCloseModal}>Cancel</button>
-              <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded" onClick={handleConfirmOrder}>Update Inquiry</button>
+            {/* Modal Content - Scrollable */}
+            <div className="p-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* User Information Card */}
+                <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+                  <h3 className="font-bold text-lg mb-4 text-gray-800 border-b pb-2">User Information</h3>
+                  <div className="space-y-3">
+                    <p className="text-gray-800"><span className="font-medium">Name:</span> {selectedUser.user?.userName || "N/A"}</p>
+                    <p className="text-gray-800"><span className="font-medium">Email:</span> {selectedUser.user?.userEmail || "N/A"}</p>
+                    <p className="text-gray-800"><span className="font-medium">Contact:</span> {selectedUser.user?.userContact || "N/A"}</p>
+                    <p className="text-gray-800"><span className="font-medium">Address:</span> {selectedUser.userAddress || selectedUser.user?.userAddress || "N/A"}</p>
+                  </div>
+                </div>
+
+                {/* Inquiry Information Card */}
+                <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
+                  <h3 className="font-bold text-lg mb-4 text-gray-800 border-b pb-2">Inquiry Information</h3>
+                  <div className="space-y-3">
+                    <p className="text-gray-800">
+                      <span className="font-medium">Preferred Date:</span> {selectedUser.preferredDate || "Not specified"}
+                    </p>
+                    <p className="text-gray-800">
+                      <span className="font-medium">Additional Info:</span> {selectedUser.additionalInfo || "None provided"}
+                    </p>
+                    <p className="text-gray-800">
+                      <span className="font-medium">Current Status:</span> 
+                      <span className={`ml-2 px-2 py-1 rounded-full text-sm font-medium ${
+                        selectedUser.status === "Approved" ? "bg-green-100 text-green-800" : 
+                        selectedUser.status === "Rejected" ? "bg-red-100 text-red-800" : 
+                        "bg-yellow-100 text-yellow-800"
+                      }`}>
+                        {selectedUser.status || "Pending"}
+                      </span>
+                    </p>
+                    <p className="text-gray-800">
+                      <span className="font-medium">Submitted:</span> {new Date(selectedUser.createdAt).toLocaleString() || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Update Section */}
+              <div className="mt-6 bg-gray-50 p-6 rounded-xl shadow-sm">
+                <h3 className="font-bold text-lg mb-4 text-gray-800 border-b pb-2">Update Inquiry</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input 
+                      type="date" 
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
+                      value={date} 
+                      onChange={(e) => setDate(e.target.value)} 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                    <input 
+                      type="time" 
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
+                      value={time} 
+                      onChange={(e) => setTime(e.target.value)} 
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                  <textarea 
+                    rows={3} 
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
+                    value={message} 
+                    onChange={(e) => setMessage(e.target.value)} 
+                    placeholder="Enter a message for the user"
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <select 
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
+                    value={selectedStatus} 
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer - Sticky */}
+            <div className="sticky bottom-0 bg-white p-6 border-t rounded-b-xl">
+              <div className="flex justify-end gap-4">
+                <button 
+                  className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200" 
+                  onClick={handleCloseModal}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200" 
+                  onClick={handleConfirmOrder}
+                >
+                  Update Inquiry
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -590,82 +724,89 @@ const Orders = () => {
       
       {/* Calendar Modal */}
       {isCalendarModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-800 bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl p-6 z-10 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Booking Calendar</h2>
-              <button 
-                onClick={closeCalendarModal}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg mb-4">
-              <p className="text-sm text-gray-600 mb-2">
-                This calendar shows all your approved bookings. Use this to avoid scheduling conflicts.
-              </p>
-              
-              {Object.keys(groupedBookings).length > 0 ? (
-                <div className="space-y-4">
-                  {Object.entries(groupedBookings)
-                    .sort(([dateA], [dateB]) => new Date(dateA) - new Date(dateB))
-                    .map(([date, slots]) => (
-                    <div key={date} className="border rounded-lg overflow-hidden">
-                      <div className="bg-blue-600 text-white px-4 py-2 font-bold">
-                        {new Date(date).toLocaleDateString('en-US', { 
-                          weekday: 'long', 
-                          year: 'numeric', 
-                          month: 'long', 
-                          day: 'numeric' 
-                        })}
-                      </div>
-                      <div className="p-4">
-                        <table className="w-full">
-                          <thead>
-                            <tr className="border-b">
-                              <th className="text-left py-2">Time</th>
-                              <th className="text-left py-2">Client</th>
-                              <th className="text-left py-2">Service</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {slots
-                              .sort((a, b) => a.time.localeCompare(b.time))
-                              .map((slot, idx) => (
-                              <tr key={idx} className="border-b last:border-b-0">
-                                <td className="py-2 font-medium">
-                                  {slot.time}
-                                </td>
-                                <td className="py-2">
-                                  {slot.userName}
-                                </td>
-                                <td className="py-2">
-                                  {slot.serviceName}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  ))}
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl my-8">
+            {/* Calendar Modal Header - Sticky */}
+            <div className="sticky top-0 bg-white z-20 rounded-t-xl">
+              <div className="bg-emerald-600 text-white p-4 rounded-t-xl">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-bold">Booking Calendar</h2>
+                  <button 
+                    onClick={closeCalendarModal}
+                    className="text-white hover:text-gray-200 transition-colors"
+                  >
+                    ✕
+                  </button>
                 </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No approved bookings found. When you approve inquiries with date and time, they will appear here.
-                </div>
-              )}
+              </div>
             </div>
-            
-            <div className="flex justify-end">
-              <button 
-                onClick={closeCalendarModal}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-              >
-                Close
-              </button>
+
+            {/* Calendar Modal Content - Scrollable */}
+            <div className="p-6 max-h-[calc(100vh-12rem)] overflow-y-auto">
+              <div className="bg-gray-50 p-6 rounded-xl">
+                <p className="text-sm text-gray-600 mb-4">
+                  This calendar shows all your approved bookings. Use this to avoid scheduling conflicts.
+                </p>
+                
+                {Object.keys(groupedBookings).length > 0 ? (
+                  <div className="space-y-6">
+                    {Object.entries(groupedBookings)
+                      .sort(([dateA], [dateB]) => new Date(dateA) - new Date(dateB))
+                      .map(([date, slots]) => (
+                        <div key={date} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                          <div className="bg-emerald-600 text-white px-6 py-3">
+                            <h3 className="font-bold">
+                              {new Date(date).toLocaleDateString('en-US', { 
+                                weekday: 'long', 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                              })}
+                            </h3>
+                          </div>
+                          <div className="p-4">
+                            <table className="w-full">
+                              <thead>
+                                <tr className="border-b">
+                                  <th className="text-left py-2 text-gray-600">Time</th>
+                                  <th className="text-left py-2 text-gray-600">Client</th>
+                                  <th className="text-left py-2 text-gray-600">Service</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {slots
+                                  .sort((a, b) => a.time.localeCompare(b.time))
+                                  .map((slot, idx) => (
+                                    <tr key={idx} className="border-b last:border-b-0">
+                                      <td className="py-3 font-medium text-gray-900">{slot.time}</td>
+                                      <td className="py-3 text-gray-800">{slot.userName}</td>
+                                      <td className="py-3 text-gray-800">{slot.serviceName}</td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    No approved bookings found. When you approve inquiries with date and time, they will appear here.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Calendar Modal Footer - Sticky */}
+            <div className="sticky bottom-0 bg-white p-6 border-t rounded-b-xl">
+              <div className="flex justify-end">
+                <button 
+                  onClick={closeCalendarModal}
+                  className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>

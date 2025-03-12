@@ -10,8 +10,6 @@ const AddServicePopup = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editServiceId, setEditServiceId] = useState(null);
 
-  const providerId = storedUser ? storedUser.id : null;
-
   const [formData, setFormData] = useState({
     serviceName: "",
     servicePrice: "",
@@ -244,136 +242,193 @@ const AddServicePopup = () => {
   };
 
   return (
-    <main className="flex-1 lg:ml-64 py-2 mt-20">
-    <div className="flex">
+    <div className="min-h-screen pt-8 bg-gray-50">
       <Sidebar />
-      <div className="flex-1 p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">My Services</h2>
-          <button
-            onClick={() => {
-              setShowPopup(true);
-              setIsEditing(false);
-              setFormData({
-                serviceName: "",
-                servicePrice: "",
-                serviceDescription: "",
-                serviceDuration: "",
-                categoryId: "",
-                serviceProviderId: storedUser?.id || "",
-                serviceImage: null,
-              });
-            }}
-            className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
-          >
-            Add New Service
-          </button>
+      <div className="lg:ml-64">
+        {/* Fixed Header */}
+        <div className="fixed top-0 right-0 lg:left-64 left-0 bg-white z-10 border-b">
+          <div className="p-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-gray-800">My Services</h2>
+              <button
+                onClick={() => {
+                  setShowPopup(true);
+                  setIsEditing(false);
+                  setFormData({
+                    serviceName: "",
+                    servicePrice: "",
+                    serviceDescription: "",
+                    serviceDuration: "",
+                    categoryId: "",
+                    serviceProviderId: storedUser?.id || "",
+                    serviceImage: null,
+                  });
+                }}
+                className="bg-emerald-600 mt-4 text-white px-6 py-2.5 rounded-lg hover:bg-emerald-700 transition-colors duration-200 flex items-center gap-2"
+              >
+                <span className="text-xl">+</span> Add New Service
+              </button>
+            </div>
+          </div>
         </div>
 
+        {/* Main Content with Padding for Fixed Header */}
+        <main className="pt-24 p-6">
+          <div className="max-w-7xl mx-auto">
+            {/* Services Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {services.map((service) => (
+                <div
+                  key={service._id}
+                  className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
+                >
+                  {service.serviceImage && (
+                    <div className="relative h-48">
+                      <img
+                        src={`http://localhost:4000/uploads/${service.serviceImage}`}
+                        alt={service.serviceName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">{service.serviceName}</h3>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{service.serviceDescription}</p>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-emerald-600 font-bold text-lg">₹{service.servicePrice}</span>
+                      <span className="text-gray-500 text-sm">{service.serviceDuration}</span>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <button
+                        onClick={() => handleEdit(service)}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(service._id)}
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
+
+        {/* Add/Edit Service Popup */}
         {showPopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg w-full max-w-md">
-              <h3 className="text-xl font-semibold mb-4">
-                {isEditing ? "Edit Service" : "Add New Service"}
-              </h3>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-gray-700 mb-2">Service Name</label>
-                  <input
-                    type="text"
-                    name="serviceName"
-                    value={formData.serviceName}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-md p-2"
-                    required
-                  />
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white p-6 border-b border-gray-200">
+                <h3 className="text-xl font-bold text-gray-800">
+                  {isEditing ? "Edit Service" : "Add New Service"}
+                </h3>
+              </div>
+              
+              <form onSubmit={handleSubmit} className="p-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Service Name</label>
+                    <input
+                      type="text"
+                      name="serviceName"
+                      value={formData.serviceName}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
+                    <input
+                      type="number"
+                      name="servicePrice"
+                      value={formData.servicePrice}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea
+                      name="serviceDescription"
+                      value={formData.serviceDescription}
+                      onChange={handleChange}
+                      rows="3"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+                    <input
+                      type="text"
+                      name="serviceDuration"
+                      value={formData.serviceDuration}
+                      onChange={handleChange}
+                      placeholder="e.g., 1 hour"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select
+                      name="categoryId"
+                      value={formData.categoryId}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      required
+                    >
+                      <option value="">Select Category</option>
+                      {categories && categories.length > 0 ? (
+                        categories.map((category) => {
+                          const categoryId = category._id || category.categoryId;
+                          const categoryName = category.name || category.categoryName;
+                          return (
+                            <option key={categoryId} value={categoryId}>
+                              {categoryName}
+                            </option>
+                          );
+                        })
+                      ) : (
+                        <option value="" disabled>No categories available</option>
+                      )}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Service Image</label>
+                    <input
+                      type="file"
+                      name="serviceImage"
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      accept="image/*"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-gray-700 mb-2">Price</label>
-                  <input
-                    type="number"
-                    name="servicePrice"
-                    value={formData.servicePrice}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-md p-2"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 mb-2">Description</label>
-                  <textarea
-                    name="serviceDescription"
-                    value={formData.serviceDescription}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-md p-2"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 mb-2">Duration</label>
-                  <input
-                    type="text"
-                    name="serviceDuration"
-                    value={formData.serviceDuration}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-md p-2"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 mb-2">Category</label>
-                  <select
-                    name="categoryId"
-                    value={formData.categoryId}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-md p-2"
-                    required
-                  >
-                    <option value="">Select Category</option>
-                    {categories && categories.length > 0 ? (
-                      categories.map((category) => {
-                        // Handle different possible category structures
-                        const categoryId = category._id || category.categoryId;
-                        const categoryName = category.name || category.categoryName;
-                        
-                        return (
-                          <option key={categoryId} value={categoryId}>
-                            {categoryName}
-                          </option>
-                        );
-                      })
-                    ) : (
-                      <option value="" disabled>No categories available</option>
-                    )}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 mb-2">Service Image</label>
-                  <input
-                    type="file"
-                    name="serviceImage"
-                    onChange={handleChange}
-                    className="w-full"
-                    accept="image/*"
-                  />
-                </div>
-
-                <div className="flex justify-end space-x-2">
+                <div className="flex justify-end gap-3 mt-6">
                   <button
                     type="button"
                     onClick={() => setShowPopup(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                    className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                    className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200"
                   >
                     {isEditing ? "Update" : "Add"} Service
                   </button>
@@ -382,46 +437,8 @@ const AddServicePopup = () => {
             </div>
           </div>
         )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service) => (
-            <div
-              key={service._id}
-              className="bg-white p-4 rounded-lg shadow-md"
-            >
-              {service.serviceImage && (
-                <img
-                  src={`http://localhost:4000/uploads/${service.serviceImage}`}
-                  alt={service.serviceName}
-                  className="w-full h-48 object-cover rounded-md mb-4"
-                />
-              )}
-              <h3 className="text-xl font-semibold mb-2">{service.serviceName}</h3>
-              <p className="text-gray-600 mb-2">{service.serviceDescription}</p>
-              <p className="text-purple-600 font-semibold mb-2">
-                ₹{service.servicePrice}
-              </p>
-              <p className="text-gray-500 mb-4">{service.serviceDuration}</p>
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={() => handleEdit(service)}
-                  className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(service._id)}
-                  className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
     </div>
-  </main>
   );
 };
 

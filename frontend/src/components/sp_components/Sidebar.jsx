@@ -1,8 +1,6 @@
-import React, { useState } from "react";
-import { TbHomeFilled } from "react-icons/tb";
+import { useState } from "react";
 import { GrServices } from "react-icons/gr";
 import { BsPersonWorkspace } from "react-icons/bs";
-import { BsShop } from "react-icons/bs";
 import { FaCartShopping } from "react-icons/fa6";
 import { MdFeedback } from "react-icons/md";
 import { HiOutlineLogout } from "react-icons/hi";
@@ -45,68 +43,68 @@ const Sidebar = () => {
                         } transition-transform duration-300 ease-in-out z-50 lg:translate-x-0 lg:block`}
                 >
                     {/* Sidebar Header */}
-                    <div className="flex items-center justify-between p-4">
-                        <span className="font-bold text-4xl">WorkPort</span>
-                        {/* Close Button */}
+                    <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                        <span className="font-bold text-4xl text-emerald-400">WorkPorts</span>
                         <button
                             onClick={toggleSidebar}
-                            className="text-white text-2xl focus:outline-none lg:hidden"
+                            className="text-white text-2xl focus:outline-none lg:hidden hover:text-emerald-400"
                         >
                             &times;
                         </button>
                     </div>
+
                     {/* Sidebar Links */}
-                    <nav className="mt-3">
+                    <nav className="flex flex-col h-[calc(100vh-80px)]">
+                        <div className="flex-1">
+                            {/* Dashboard Link  */}
+                            <NavLink
+                                to="/Dashboard"
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "block px-4 py-3 mt-2 bg-emerald-600 text-white"
+                                        : "block px-4 py-3 mt-2 hover:bg-emerald-600/20 text-gray-300 hover:text-white"
+                                }
+                            >
+                                <span className="flex px-2 gap-3 items-center">
+                                    <MdDashboard className="text-2xl" /> Dashboard
+                                </span>
+                            </NavLink>
 
-                        {/* Dashboard Link  */}
-                        <NavLink
-                            to="/Dashboard"
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "block px-4 py-2 mt-3 bg-[#52796f] text-white"
-                                    : "block px-4 py-2 mt-3 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
-                            }
-                        >
-                            <span className="flex px-2 gap-3 justify-start items-center">
-                                <MdDashboard className="text-2xl" /> Dashboard
-                            </span>
-                        </NavLink>
+                            {/* Add Service Link  */}
+                            <NavLink
+                                to="/addservice"
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "block px-4 py-3 mt-2 bg-emerald-600 text-white"
+                                        : "block px-4 py-3 mt-2 hover:bg-emerald-600/20 text-gray-300 hover:text-white"
+                                }
+                            >
+                                <span className="flex px-2 gap-3 items-center">
+                                    <GrServices className="text-2xl" /> Add Service
+                                </span>
+                            </NavLink>
 
-                        {/* Add Service Link  */}
-                        <NavLink
-                            to="/addservice"
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "block px-4 py-2 mt-3 bg-[#52796f] text-white"
-                                    : "block px-4 py-2 mt-3 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
-                            }
-                        >
-                            <span className="flex px-2 gap-3 justify-start items-center">
-                                <GrServices className="text-2xl" /> Add Service
-                            </span>
-                        </NavLink>
+                            {/* Profile Link  */}
+                            <NavLink
+                                to="/profile"
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "block px-4 py-3 mt-2 bg-emerald-600 text-white"
+                                        : "block px-4 py-3 mt-2 hover:bg-emerald-600/20 text-gray-300 hover:text-white"
+                                }
+                            >
+                                <span className="flex px-2 gap-3 items-center">
+                                    <BsPersonWorkspace className="text-2xl" /> Profile
+                                </span>
+                            </NavLink>
 
-                        {/* Profile Link  */}
-                        <NavLink
-                            to="/profile"
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "block px-4 py-2 mt-3 bg-[#52796f]  text-white"
-                                    : "block px-4 py-2 mt-3 hover:bg-[#52796f] hover:scale-95 transition-all duration-300 text-white"
-                            }
-                        >
-                            <span className="flex px-2 gap-3 justify-start items-center">
-                                <BsPersonWorkspace className="text-2xl" /> Profile
-                            </span>
-                        </NavLink>
-
-                        {/* Myshop Link  */}
-                        {/* <NavLink
-                            to="/myshop"
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "block px-4 py-2 mt-3 bg-[#52796f] text-white"
-                                    : "block px-4 py-2 mt-3 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
+                            {/* Myshop Link  */}
+                            {/* <NavLink
+                                to="/myshop"
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "block px-4 py-2 mt-3 bg-[#52796f] text-white"
+                                        : "block px-4 py-2 mt-3 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
                             }
                         >
                             <span className="flex px-2 gap-3 justify-start items-center">
@@ -114,32 +112,41 @@ const Sidebar = () => {
                             </span>
                         </NavLink> */}
 
-                        {/* Order Link  */}
-                        <NavLink
-                            to="/order"
-                            className={({ isActive }) =>
-                                isActive
-                                    ? "block px-4 py-2 mt-3 bg-[#52796f] text-white"
-                                    : "block px-4 py-2 mt-3 hover:bg-[#52796f] text-white hover:scale-95 transition-all duration-300"
-                            }
-                        >
-                            <span className="flex px-2 gap-3 justify-start items-center">
-                                <FaCartShopping className="text-2xl" /> Inquiry
-                            </span>
-                        </NavLink>
+                            {/* Order Link  */}
+                            <NavLink
+                                to="/order"
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "block px-4 py-3 mt-2 bg-emerald-600 text-white"
+                                        : "block px-4 py-3 mt-2 hover:bg-emerald-600/20 text-gray-300 hover:text-white"
+                                }
+                            >
+                                <span className="flex px-2 gap-3 items-center">
+                                    <FaCartShopping className="text-2xl" /> Inquiry
+                                </span>
+                            </NavLink>
 
-                        {/* Feedback Link  */}
-                        <NavLink to="/feedback" className="block hover:scale-95 transition-all duration-300 px-4 py-2 mt-3 hover:bg-[#52796f]">
-                            <span className="flex px-2 gap-3 justify-start items-center">
-                                <MdFeedback className="text-2xl" /> Feedback
-                            </span>
-                        </NavLink>
+                            {/* Feedback Link  */}
+                            <NavLink
+                                to="/feedback"
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "block px-4 py-3 mt-2 bg-emerald-600 text-white"
+                                        : "block px-4 py-3 mt-2 hover:bg-emerald-600/20 text-gray-300 hover:text-white"
+                                }
+                            >
+                                <span className="flex px-2 gap-3 items-center">
+                                    <MdFeedback className="text-2xl" /> Feedback
+                                </span>
+                            </NavLink>
+                        </div>
 
-                        {/* Logout Link  */}
+                        {/* Logout Button */}
                         <button
                             onClick={() => setShowLogoutPopup(true)}
-                            className="w-full px-4 bg-red-500 py-2 mt-3 hover:bg-red-700">
-                            <span className="flex px-2 gap-3 justify-start items-center">
+                            className="w-full px-4 py-3 bg-red-500 hover:bg-red-600 transition-colors duration-200 mt-auto"
+                        >
+                            <span className="flex px-2 gap-3 items-center">
                                 <HiOutlineLogout className="text-2xl" /> Logout
                             </span>
                         </button>
@@ -148,16 +155,15 @@ const Sidebar = () => {
 
                 {/* Navbar */}
                 <div className="flex flex-1 flex-col">
-                    <header className="fixed w-full top-0 z-50 flex items-center justify-between bg-[#2f3e46] text-white p-4 shadow-md">
-                        {/* Sidebar Toggle Button */}
+                    <header className="fixed w-full top-0 z-40 flex items-center justify-between bg-[#2f3e46] text-white px-4 py-3 shadow-md">
                         <button
                             onClick={toggleSidebar}
-                            className="text-2xl focus:outline-none lg:hidden"
+                            className="text-2xl focus:outline-none lg:hidden hover:text-emerald-400"
                         >
                             <FaAlignRight />
                         </button>
-                        {/* Brand Name */}
-                        <span className="font-bold text-lg">WorkPort</span>
+                        <span className="font-bold text-lg lg:hidden">WorkPorts</span>
+                        <div className="w-8 lg:hidden"></div>
                     </header>
                 </div>
             </div>

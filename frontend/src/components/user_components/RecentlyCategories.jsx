@@ -7,7 +7,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
 
-
 const RecentlyCategories = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +16,6 @@ const RecentlyCategories = () => {
       .then((res) => res.json())
       .then((data) => {
         setServices(data);
-        // console.log(data);
         setLoading(false);
       })
       .catch((error) => {
@@ -27,44 +25,50 @@ const RecentlyCategories = () => {
   }, []);
 
   return (
-    <div className="h-auto md:mt-6 bg-[#2D4E35] ">
-      <h1 className="bg-txt text-[#FFA901] text-center pt-6 text-3xl  sm:text-4xl lg:text-5xl font-semibold">
-        Recently Added
-      </h1>
-      <div className="p-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center">
-        {loading ? (
-          <p className="">Loading...</p>
-        ) : services.length > 0 ? (
-          services.map((service) => (
-            <RcCat key={service._id} service={service} />
-          ))
-        ) : (
-          <p className="text-center">No services found.</p>
-        )}
+    <div className="relative py-16">
+      {/* Section Header */}
+      <div className="text-center mb-12">
+        <h2 className="text-4xl md:text-5xl font-bold text-emerald-900 mb-4">
+          Recently Added Services
+        </h2>
+        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          Discover our latest additions - fresh services ready to meet your needs
+        </p>
       </div>
 
+      {/* Services Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {loading ? (
+            <div className="col-span-full flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent"></div>
+            </div>
+          ) : services.length > 0 ? (
+            services.map((service) => (
+              <RcCat key={service._id} service={service} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-500 text-lg">No services available at the moment.</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-
 const RcCat = ({ service }) => {
-
   const { user } = useAuth();
   const navigate = useNavigate();
-  // const [showPopup, setShowPopup] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
-
 
   const handleWP = (service) => {
     if (!user) {
-      // Prevent default link behavior
       setShowPopup(true);
       return;
     }
 
-    // If user is logged in, navigate to WhatsApp
     if (!service || !service.serviceProviderId || !service.serviceProviderId.spContact) {
       toast.error("❌ Contact information missing!");
       return;
@@ -75,12 +79,10 @@ const RcCat = ({ service }) => {
       : "91" + service.serviceProviderId.spContact;
 
     const whatsappURL = `https://wa.me/${phoneNumber}?text=Hello%2C%20I%20am%20interested%20in%20your%20services.`;
-
-    window.open(whatsappURL, "_blank"); // Open WhatsApp link in new tab
+    window.open(whatsappURL, "_blank");
   }
 
   const handleInquiry = async (service) => {
-    // console.log("AA CHHE : ", service.serviceProviderId._id)
     if (!user || !user.id) {
       setShowPopup(true);
       return;
@@ -92,8 +94,6 @@ const RcCat = ({ service }) => {
     }
 
     try {
-      // console.log("Sending inquiry...", { user: user.id, service: service._id, serviceProvider: shopData._id });
-
       const response = await fetch("http://localhost:4000/api/inquiries/send", {
         method: "POST",
         headers: {
@@ -107,7 +107,6 @@ const RcCat = ({ service }) => {
       });
 
       const data = await response.json();
-      // console.log("Server Response:", data);
 
       if (response.ok) {
         toast.success(`Inquiry Sent Successfully to ${service.serviceProviderId.spName}!`, {
@@ -129,83 +128,93 @@ const RcCat = ({ service }) => {
     }
   };
 
-
-  // console.log(service);
   return (
-    <div className="max-w-sm hover:scale-105 duration-200 transition-all bg-white rounded-xl shadow-lg  overflow-hidden border border-gray-200">
+    <div className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
       {/* Image Section */}
-      <div className="w-full h-40 bg-gray-200 flex justify-center items-center">
+      <div className="relative h-48 overflow-hidden">
         <img
           src={`http://localhost:4000/uploads/${service.serviceImage}`}
           alt={service.serviceName}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+        <div className="absolute bottom-3 right-3 bg-emerald-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+          ₹{service.servicePrice}
+        </div>
       </div>
 
       {/* Content Section */}
-      <div className="p-4">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="text-xl font-bold capitalize text-gray-800">{service.serviceName}</h2>
-
-          <p className="text-xl font-bold text-green-600">₹{service.servicePrice}</p>
-        </div>
-
-        {/* Rating */}
-        <div className="flex items-center h-[1px] w-[1] text-yellow-500 my-2">
-          <FaStar />
-          <FaStar />
-          <FaStar />
-          <FaStar />
-          <FaStar className="text-gray-300" />
-          <span className="text-gray-600 ml-2 text-sm">4.5 (413)</span>
+      <div className="p-6">
+        <div className="flex items-start justify-between mb-3">
+          <h3 className="text-xl font-bold text-emerald-900 capitalize group-hover:text-emerald-700 transition-colors">
+            {service.serviceName}
+          </h3>
+          <div className="flex items-center text-amber-400 ml-2">
+            <FaStar />
+            <span className="text-gray-600 ml-1 text-sm">4.5</span>
+          </div>
         </div>
 
         {/* Description */}
-        <p className="text-sm mt-1 text-gray-600 text-justify break-words "> 
-          {service.serviceDescription 
-            ? (service.serviceDescription.substr(0, 200) + " ...") 
-            : "No description available"
-          }
-          {service.serviceDescription && service.serviceDescription.length > 200 && 
-            <span className="cursor-pointer">Read more</span>
-          }
+        <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
+          {service.serviceDescription || "No description available"}
         </p>
 
-        {/* Additional Info */}
-        <div className="mt-4 flex justify-between items-center">
+        {/* Shop Info */}
+        <div className="mt-4 flex items-center justify-between">
           {service.serviceProviderId ? (
             <Link 
-              to={`/Shop-Dashboard/${service.serviceProviderId._id}`} 
-              className="text-md text-gray-700 cursor-pointer font-bold underline"
+              to={`/Shop-Dashboard/${service.serviceProviderId._id}`}
+              className="text-emerald-600 hover:text-emerald-700 font-medium text-sm transition-colors"
             >
-              Shop: {service.serviceProviderId.spShopName || 'Unknown Shop'}
+              {service.serviceProviderId.spShopName || 'Unknown Shop'}
             </Link>
           ) : (
-            <span className="text-md text-gray-700 font-bold">Shop: Not Available</span>
+            <span className="text-gray-500 text-sm">Shop not available</span>
           )}
-          <p className="text-sm text-black">Duration: {service.serviceDuration || 'N/A'}</p>
+          <span className="text-sm text-gray-500">
+            {service.serviceDuration || 'Duration N/A'}
+          </span>
         </div>
 
-        <div className="flex flex-nowrap justify-center gap-3 mt-6 ">
-
-          <button onClick={() => handleWP(service)}
-            className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-green-600 text-white text-lg rounded-lg hover:bg-green-500 transition-all shadow-md">
-            <FaWhatsapp /> <span className="ml-2">WhatsApp</span>
+        {/* Action Buttons */}
+        <div className="mt-6 grid grid-cols-2 gap-3">
+          <button
+            onClick={() => handleWP(service)}
+            className="flex items-center justify-center px-4 py-2.5 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors duration-300"
+          >
+            <FaWhatsapp className="mr-2" />
+            <span className="font-medium">WhatsApp</span>
           </button>
-
-          <button onClick={() => handleInquiry(service)} className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-yellow-500 text-white text-lg rounded-lg hover:bg-yellow-400 transition-all shadow-md">
-            <IoIosSend /> <span className="ml-2">Send Inquiry</span>
+          <button
+            onClick={() => handleInquiry(service)}
+            className="flex items-center justify-center px-4 py-2.5 bg-amber-500 text-white rounded-full hover:bg-amber-600 transition-colors duration-300"
+          >
+            <IoIosSend className="mr-2" />
+            <span className="font-medium">Inquire</span>
           </button>
         </div>
       </div>
+
+      {/* Login Popup */}
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
-            <h2 className="text-xl text-black font-bold mb-3">Login Required</h2>
-            <p className="text-gray-700 mb-4">You need to login to book a service.</p>
-            <div className="flex justify-center gap-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg" onClick={() => navigate('/user-login')}>Login</button>
-              <button className="bg-gray-500 text-white px-4 py-2 rounded-lg" onClick={() => setShowPopup(false)}>Close</button>
+        <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 transform transition-all">
+            <h2 className="text-2xl font-bold text-emerald-900 mb-4">Login Required</h2>
+            <p className="text-gray-600 mb-6">Please login to your account to continue with this action.</p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => navigate('/user-login')}
+                className="flex-1 bg-emerald-600 text-white py-2.5 rounded-full hover:bg-emerald-700 transition-colors duration-300 font-medium"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setShowPopup(false)}
+                className="flex-1 bg-gray-200 text-gray-800 py-2.5 rounded-full hover:bg-gray-300 transition-colors duration-300 font-medium"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -213,11 +222,5 @@ const RcCat = ({ service }) => {
     </div>
   );
 };
-
-
-
-
-// export default RcCat;
-
 
 export default RecentlyCategories;

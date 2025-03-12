@@ -3,37 +3,38 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/user_components/Navbar";
 import Footer from "../../components/user_components/Footer";
-import { FaRupeeSign } from "react-icons/fa";
-import { MdPhone } from "react-icons/md";
+import { FaRupeeSign, FaFilter, FaStar, FaMapMarkerAlt } from "react-icons/fa";
+import { MdPhone, MdSort } from "react-icons/md";
 import { FaCheckCircle, FaWhatsapp } from "react-icons/fa";
-import VerificationModal from "../../components/user_components/VerificationModal";
 
 const User_Dashboard = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [serviceProviders, setServiceProviders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
   const location = useLocation();
 
-  // Extract category ID from URL query parameters
   const searchParams = new URLSearchParams(location.search);
   const selectedCategory = searchParams.get("category");
 
   useEffect(() => {
     if (!selectedCategory) {
       console.warn("⚠️ No category selected!");
+      setIsLoading(false);
       return;
     }
 
-    // console.log("📌 Selected Category:", selectedCategory);
-
+    setIsLoading(true);
     axios
       .get(`http://localhost:4000/api/sp/providers?category=${selectedCategory}`)
       .then((response) => {
-        // console.log("✅ Full API Response:", response.data);
         setServiceProviders(response.data.providers || []);
+        setIsLoading(false);
       })
-      .catch((error) => console.error("❌ Error fetching data:", error));
+      .catch((error) => {
+        console.error("❌ Error fetching data:", error);
+        setIsLoading(false);
+      });
   }, [selectedCategory]);
-
 
   const [filters, setFilters] = useState({
     productName: "",
@@ -41,7 +42,8 @@ const User_Dashboard = () => {
     priceMax: "",
     category: "",
     availability: "",
-    brand: ""
+    brand: "",
+    sortBy: "rating" // New sort option
   });
 
   const handleChange = (e) => {
@@ -54,85 +56,243 @@ const User_Dashboard = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <div className="text-2xl font-bold mt-24 p-8 m-2 text-center sm:text-left">
-        Recent Shops
-        <hr className='h-[1.5px] mt-3 bg-black' />
+      {/* Hero Section */}
+      <div className="pt-24 pb-8 bg-gradient-to-b from-emerald-900 to-emerald-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl font-bold text-center text-white mb-4">
+            Discover Local <span className="text-amber-400">Services</span>
+          </h1>
+          <p className="text-emerald-100 text-center text-lg max-w-3xl mx-auto">
+            Find and connect with the best service providers in your area
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-col p-4 m-2 gap-6 md:flex-row md:flex-wrap md:justify-center lg:justify-between">
-        <div className="w-full sm:w-96 md:w-80 lg:w-96 mx-auto">
-          <div className="p-6 border border-black bg-[#005f58] shadow-lg rounded-lg">
-            <h2 className="text-xl font-bold mb-4 text-white">Shop Dashboard Search</h2>
-            <input type="text" name="productName" value={filters.productName} onChange={handleChange} placeholder="Product Name" className="w-full p-2 border rounded mb-3" />
-            <div className="flex flex-col sm:flex-row gap-2 mb-3">
-              <input type="number" name="priceMin" value={filters.priceMin} onChange={handleChange} placeholder="Min Price" className="w-full sm:w-1/2 p-2 border rounded" />
-              <input type="number" name="priceMax" value={filters.priceMax} onChange={handleChange} placeholder="Max Price" className="w-full sm:w-1/2 p-2 border rounded" />
-            </div>
-            <select name="category" value={filters.category} onChange={handleChange} className="w-full p-2 border rounded mb-3">
-              <option value="">Select Category</option>
-              <option value="electronics">Electronics</option>
-              <option value="fashion">Fashion</option>
-              <option value="home">Home & Kitchen</option>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Filter Controls */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <h2 className="text-2xl font-bold text-emerald-900">
+            Available Service Providers
+          </h2>
+          <div className="flex gap-4">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors"
+            >
+              <FaFilter />
+              Filters
+            </button>
+            <select
+              name="sortBy"
+              value={filters.sortBy}
+              onChange={handleChange}
+              className="px-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="rating">Top Rated</option>
+              <option value="priceAsc">Price: Low to High</option>
+              <option value="priceDesc">Price: High to Low</option>
+              <option value="newest">Newest First</option>
             </select>
-            <select name="availability" value={filters.availability} onChange={handleChange} className="w-full p-2 border rounded mb-3">
-              <option value="">Availability</option>
-              <option value="in-stock">In Stock</option>
-              <option value="out-of-stock">Out of Stock</option>
-            </select>
-            <input type="text" name="brand" value={filters.brand} onChange={handleChange} placeholder="Brand" className="w-full p-2 border rounded mb-3" />
-            <button onClick={handleSearch} className="w-full bg-[#FFA901] text-white py-2 rounded hover:bg-[#9d6d0d]">Search</button>
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 md:w-3/4 lg:w-3/5">
-          {serviceProviders.length > 0 ? (
+        {/* Filters Panel */}
+        <div className={`bg-white rounded-xl shadow-lg mb-8 transition-all duration-300 ${showFilters ? 'block' : 'hidden'}`}>
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+              <input
+                type="text"
+                name="productName"
+                value={filters.productName}
+                onChange={handleChange}
+                placeholder="Search services..."
+                className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+              <div className="flex gap-4">
+                <input
+                  type="number"
+                  name="priceMin"
+                  value={filters.priceMin}
+                  onChange={handleChange}
+                  placeholder="Min"
+                  className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <input
+                  type="number"
+                  name="priceMax"
+                  value={filters.priceMax}
+                  onChange={handleChange}
+                  placeholder="Max"
+                  className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+              <select
+                name="category"
+                value={filters.category}
+                onChange={handleChange}
+                className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              >
+                <option value="">All Categories</option>
+                <option value="electronics">Electronics</option>
+                <option value="fashion">Fashion</option>
+                <option value="home">Home & Kitchen</option>
+              </select>
+            </div>
+          </div>
+          <div className="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end gap-4">
+            <button
+              onClick={() => setFilters({
+                productName: "",
+                priceMin: "",
+                priceMax: "",
+                category: "",
+                availability: "",
+                brand: "",
+                sortBy: "rating"
+              })}
+              className="px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Reset
+            </button>
+            <button
+              onClick={handleSearch}
+              className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              Apply Filters
+            </button>
+          </div>
+        </div>
+
+        {/* Service Providers Grid */}
+        <div className="grid gap-8">
+          {isLoading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading service providers...</p>
+            </div>
+          ) : serviceProviders.length > 0 ? (
             serviceProviders.map((provider) => (
-              <Link to={`/shop/${provider.spShopName.replace(/\s+/g, '-').toLowerCase()}?id=${provider._id}`} key={provider._id}>
-                <div className="border border-black p-4 rounded-lg shadow-md flex flex-col md:flex-row gap-4 items-center md:items-center">
-                  <img src={`http://localhost:4000/${provider.spShopBannerImage}`} className="bg-gray-300 w-full sm:w-80 md:w-72 md:h-64 object-cover rounded-lg" alt={provider.spShopName} />
-                  <div className="flex-1 text-center flex-wrap md:text-left">
-                    <h2 className="text-2xl font-bold text-black">{provider.spShopName}</h2>
-                    <p className="text-md text-black capitalize mt-2">{provider.spCity}, {provider.spArea}</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
+              <Link 
+                to={`/shop/${provider.spShopName.replace(/\s+/g, '-').toLowerCase()}?id=${provider._id}`} 
+                key={provider._id}
+                className="block bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <div className="p-6 grid md:grid-cols-3 gap-6">
+                  {/* Shop Image */}
+                  <div className="relative">
+                    <img 
+                      src={`http://localhost:4000/uploads/${provider.spShopBannerImage}`} 
+                      className="w-full h-64 object-cover rounded-xl" 
+                      alt={provider.spShopName} 
+                    />
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
+                      <FaStar className="text-amber-400" />
+                      <span className="font-medium">4.5</span>
+                    </div>
+                  </div>
+
+                  {/* Shop Info */}
+                  <div className="md:col-span-2">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">{provider.spShopName}</h3>
+                        <p className="flex items-center text-gray-600 mb-4">
+                          <FaMapMarkerAlt className="mr-2 text-emerald-500" />
+                          {provider.spCity}, {provider.spArea}
+                        </p>
+                      </div>
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.location.href = `tel:${provider.spContact}`;
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors"
+                        >
+                          <MdPhone />
+                          Call
+                        </button>
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            window.open(`https://wa.me/91${provider.spContact}`, "_blank");
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                        >
+                          <FaWhatsapp />
+                          WhatsApp
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Services Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {provider.services.length > 0 ? (
                         provider.services.slice(0, 2).map((service) => (
-                          <div key={service._id} className="bg-[#115D33] p-3 text-center text-lg rounded-lg">
-                            <img
-                              src={`http://localhost:4000/uploads/${service.serviceImage}`}
-                              onError={(e) => e.target.src = 'https://via.placeholder.com/300'}
-                              alt={service.serviceName}
-                              className="w-full h-40 object-cover rounded-lg mb-3"
-                            />
-                            <p className="font-semibold text-white capitalize">{service.serviceName}</p>
-                            <p className="text-xl font-bold flex text-white justify-center items-center gap-1">
-                              <FaRupeeSign /> {service.servicePrice}
-                            </p>
+                          <div key={service._id} className="bg-white border border-emerald-100 rounded-lg p-3 hover:shadow-md transition-all duration-300">
+                            <div className="flex gap-3">
+                              {/* Service Image */}
+                              <img
+                                src={`http://localhost:4000/uploads/${service.serviceImage}`}
+                                onError={(e) => e.target.src = 'https://via.placeholder.com/100'}
+                                alt={service.serviceName}
+                                className="w-24 h-24 object-cover rounded-lg flex-shrink-0"
+                              />
+                              
+                              {/* Service Details */}
+                              <div className="flex-1">
+                                <div className="flex items-start justify-between gap-2 mb-1">
+                                  <h4 className="font-medium text-gray-900 capitalize line-clamp-1">
+                                    {service.serviceName}
+                                  </h4>
+                                  <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs font-medium">
+                                    {service.serviceCategory || "General"}
+                                  </span>
+                                </div>
+                                
+                                <p className="text-gray-600 text-sm line-clamp-2 mb-2">
+                                  {service.serviceDescription || "Professional service with quality assurance."}
+                                </p>
+
+                                <div className="flex items-center justify-between">
+                                  <p className="text-lg font-bold text-emerald-600 flex items-center gap-1">
+                                    <FaRupeeSign className="text-sm" />
+                                    {service.servicePrice}
+                                  </p>
+                                  <div className="flex items-center gap-1 text-sm">
+                                    <FaStar className="text-amber-400" />
+                                    <span className="font-medium">4.5</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         ))
                       ) : (
-                        <p className="text-gray-500 col-span-2 text-center">No services available</p>
+                        <p className="text-gray-500 col-span-2 text-center py-4 bg-gray-50 rounded-lg">
+                          No services available
+                        </p>
                       )}
-                    </div>
-                    <div className="flex flex-wrap justify-center md:justify-start gap-3">
-                      <button onClick={() => window.location.href = `tel:${provider.spContact}`} className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-blue-800 text-white text-lg rounded-lg hover:bg-blue-700 transition-all shadow-md">
-                        <MdPhone /> <span className="ml-2">{provider.spContact}</span>
-                      </button>
-                      <button onClick={() => window.open(`https://wa.me/91${provider.spContact}`, "_blank")} className="flex items-center justify-center w-[180px] sm:w-[160px] h-[50px] bg-green-600 text-white text-lg rounded-lg hover:bg-green-500 transition-all shadow-md">
-                        <FaWhatsapp /> <span className="ml-2">WhatsApp</span>
-                      </button>
                     </div>
                   </div>
                 </div>
               </Link>
             ))
           ) : (
-            <div className="text-center p-8 border border-gray-300 rounded-lg">
+            <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
               <FaCheckCircle className="text-gray-400 text-5xl mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-700">No Service Providers Found</h3>
-              <p className="text-gray-500 mt-2">
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">No Service Providers Found</h3>
+              <p className="text-gray-500">
                 There are no service providers available for this category at the moment.
               </p>
             </div>
@@ -141,7 +301,7 @@ const User_Dashboard = () => {
       </div>
 
       <Footer />
-    </>
+    </div>
   );
 };
 

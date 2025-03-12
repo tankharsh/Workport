@@ -4,6 +4,7 @@ import gsap from 'gsap'
 import {useAuth} from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { FaUser, FaEnvelope, FaPhone, FaLock, FaShieldAlt } from 'react-icons/fa';
 
 function UserRegistrationFrom() {
   const navigate = useNavigate();
@@ -132,139 +133,174 @@ function UserRegistrationFrom() {
         <meta name="author" content="WorkPort Team" />
       </Helmet>
       <Navbar />
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-        <div ref={RegRef} className="bg-white shadow-lg w-full max-w-md p-8 rounded-lg">
-          <h2 className="text-2xl font-semibold text-center text-gray-700 mb-6">
-            Create Your Account
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name Field */}
-            <div>
-              <label htmlFor="userName" className="block text-sm font-medium text-gray-600">
-                Full Name
-              </label>
-              <input
-                name="userName"
-                type="text"
-                id="userName"
-                value={formData.userName}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-                className={`w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  errors.userName ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.userName && (
-                <p className="mt-1 text-xs text-red-500">{errors.userName}</p>
-              )}
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-emerald-500 to-emerald-700 py-12 px-4">
+        <div ref={RegRef} className="bg-white shadow-2xl w-full max-w-md rounded-2xl relative overflow-hidden">
+          {/* Decorative Elements */}
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100 rounded-full -translate-y-1/2 translate-x-1/2 opacity-10"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-200 rounded-full translate-y-1/2 -translate-x-1/2 opacity-10"></div>
+
+          <div className="p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800 relative inline-block">
+                Create Account
+                <span className="block text-sm font-normal text-emerald-600 mt-2">Join our community today</span>
+                <div className="absolute -bottom-2 left-0 w-12 h-1 bg-emerald-500 rounded-full"></div>
+              </h2>
             </div>
 
-            {/* Email Field */}
-            <div>
-              <label htmlFor="userEmail" className="block text-sm font-medium text-gray-600">
-                Email Address
-              </label>
-              <input
-                name="userEmail"
-                type="email"
-                id="userEmail"
-                value={formData.userEmail}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                className={`w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  errors.userEmail ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.userEmail && (
-                <p className="mt-1 text-xs text-red-500">{errors.userEmail}</p>
-              )}
-            </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Name Field */}
+              <div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <FaUser className="text-emerald-500" />
+                  </div>
+                  <input
+                    name="userName"
+                    type="text"
+                    value={formData.userName}
+                    onChange={handleChange}
+                    placeholder="Full Name"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
+                      errors.userName ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                    } focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all`}
+                  />
+                </div>
+                {errors.userName && (
+                  <p className="mt-1.5 text-sm text-red-500 flex items-center">
+                    <FaShieldAlt className="mr-1" /> {errors.userName}
+                  </p>
+                )}
+              </div>
 
-            {/* Contact Field */}
-            <div>
-              <label htmlFor="userContact" className="block text-sm font-medium text-gray-600">
-                Contact Number
-              </label>
-              <input
-                name="userContact"
-                type="tel"
-                id="userContact"
-                value={formData.userContact}
-                onChange={handleChange}
-                placeholder="Enter 10-digit mobile number"
-                className={`w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  errors.userContact ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.userContact && (
-                <p className="mt-1 text-xs text-red-500">{errors.userContact}</p>
-              )}
-            </div>
+              {/* Email Field */}
+              <div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <FaEnvelope className="text-emerald-500" />
+                  </div>
+                  <input
+                    name="userEmail"
+                    type="email"
+                    value={formData.userEmail}
+                    onChange={handleChange}
+                    placeholder="Email Address"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
+                      errors.userEmail ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                    } focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all`}
+                  />
+                </div>
+                {errors.userEmail && (
+                  <p className="mt-1.5 text-sm text-red-500 flex items-center">
+                    <FaShieldAlt className="mr-1" /> {errors.userEmail}
+                  </p>
+                )}
+              </div>
 
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-600">
-                Password
-              </label>
-              <input
-                name="password"
-                type="password"
-                id="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Create a strong password"
-                className={`w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.password && (
-                <p className="mt-1 text-xs text-red-500">{errors.password}</p>
-              )}
-            </div>
+              {/* Contact Field */}
+              <div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <FaPhone className="text-emerald-500" />
+                  </div>
+                  <input
+                    name="userContact"
+                    type="tel"
+                    value={formData.userContact}
+                    onChange={handleChange}
+                    placeholder="Contact Number"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
+                      errors.userContact ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                    } focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all`}
+                  />
+                </div>
+                {errors.userContact && (
+                  <p className="mt-1.5 text-sm text-red-500 flex items-center">
+                    <FaShieldAlt className="mr-1" /> {errors.userContact}
+                  </p>
+                )}
+              </div>
 
-            {/* Confirm Password Field */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-600">
-                Confirm Password
-              </label>
-              <input
-                name="confirmPassword"
-                type="password"
-                id="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirm your password"
-                className={`w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                  errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                }`}
-              />
-              {errors.confirmPassword && (
-                <p className="mt-1 text-xs text-red-500">{errors.confirmPassword}</p>
-              )}
-            </div>
+              {/* Password Field */}
+              <div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <FaLock className="text-emerald-500" />
+                  </div>
+                  <input
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Create Password"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
+                      errors.password ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                    } focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all`}
+                  />
+                </div>
+                {errors.password && (
+                  <p className="mt-1.5 text-sm text-red-500 flex items-center">
+                    <FaShieldAlt className="mr-1" /> {errors.password}
+                  </p>
+                )}
+              </div>
 
-            {/* Register Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors ${
-                isLoading ? 'opacity-70 cursor-not-allowed' : ''
-              }`}
-            >
-              {isLoading ? 'Registering...' : 'Create Account'}
-            </button>
+              {/* Confirm Password Field */}
+              <div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <FaLock className="text-emerald-500" />
+                  </div>
+                  <input
+                    name="confirmPassword"
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="Confirm Password"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border ${
+                      errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                    } focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all`}
+                  />
+                </div>
+                {errors.confirmPassword && (
+                  <p className="mt-1.5 text-sm text-red-500 flex items-center">
+                    <FaShieldAlt className="mr-1" /> {errors.confirmPassword}
+                  </p>
+                )}
+              </div>
 
-            <p className="text-center text-sm text-gray-600 mt-4">
-              Already have an account?{' '}
+              {/* Submit Button */}
               <button
-                type="button"
-                onClick={() => navigate('/user-login')}
-                className="text-blue-500 hover:text-blue-600 font-medium"
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-300 relative overflow-hidden group mt-6"
               >
-                Login here
+                <span className="absolute w-64 h-64 mt-12 group-hover:-rotate-45 transition-all duration-500 ease-out -translate-x-20 -translate-y-32 bg-white opacity-10 rounded-full"></span>
+                <span className="relative">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      Creating Account...
+                    </div>
+                  ) : (
+                    'Create Account'
+                  )}
+                </span>
               </button>
-            </p>
-          </form>
+
+              <p className="text-center text-gray-600 mt-6">
+                Already have an account?{' '}
+                <button
+                  type="button"
+                  onClick={() => navigate('/user-login')}
+                  className="text-emerald-600 hover:text-emerald-700 font-medium focus:outline-none"
+                >
+                  Sign In
+                </button>
+              </p>
+            </form>
+          </div>
         </div>
       </div>
     </>

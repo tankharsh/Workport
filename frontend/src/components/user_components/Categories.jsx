@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const Categories = () => {
     const sliderRef = useRef(null);
@@ -29,24 +30,39 @@ const Categories = () => {
     };
 
     return (
-        <div className="text-black mt-6 h-auto relative">
-            <h1 className="bg-txt  text-center pt-5 text-3xl sm:text-4xl lg:text-5xl font-semibold">
-                Top Categories
-            </h1>
+        <div className="relative py-16">
+            {/* Section Header */}
+            <div className="text-center mb-12">
+                <h2 className="text-4xl md:text-5xl font-bold text-emerald-900 mb-4">
+                    Top Categories
+                </h2>
+                <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                    Explore our most popular service categories trusted by thousands of customers
+                </p>
+            </div>
 
-            <div className="relative p-6 md:p-12">
+            <div className="relative px-4 md:px-8">
                 {/* Left Scroll Button */}
                 <button
                     onClick={scrollLeft}
-                    className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 z-10"
+                    className="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-white text-emerald-800 p-3 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 z-10"
+                    aria-label="Scroll left"
                 >
-                    &#8592;
+                    <IoIosArrowBack size={24} />
                 </button>
 
                 {/* Scrollable Category List */}
-                <div ref={sliderRef} className="flex gap-6 overflow-x-scroll scrollbar-hide snap-x snap-mandatory">
+                <div 
+                    ref={sliderRef} 
+                    className="flex gap-6 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-8 px-4"
+                    style={{ scrollbarWidth: 'none', '-ms-overflow-style': 'none' }}
+                >
                     {categories.map((category) => (
-                        <div key={category._id} onClick={() => navigate(`/User-Dashboard?category=${category._id}`)}>
+                        <div 
+                            key={category._id} 
+                            onClick={() => navigate(`/User-Dashboard?category=${category._id}`)}
+                            className="flex-none"
+                        >
                             <CatCard category={category} />
                         </div>
                     ))}
@@ -55,9 +71,10 @@ const Categories = () => {
                 {/* Right Scroll Button */}
                 <button
                     onClick={scrollRight}
-                    className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full shadow-lg hover:bg-gray-700 z-10"
+                    className="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white text-emerald-800 p-3 rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 z-10"
+                    aria-label="Scroll right"
                 >
-                    &#8594;
+                    <IoIosArrowForward size={24} />
                 </button>
             </div>
         </div>
@@ -66,22 +83,30 @@ const Categories = () => {
 
 const CatCard = ({ category }) => {
     return (
-        <div className="txt flex justify-center items-center cursor-pointer hover:scale-95 duration-200  transition-all">
-            <div className="group h-[400px] w-80 bg-gray-300 hover:bg-[#2D4E35] duration-200 transition-colors rounded-xl shadow-lg overflow-hidden ">
-                <div className="flex justify-center peer">
-                        <div className="w-full h-40 rounded-xl p-3 overflow-hidden">
-                        <img
-                            src={`http://localhost:4000/uploads/${category.categoryImage}`}
-                            alt={category.categoryName}
-                            className="object-cover  w-full h-full"
-                        />
-                    </div>
-                </div>
-                <div className="px-6 py-8 group-hover:text-[#FFA901]">
-                    <h2 className="text-2xl capitalize text-black font-bold text-center  group-hover:text-[#FFA901] mb-4">{category.categoryName}</h2>
-                    <p className="text-black text-center group-hover:text-white text-sm leading-relaxed">
-                        {category.categoryDescription}
-                    </p>
+        <div className="group w-72 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-1">
+            {/* Image Container */}
+            <div className="relative h-48 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/20 to-transparent"></div>
+                <img
+                    src={`http://localhost:4000/uploads/${category.categoryImage}`}
+                    alt={category.categoryName}
+                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                />
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+                <h3 className="text-xl font-bold text-emerald-900 capitalize mb-3 group-hover:text-emerald-700 transition-colors">
+                    {category.categoryName}
+                </h3>
+                <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                    {category.categoryDescription}
+                </p>
+                
+                {/* View Details Link */}
+                <div className="mt-4 flex items-center text-emerald-600 font-medium text-sm group-hover:text-emerald-500">
+                    View Services
+                    <IoIosArrowForward className="ml-1 transform group-hover:translate-x-1 transition-transform" />
                 </div>
             </div>
         </div>

@@ -5,7 +5,7 @@ import { useGSAP } from '@gsap/react';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FaShop, FaUsers, FaClipboardList, FaStar } from 'react-icons/fa6';
+import { FaShop, FaUsers, FaClipboardList, FaStar, FaChartLine, FaBell, FaCalendarCheck, FaMoneyBillWave } from 'react-icons/fa6';
 
 const Dashboard = () => {
     const { serviceprovider } = useAuth();
@@ -14,19 +14,75 @@ const Dashboard = () => {
         totalServices: 0,
         pendingRequests: 0,
         completedRequests: 0,
-        rating: 0
+        rating: 0,
+        totalEarnings: 0,
+        monthlyBookings: 0
     });
 
-    // animation 
-    const desRef = useRef();
+    // animation refs
+    const mainRef = useRef();
+    const welcomeRef = useRef();
+    const shopRef = useRef();
+    const statsRef = useRef();
+    const actionsRef = useRef();
+
     useGSAP(() => {
-        gsap.from(desRef.current, {
-            scale: 0,
-            duration: 0.5,
-            y: 300,
-            delay: 0.3
-        })
-    });
+        const timeline = gsap.timeline({
+            defaults: {
+                ease: "power2.out",
+                duration: 0.6
+            }
+        });
+        
+        // Initial fade in of the main container
+        timeline.fromTo(mainRef.current, 
+            { opacity: 0 },
+            { opacity: 1, duration: 0.3 }
+        )
+        // Welcome section slides in from top
+        .fromTo(welcomeRef.current,
+            { y: -50, opacity: 0 },
+            { y: 0, opacity: 1 }
+        )
+        // Shop info card slides in and fades
+        .fromTo(shopRef.current,
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1 },
+            "-=0.4"
+        )
+        // Stats cards stagger in from bottom
+        .fromTo(statsRef.current.children,
+            { 
+                y: 50,
+                opacity: 0,
+                scale: 0.9
+            },
+            { 
+                y: 0,
+                opacity: 1,
+                scale: 1,
+                stagger: 0.1,
+                duration: 0.4
+            },
+            "-=0.3"
+        )
+        // Quick action buttons slide in from left with stagger
+        .fromTo(actionsRef.current.children,
+            {
+                x: -30,
+                opacity: 0,
+                scale: 0.9
+            },
+            {
+                x: 0,
+                opacity: 1,
+                scale: 1,
+                stagger: 0.1,
+                duration: 0.4
+            },
+            "-=0.2"
+        );
+    }, []);
 
     useEffect(() => {
         // Fetch dashboard statistics
@@ -62,107 +118,140 @@ const Dashboard = () => {
                 <meta name="description" content="Service Provider Dashboard - Manage your services and requests" />
             </Helmet>
             <Sidebar />
-            <main className="flex-1 lg:ml-64 py-6 px-8 mt-20">
-                {/* Welcome Section */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800">
-                        Welcome back, {serviceprovider.spName}!
-                    </h1>
-                    <p className="text-gray-600 mt-2">
-                        Manage your shop and services from your dashboard
-                    </p>
+            <main ref={mainRef} className="flex-1 lg:ml-64 mt-8 min-h-screen bg-gray-50">
+                {/* Top Bar with Notifications */}
+                <div className="bg-white shadow-sm py-4 px-8 flex justify-between items-center sticky top-0 z-10">
+                    <div className="flex items-center space-x-4">
+                        <FaChartLine className="text-emerald-600 text-2xl" />
+                        <h2 className="text-xl font-semibold text-gray-800">Dashboard Overview</h2>
+                    </div>
+                    <button className="p-2 rounded-full hover:bg-gray-100 relative transition-colors duration-200">
+                        <FaBell className="text-gray-600 text-xl" />
+                        <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center transform scale-100 hover:scale-110 transition-transform duration-200">3</span>
+                    </button>
                 </div>
 
-                {/* Shop Info Card */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-                    <div className="flex items-center mb-4">
-                        <FaShop className="text-3xl text-blue-600 mr-4" />
-                        <div>
-                            <h2 className="text-xl font-semibold text-gray-800">{serviceprovider.spShopName}</h2>
-                            <p className="text-gray-600">{serviceprovider.spArea}, {serviceprovider.spCity}</p>
-                        </div>
+                <div className="p-8">
+                    {/* Welcome Section */}
+                    <div ref={welcomeRef} className="mb-8 bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-2xl p-8 text-white shadow-lg transform hover:shadow-xl transition-all duration-300">
+                        <h1 className="text-3xl font-bold mb-2">
+                            Welcome back, {serviceprovider.spName}!
+                        </h1>
+                        <p className="text-emerald-100 text-lg">
+                            Here&apos;s what&apos;s happening with your business today
+                        </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div className="flex items-center">
-                            <FaUsers className="text-gray-500 mr-2" />
-                            <span className="text-gray-700">{serviceprovider.spContact}</span>
-                        </div>
-                        <div className="flex items-center">
-                            <FaStar className="text-yellow-500 mr-2" />
-                            <span className="text-gray-700">{stats.rating || 0} Rating</span>
-                        </div>
-                    </div>
-                </div>
 
-                {/* Statistics Grid */}
-                <div ref={desRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Total Services */}
-                    <div className="bg-blue-500 text-white rounded-lg shadow-md p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm opacity-75">Total Services</p>
-                                <h3 className="text-2xl font-bold mt-1">{stats.totalServices}</h3>
+                    {/* Shop Info Card */}
+                    <div ref={shopRef} className="bg-white rounded-2xl shadow-md p-6 mb-8 transform hover:scale-[1.01] hover:shadow-lg transition-all duration-300">
+                        <div className="flex items-center mb-4">
+                            <div className="p-3 bg-emerald-100 rounded-xl mr-4 transform hover:rotate-6 transition-transform duration-300">
+                                <FaShop className="text-3xl text-emerald-600" />
                             </div>
-                            <FaClipboardList className="text-3xl opacity-75" />
-                        </div>
-                    </div>
-
-                    {/* Pending Requests */}
-                    <div className="bg-yellow-500 text-white rounded-lg shadow-md p-6">
-                        <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm opacity-75">Pending Requests</p>
-                                <h3 className="text-2xl font-bold mt-1">{stats.pendingRequests}</h3>
+                                <h2 className="text-xl font-semibold text-gray-800">{serviceprovider.spShopName}</h2>
+                                <p className="text-gray-600">{serviceprovider.spArea}, {serviceprovider.spCity}</p>
                             </div>
-                            <FaClipboardList className="text-3xl opacity-75" />
+                            <button 
+                                onClick={() => navigate('/myshop')}
+                                className="ml-auto px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transform hover:scale-105 transition-all duration-300"
+                            >
+                                Manage Shop
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                            <div className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                                <FaUsers className="text-gray-500 mr-2 transform group-hover:scale-110 transition-transform duration-300" />
+                                <span className="text-gray-700">{serviceprovider.spContact}</span>
+                            </div>
+                            <div className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                                <FaStar className="text-yellow-500 mr-2 transform group-hover:scale-110 transition-transform duration-300" />
+                                <span className="text-gray-700">{stats.rating || 0} Rating</span>
+                            </div>
+                            <div className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                                <FaCalendarCheck className="text-emerald-500 mr-2 transform group-hover:scale-110 transition-transform duration-300" />
+                                <span className="text-gray-700">{stats.monthlyBookings || 0} Bookings this month</span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Completed Requests */}
-                    <div className="bg-green-500 text-white rounded-lg shadow-md p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm opacity-75">Completed Requests</p>
-                                <h3 className="text-2xl font-bold mt-1">{stats.completedRequests}</h3>
+                    {/* Statistics Grid */}
+                    <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        {/* Total Services */}
+                        <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl shadow-md p-6 transform hover:scale-[1.02] hover:shadow-lg transition-all duration-300">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-white/10 rounded-lg transform hover:rotate-6 transition-transform duration-300">
+                                    <FaClipboardList className="text-2xl" />
+                                </div>
+                                <span className="text-xs font-semibold bg-white/20 px-2 py-1 rounded-full">Services</span>
                             </div>
-                            <FaClipboardList className="text-3xl opacity-75" />
+                            <h3 className="text-3xl font-bold">{stats.totalServices}</h3>
+                            <p className="text-blue-100 mt-1">Total Services</p>
+                        </div>
+
+                        {/* Pending Requests */}
+                        <div className="bg-gradient-to-br from-amber-500 to-amber-600 text-white rounded-2xl shadow-md p-6 transform hover:scale-[1.02] hover:shadow-lg transition-all duration-300">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-white/10 rounded-lg transform hover:rotate-6 transition-transform duration-300">
+                                    <FaClipboardList className="text-2xl" />
+                                </div>
+                                <span className="text-xs font-semibold bg-white/20 px-2 py-1 rounded-full">Pending</span>
+                            </div>
+                            <h3 className="text-3xl font-bold">{stats.pendingRequests}</h3>
+                            <p className="text-amber-100 mt-1">Pending Requests</p>
+                        </div>
+
+                        {/* Completed Requests */}
+                        <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-2xl shadow-md p-6 transform hover:scale-[1.02] hover:shadow-lg transition-all duration-300">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-white/10 rounded-lg transform hover:rotate-6 transition-transform duration-300">
+                                    <FaClipboardList className="text-2xl" />
+                                </div>
+                                <span className="text-xs font-semibold bg-white/20 px-2 py-1 rounded-full">Completed</span>
+                            </div>
+                            <h3 className="text-3xl font-bold">{stats.completedRequests}</h3>
+                            <p className="text-emerald-100 mt-1">Completed Requests</p>
+                        </div>
+
+                        {/* Total Earnings */}
+                        <div className="bg-gradient-to-br from-violet-500 to-violet-600 text-white rounded-2xl shadow-md p-6 transform hover:scale-[1.02] hover:shadow-lg transition-all duration-300">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="p-3 bg-white/10 rounded-lg transform hover:rotate-6 transition-transform duration-300">
+                                    <FaMoneyBillWave className="text-2xl" />
+                                </div>
+                                <span className="text-xs font-semibold bg-white/20 px-2 py-1 rounded-full">Earnings</span>
+                            </div>
+                            <h3 className="text-3xl font-bold">₹{stats.totalEarnings || 0}</h3>
+                            <p className="text-violet-100 mt-1">Total Earnings</p>
                         </div>
                     </div>
 
-                    {/* Rating */}
-                    <div className="bg-purple-500 text-white rounded-lg shadow-md p-6">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-sm opacity-75">Average Rating</p>
-                                <h3 className="text-2xl font-bold mt-1">{stats.rating || 0}/5</h3>
-                            </div>
-                            <FaStar className="text-3xl opacity-75" />
+                    {/* Quick Actions */}
+                    <div className="bg-white rounded-2xl shadow-md p-6">
+                        <h2 className="text-xl font-semibold text-gray-800 mb-6">Quick Actions</h2>
+                        <div ref={actionsRef} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button
+                                onClick={() => navigate('/addservice')}
+                                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 px-4 rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
+                            >
+                                <FaClipboardList className="text-xl transform group-hover:rotate-6 transition-transform duration-300" />
+                                <span>Add New Service</span>
+                            </button>
+                            <button
+                                onClick={() => navigate('/myshop')}
+                                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-4 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
+                            >
+                                <FaShop className="text-xl transform group-hover:rotate-6 transition-transform duration-300" />
+                                <span>Manage Shop</span>
+                            </button>
+                            <button
+                                onClick={() => navigate('/order')}
+                                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-violet-500 to-violet-600 text-white py-3 px-4 rounded-xl hover:from-violet-600 hover:to-violet-700 transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg"
+                            >
+                                <FaClipboardList className="text-xl transform group-hover:rotate-6 transition-transform duration-300" />
+                                <span>View Orders</span>
+                            </button>
                         </div>
-                    </div>
-                </div>
-
-                {/* Quick Actions */}
-                <div className="mt-8">
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <button
-                            onClick={() => navigate('/addservice')}
-                            className="bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition duration-200"
-                        >
-                            Add New Service
-                        </button>
-                        <button
-                            onClick={() => navigate('/myshop')}
-                            className="bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition duration-200"
-                        >
-                            Manage Shop
-                        </button>
-                        <button
-                            onClick={() => navigate('/order')}
-                            className="bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition duration-200"
-                        >
-                            View Orders
-                        </button>
                     </div>
                 </div>
             </main>
