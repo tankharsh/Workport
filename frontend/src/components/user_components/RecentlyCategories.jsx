@@ -65,14 +65,14 @@ const RcCat = ({ service }) => {
     }
 
     // If user is logged in, navigate to WhatsApp
-    if (!service || !service.service_provider || !service.service_provider.sp_contact) {
+    if (!service || !service.serviceProviderId || !service.serviceProviderId.spContact) {
       toast.error("❌ Contact information missing!");
       return;
     }
 
-    const phoneNumber = service.service_provider.sp_contact.startsWith("+")
-      ? service.service_provider.sp_contact.replace("+", "")
-      : "91" + service.service_provider.sp_contact;
+    const phoneNumber = service.serviceProviderId.spContact.startsWith("+")
+      ? service.serviceProviderId.spContact.replace("+", "")
+      : "91" + service.serviceProviderId.spContact;
 
     const whatsappURL = `https://wa.me/${phoneNumber}?text=Hello%2C%20I%20am%20interested%20in%20your%20services.`;
 
@@ -80,7 +80,7 @@ const RcCat = ({ service }) => {
   }
 
   const handleInquiry = async (service) => {
-    // console.log("AA CHHE : ", service.service_provider._id)
+    // console.log("AA CHHE : ", service.serviceProviderId._id)
     if (!user || !user.id) {
       setShowPopup(true);
       return;
@@ -102,7 +102,7 @@ const RcCat = ({ service }) => {
         body: JSON.stringify({
           user: user.id,
           service: service._id,
-          serviceProvider: service.service_provider._id,
+          serviceProvider: service.serviceProviderId._id,
         }),
       });
 
@@ -110,7 +110,7 @@ const RcCat = ({ service }) => {
       // console.log("Server Response:", data);
 
       if (response.ok) {
-        toast.success(`Inquiry Sent Successfully to ${service.service_provider.sp_name}!`, {
+        toast.success(`Inquiry Sent Successfully to ${service.serviceProviderId.spName}!`, {
           position: "bottom-right",
           autoClose: 1500,
         });
@@ -136,8 +136,8 @@ const RcCat = ({ service }) => {
       {/* Image Section */}
       <div className="w-full h-40 bg-gray-200 flex justify-center items-center">
         <img
-          src={`http://localhost:4000/uploads/${service.services_img}`}
-          alt={service.services_name}
+          src={`http://localhost:4000/uploads/${service.serviceImage}`}
+          alt={service.serviceName}
           className="w-full h-full object-cover"
         />
       </div>
@@ -145,9 +145,9 @@ const RcCat = ({ service }) => {
       {/* Content Section */}
       <div className="p-4">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-xl font-bold capitalize text-gray-800">{service.services_name}</h2>
+          <h2 className="text-xl font-bold capitalize text-gray-800">{service.serviceName}</h2>
 
-          <p className="text-xl font-bold text-green-600">₹{service.services_price}</p>
+          <p className="text-xl font-bold text-green-600">₹{service.servicePrice}</p>
         </div>
 
         {/* Rating */}
@@ -162,28 +162,28 @@ const RcCat = ({ service }) => {
 
         {/* Description */}
         <p className="text-sm mt-1 text-gray-600 text-justify break-words "> 
-          {service.services_description 
-            ? (service.services_description.substr(0, 200) + " ...") 
+          {service.serviceDescription 
+            ? (service.serviceDescription.substr(0, 200) + " ...") 
             : "No description available"
           }
-          {service.services_description && service.services_description.length > 200 && 
+          {service.serviceDescription && service.serviceDescription.length > 200 && 
             <span className="cursor-pointer">Read more</span>
           }
         </p>
 
         {/* Additional Info */}
         <div className="mt-4 flex justify-between items-center">
-          {service.service_provider ? (
+          {service.serviceProviderId ? (
             <Link 
-              to={`/Shop-Dashboard/${service.service_provider._id}`} 
+              to={`/Shop-Dashboard/${service.serviceProviderId._id}`} 
               className="text-md text-gray-700 cursor-pointer font-bold underline"
             >
-              Shop: {service.service_provider.sp_shop_name || 'Unknown Shop'}
+              Shop: {service.serviceProviderId.spShopName || 'Unknown Shop'}
             </Link>
           ) : (
             <span className="text-md text-gray-700 font-bold">Shop: Not Available</span>
           )}
-          <p className="text-sm text-black">Duration: {service.services_duration || 'N/A'}</p>
+          <p className="text-sm text-black">Duration: {service.serviceDuration || 'N/A'}</p>
         </div>
 
         <div className="flex flex-nowrap justify-center gap-3 mt-6 ">

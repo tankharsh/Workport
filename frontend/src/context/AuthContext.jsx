@@ -174,6 +174,7 @@ export const AuthProvider = ({ children }) => {
                 user,
                 fetchUserProfile,
                 serviceprovider,
+                setServiceprovider,
                 storeSPToken,
                 fetchServiceProviderProfile,
                 spLogout,

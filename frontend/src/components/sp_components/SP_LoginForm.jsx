@@ -49,7 +49,7 @@ function SP_LoginForm() {
             } else if (res.status === 403 && data.requiresVerification) {
                 // Email not verified, redirect to verification page
                 showPopup('Please verify your email to continue', 'info');
-                navigate(`/verify-email?email=${encodeURIComponent(data.spEmail)}&type=sp`);
+                navigate(`/verify-email?email=${encodeURIComponent(formData.spEmail)}&type=sp`);
             } else {
                 showPopup('Login Failed: ' + (data.message || "Unknown error"), 'error');
                 console.log("Login failed:", data.message || "Unknown error");

@@ -1,0 +1,122 @@
+[
+  {
+    "question": "What is Workport?",
+    "answer": "Workport is an online platform where users can connect with service providers for various services, and service providers can offer their services.",
+    "keywords": ["workport", "what is", "platform", "service"],
+    "category": "general"
+  },
+  {
+    "question": "How do I create an account?",
+    "answer": "You can create an account by clicking the 'Register' button on the homepage. You'll need to provide your name, email, phone number, and password. You'll then receive a verification email or OTP to verify your account.",
+    "keywords": ["account", "register", "sign up", "create"],
+    "category": "account"
+  },
+  {
+    "question": "How do I become a service provider?",
+    "answer": "To become a service provider, you need to go to the 'Service Provider Registration' page and fill in your information. You'll need to provide details about your skills, experience, and services. After verification, you can list your services.",
+    "keywords": ["service provider", "become", "registration"],
+    "category": "account"
+  },
+  {
+    "question": "How do I list my services?",
+    "answer": "In the Service Provider Dashboard, click on the 'Add Service' button. Then enter your service details, price, and upload photos. You can also select the category for your service.",
+    "keywords": ["service", "list", "add", "services"],
+    "category": "services"
+  },
+  {
+    "question": "How do I pay for services?",
+    "answer": "When you book a service, you'll be redirected to the payment page. You can pay using credit/debit cards, net banking, or UPI.",
+    "keywords": ["payment", "pay", "how to pay"],
+    "category": "payment"
+  },
+  {
+    "question": "Can I cancel my booking?",
+    "answer": "Yes, you can cancel your booking. Go to the 'My Bookings' section in your user dashboard and click the 'Cancel' button for the booking you want to cancel. Please note that the refund policy depends on the time of booking and the service provider's terms.",
+    "keywords": ["booking", "cancel", "cancellation"],
+    "category": "services"
+  },
+  {
+    "question": "How do I reset my password?",
+    "answer": "To reset your password, click on the 'Forgot Password' link on the login page. Enter your registered email or phone number, and you'll receive a link or OTP to reset your password.",
+    "keywords": ["password", "reset", "forgot"],
+    "category": "account"
+  },
+  {
+    "question": "How do I contact a service provider?",
+    "answer": "You can go to the service provider's profile page and click the 'Contact' button. You can send them a message or view their contact details.",
+    "keywords": ["contact", "service provider", "message"],
+    "category": "services"
+  },
+  {
+    "question": "How do I provide feedback?",
+    "answer": "After the service is completed, you'll have the option to provide feedback. You can go to the 'My Bookings' section in your user dashboard and provide a rating and review for the service.",
+    "keywords": ["feedback", "review", "rating"],
+    "category": "services"
+  },
+  {
+    "question": "Is Workport available on mobile app?",
+    "answer": "Currently, Workport is only available as a web platform. We're planning to launch mobile apps for Android and iOS soon.",
+    "keywords": ["mobile", "app", "android", "ios"],
+    "category": "general"
+  },
+  {
+    "question": "What services are available on Workport?",
+    "answer": "Workport offers various types of services, such as household services (cleaning, repairs), professional services (legal, financial advice), health and wellness, education and training, technical support, and much more.",
+    "keywords": ["services", "available", "types"],
+    "category": "services"
+  },
+  {
+    "question": "Can I register as multiple service providers?",
+    "answer": "Yes, you can register as multiple service providers. You'll need to create separate profiles for each service category and provide the necessary qualifications and experience for each.",
+    "keywords": ["multiple", "service provider", "registration"],
+    "category": "account"
+  },
+  {
+    "question": "How do I update my profile?",
+    "answer": "To update your profile, log in to your dashboard and go to the 'Profile' or 'Settings' section. There you can update your personal information, contact details, and profile photo.",
+    "keywords": ["profile", "update", "edit"],
+    "category": "account"
+  },
+  {
+    "question": "Can I reschedule my booking?",
+    "answer": "Yes, you can reschedule your booking, but it depends on the service provider's availability and policies. Go to the 'My Bookings' section in your user dashboard and use the 'Reschedule' option or contact the service provider directly.",
+    "keywords": ["booking", "time", "change", "reschedule"],
+    "category": "services"
+  },
+  {
+    "question": "How do I set the price for my service?",
+    "answer": "To set the price for your service, you can consider market rates, your experience level, and the complexity of the service. You can set the price by going to the 'Service Management' section in your service provider dashboard.",
+    "keywords": ["price", "set", "value"],
+    "category": "services"
+  },
+  {
+    "question": "Are there any commissions or fees on Workport?",
+    "answer": "Yes, Workport charges a small platform fee for each successful booking. This fee is a percentage of the total service price and is automatically deducted from the service provider's payment. For detailed fee structure, please see the 'Fees and Commissions' page.",
+    "keywords": ["commission", "fee", "charges"],
+    "category": "payment"
+  },
+  {
+    "question": "How do I manage my customers?",
+    "answer": "To manage your customers, use the 'Customer Management' section in your service provider dashboard. Here you can see a list of all your customers, their contact details, and booking history. You can also send them messages and offer special deals.",
+    "keywords": ["customer", "management", "contact"],
+    "category": "services"
+  },
+  {
+    "question": "How do I get reviews for my services?",
+    "answer": "To get reviews for your services, encourage customers to provide feedback after the service is completed. You can send them a follow-up email or message, or personally request them to leave a review. Providing good service is also an important part of getting good reviews.",
+    "keywords": ["reviews", "feedback", "get"],
+    "category": "services"
+  },
+  {
+    "question": "Can I offer promotions or discounts for my services?",
+    "answer": "Yes, you can offer promotions or discounts for your services. Go to the 'Promotions' section in your service provider dashboard and create new offers. You can provide time-limited discounts, package deals, or special offers for new customers.",
+    "keywords": ["promotion", "discount", "offer"],
+    "category": "services"
+  },
+  {
+    "question": "How secure is my payment information on Workport?",
+    "answer": "Workport takes security very seriously. All payment information is encrypted and processed through secure payment gateways. We do not store your complete card details on our servers. We comply with industry-standard security protocols to ensure your financial information remains safe.",
+    "keywords": ["security", "payment", "information", "safe"],
+    "category": "payment"
+  }
+] 

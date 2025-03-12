@@ -14,10 +14,21 @@ const otpRoutes = require('./routes/otpRoutes');
 const serviceRoutes = require('./routes/service.routes');
 const inquiryRoutes = require('./routes/inquiry.routes');
 const verificationRoutes = require('./routes/verification.routes');
+const chatbotRoutes = require('./routes/chatbot.routes');
 
 
 connectDB();
-app.use(cors());
+
+// Configure CORS
+const corsOptions = {
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'], // Add your frontend URL
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true, // Allow cookies
+  optionsSuccessStatus: 204,
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended:true}));
 app.use("/uploads", express.static("uploads"));
@@ -42,6 +53,7 @@ app.use('/api/otp', otpRoutes);
 app.use('/api/services',serviceRoutes);
 app.use('/api/inquiries',inquiryRoutes);
 app.use('/api/verification', verificationRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 // Static files for uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

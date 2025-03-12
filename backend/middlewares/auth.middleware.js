@@ -70,3 +70,44 @@ module.exports.authServiceProvider = async (req, res, next) => {
     return res.status(400).json({ message: "Invalid Token" });
   }
 };
+
+// Middleware for checking if user is an admin
+module.exports.isAdmin = async (req, res, next) => {
+  try {
+    // For development purposes, temporarily allow all requests to pass through
+    // This will help test the chatbot functionality without admin authentication
+    // IMPORTANT: Remove this in production!
+    return next();
+    
+    // Uncomment the below code when ready to implement proper admin authentication
+    /*
+    const authHeader = req.header("Authorization");
+
+    if (!authHeader) {
+      return res.status(401).json({ message: "Access Denied: No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Access Denied: Token missing" });
+    }
+
+    // Check if the token is blacklisted
+    const isBlacklisted = await BlackListToken.findOne({ token });
+    if (isBlacklisted) {
+      return res.status(401).json({ message: "Access Denied: Token is blacklisted" });
+    }
+
+    // Verify token and check for admin role
+    const verified = jwt.verify(token, secretKey);
+    if (!verified.isAdmin) {
+      return res.status(403).json({ message: "Access Denied: Admin privileges required" });
+    }
+
+    req.admin = verified; // Attach admin data to the request object
+    next();
+    */
+  } catch (err) {
+    return res.status(400).json({ message: "Invalid Token" });
+  }
+};

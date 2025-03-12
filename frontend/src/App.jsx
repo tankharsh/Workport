@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import axios from 'axios';
 import Loader from './admin/Loader';
@@ -16,10 +16,10 @@ import User_Dashboard from './pages/user_pages/User_Dashboard';
 import AdminDashboard from './admin/AdminDashboard';
 import AdminGetAllServiceProvider from './admin/AdminGetAllServiceProvider';
 import AdminGetAllUser from './admin/AdminGetAllUser';
-import SP_LoginForm from './components/sp_components/SP_LoginForm';
 import Shop_Dashboard from './pages/user_pages/Shop_Dashboard';
 import AdminAddCategory from './admin/AdminAddCategory';
 import AdminAllCategory from './admin/AdminAllCategory';
+import AdminChatbotFAQs from './admin/AdminChatbotFAQs';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import SPProtectedRoute from './pages/Protected';
 import Cartpage from './components/user_components/Cartpage';
@@ -32,6 +32,7 @@ import UserServicesView from './pages/user_pages/UserServicesView';
 import VerificationPage from './components/common/VerificationPage';
 import NewUserAuth from './components/user_components/NewUserAuth';
 import NewSPAuth from './components/sp_components/NewSPAuth';
+import ChatBot from './components/common/ChatBot';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -74,14 +75,15 @@ function App() {
     <>
       <HelmetProvider>
         <Helmet>
-          <title>Work Port</title>
-          <meta name="description" content="Description of my website" />
+          <title>Workport - Connect with Service Providers</title>
+          <meta name="description" content="Find and connect with service providers in your area" />
         </Helmet>
 
         {/* toast  */}
         <ToastContainer />
 
         <Router>
+          <ChatBot />
           <Loader show={loading} />
           <Routes>
             {/* users routes  */}
@@ -100,7 +102,7 @@ function App() {
 
             {/* Service Provider routes  */}
             <Route path='/sp-provider' element={<SP_RegistrationForm />} />
-            <Route path='/sp-provider-login' element={<SP_LoginForm />} />
+            <Route path='/sp-provider-login' element={<Navigate to="/sp-provider-login-new" replace />} />
             <Route path='/sp-provider-login-new' element={<NewSPAuth />} />
             <Route element={<SPProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
@@ -120,6 +122,7 @@ function App() {
             <Route path='/Admin-Dashboard/all-users' element={<AdminGetAllUser />} />
             <Route path='/Admin-Dashboard/add-category' element={<AdminAddCategory />} />
             <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
+            <Route path='/Admin-Dashboard/chatbot-faqs' element={<AdminChatbotFAQs />} />
 
             {/* Universal routes  */}
             <Route path="*" element={<Navigate to="/" />} />

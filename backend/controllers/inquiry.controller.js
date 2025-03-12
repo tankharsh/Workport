@@ -260,7 +260,7 @@ exports.getUserInquiries = async (req, res) => {
     try {
         const { userId } = req.params;
         const inquiries = await Inquiry.find({ user: userId })
-            .populate("service", "serviceName")  // Fixed field name to match Service model
+            .populate("service", "serviceName serviceImage servicePrice serviceDuration")  // Added serviceImage field
             .populate("serviceProvider", "spName")  // Fixed field name to match ServiceProvider model
             .lean();
 

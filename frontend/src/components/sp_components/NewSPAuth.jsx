@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Helmet } from 'react-helmet-async';
@@ -8,7 +8,15 @@ import Navbar from '../user_components/Navbar';
 const NewSPAuth = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { storeSPToken, showPopup } = useAuth();
+  const { storeSPToken, showPopup, serviceprovider } = useAuth();
+  
+  // Check if already logged in
+  useEffect(() => {
+    const spToken = localStorage.getItem('SP_token');
+    if (spToken && serviceprovider) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [serviceprovider, navigate]);
   
   // Determine if we're on login or register page
   const isLoginPage = location.pathname === '/sp-provider-login-new';

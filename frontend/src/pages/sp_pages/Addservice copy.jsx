@@ -14,13 +14,13 @@ const AddServicePopup = () => {
 
 
   const [formData, setFormData] = useState({
-    services_name: "",
-    services_price: "",
-    services_description: "",
-    services_duration: "",
+    serviceName: "",
+    servicePrice: "",
+    serviceDescription: "",
+    serviceDuration: "",
     categoryId: "",
-    service_provider: storedUser?.id || "", // ✅ Ensure service_provider is always set
-    services_img: null,
+    serviceProviderId: storedUser?.id || "", // ✅ Ensure service_provider is always set
+    serviceImage: null,
   });
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const AddServicePopup = () => {
     }
     
 
-    setFormData((prev) => ({ ...prev, service_provider: storedUser.id }));
+    setFormData((prev) => ({ ...prev, serviceProviderId: storedUser.id }));
 
     const fetchCategories = async () => {
       try {
@@ -55,7 +55,7 @@ const AddServicePopup = () => {
         const response = await fetch("http://localhost:4000/api/services/");
         const data = await response.json();
         const filteredServices = data.filter(
-          (service) => service.service_provider._id === storedUser.id
+          (service) => service.serviceProviderId._id === storedUser.id
         );
         setServices(filteredServices);
       } catch (error) {
@@ -80,7 +80,7 @@ const AddServicePopup = () => {
   
     console.log("🔹 Submitting Form Data:", formData); // ✅ Debugging log
   
-    if (!formData.service_provider) {
+    if (!formData.serviceProviderId) {
       console.error("❌ Error: Service provider ID is missing.");
       Swal.fire({
         icon: "error",
@@ -92,7 +92,7 @@ const AddServicePopup = () => {
   
     const formDataToSend = new FormData();
     for (const key in formData) {
-      if (key === "services_img" && formData[key] instanceof File) {
+      if (key === "serviceImage" && formData[key] instanceof File) {
         formDataToSend.append(key, formData[key]);
       } else {
         formDataToSend.append(key, formData[key]);
@@ -122,7 +122,7 @@ const AddServicePopup = () => {
           const res = await fetch("http://localhost:4000/api/services/");
           const data = await res.json();
           setServices(
-            data.filter((service) => service.service_provider._id === storedUser.id)
+            data.filter((service) => service.serviceProviderId._id === storedUser.id)
           );
         }
   
@@ -135,15 +135,15 @@ const AddServicePopup = () => {
         setShowPopup(false);
         setIsEditing(false);
   
-        // ✅ Ensure service_provider is always retained
+        // ✅ Ensure serviceProviderId is always retained
         setFormData({
-          services_name: "",
-          services_price: "",
-          services_description: "",
-          services_duration: "",
+          serviceName: "",
+          servicePrice: "",
+          serviceDescription: "",
+          serviceDuration: "",
           categoryId: "",
-          service_provider: storedUser?.id || "",
-          services_img: null,
+          serviceProviderId: storedUser?.id || "",
+          serviceImage: null,
         });
   
       } else {
@@ -168,13 +168,13 @@ const AddServicePopup = () => {
     console.log("📝 Editing Service:", service); // ✅ Debugging log
 
     setFormData({
-      services_name: service.services_name,
-      services_price: service.services_price,
-      services_description: service.services_description,
-      services_duration: service.services_duration,
+      serviceName: service.serviceName,
+      servicePrice: service.servicePrice,
+      serviceDescription: service.serviceDescription,
+      serviceDuration: service.serviceDuration,
       categoryId: service.categoryId?._id || "",
-      service_provider: service.service_provider?._id || storedUser?.id || "", // ✅ Ensure service_provider is set
-      services_img: service.services_img,
+      serviceProviderId: service.serviceProviderId?._id || storedUser?.id || "", // ✅ Ensure service_provider is set
+      serviceImage: service.serviceImage,
     });
 
     setEditServiceId(service._id);
@@ -225,13 +225,13 @@ const AddServicePopup = () => {
               setShowPopup(true);
               setIsEditing(false);
               setFormData({
-                services_name: "",
-                services_price: "",
-                services_description: "",
-                services_duration: "",
+                serviceName: "",
+                servicePrice: "",
+                serviceDescription: "",
+                serviceDuration: "",
                 categoryId: "",
-                service_provider: storedUser?.id || "",
-                services_img: null,
+                serviceProviderId: storedUser?.id || "",
+                serviceImage: null,
               });
             }}
             className="bg-purple-600 text-white float-right px-4 py-2 rounded-lg mb-4"
@@ -256,11 +256,11 @@ const AddServicePopup = () => {
             <tbody>
               {services.map((service) => (
                 <tr key={service._id} className="text-center">
-                  <td className="border p-2">{service.services_name}</td>
-                  <td className="border p-2">{service.services_price}</td>
-                  <td className="border p-2">{service.services_duration}</td>
+                  <td className="border p-2">{service.serviceName}</td>
+                  <td className="border p-2">{service.servicePrice}</td>
+                  <td className="border p-2">{service.serviceDuration}</td>
                   <td className="border p-2">{service.categoryId?.categoryName || "N/A"}</td>
-                  <td className="border p-2"><img src={`http://localhost:4000/uploads/${service.services_img}`} alt="Service" className="w-16 h-16 object-cover mx-auto" /></td>
+                  <td className="border p-2"><img src={`http://localhost:4000/uploads/${service.serviceImage}`} alt="Service" className="w-16 h-16 object-cover mx-auto" /></td>
                   <td className="border p-2">
                     <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => handleEdit(service)}>Edit</button>
                     <button className="bg-red-500 text-white px-2 py-1 rounded" onClick={() => handleDelete(service._id)}>Delete</button>
@@ -275,10 +275,10 @@ const AddServicePopup = () => {
             <div className="bg-white p-8 rounded-lg w-full max-w-lg">
               <h2 className="text-2xl mb-4 text-black">{isEditing ? "Edit Service" : "Add Service"}</h2>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <input type="text" name="services_name" value={formData.services_name} onChange={handleChange} placeholder="Service Name" className="w-full p-2 border rounded text-black" required />
-                <input type="number" name="services_price" value={formData.services_price} onChange={handleChange} placeholder="Service Price" className="w-full p-2 border rounded text-black" required />
-                <textarea name="services_description" value={formData.services_description} onChange={handleChange} placeholder="Service Description" className="w-full p-2 border rounded text-black" required />
-                <input type="text" name="services_duration" value={formData.services_duration} onChange={handleChange} placeholder="Service Duration" className="w-full p-2 border rounded text-black" required />
+                <input type="text" name="serviceName" value={formData.serviceName} onChange={handleChange} placeholder="Service Name" className="w-full p-2 border rounded text-black" required />
+                <input type="number" name="servicePrice" value={formData.servicePrice} onChange={handleChange} placeholder="Service Price" className="w-full p-2 border rounded text-black" required />
+                <textarea name="serviceDescription" value={formData.serviceDescription} onChange={handleChange} placeholder="Service Description" className="w-full p-2 border rounded text-black" required />
+                <input type="text" name="serviceDuration" value={formData.serviceDuration} onChange={handleChange} placeholder="Service Duration" className="w-full p-2 border rounded text-black" required />
                 <select name="categoryId" value={formData.categoryId} onChange={handleChange} className="w-full p-2 border rounded text-black" required>
                   <option value="" >Select Category</option>
                   {categories.map((category) => (
@@ -286,17 +286,17 @@ const AddServicePopup = () => {
                   ))}
                 </select>
 
-                {isEditing ? (formData.services_img && (
+                {isEditing ? (formData.serviceImage && (
                   <div className="mb-4">
                     <img
-                      src={`http://localhost:4000/uploads/${formData.services_img}`}
+                      src={`http://localhost:4000/uploads/${formData.serviceImage}`}
                       alt="Service"
                       className="w-full h-40 object-cover rounded-lg"
                     />
                   </div>
                 ))   : ""}
                 
-                <input type="file" name="services_img" onChange={handleChange} className="w-full p-2 border rounded text-black" />
+                <input type="file" name="serviceImage" onChange={handleChange} className="w-full p-2 border rounded text-black" />
                 <div className="flex justify-end gap-4">
                   <button type="button" onClick={() => setShowPopup(false)} className="bg-gray-400 text-black px-4 py-2 rounded-lg">Cancel</button>
                   <button type="submit" className="bg-purple-600 text-black px-4 py-2 rounded-lg">Submit</button>
