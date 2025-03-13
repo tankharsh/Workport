@@ -34,7 +34,7 @@ function UserRegistrationFrom() {
     if (!formData.userEmail) {
       newErrors.userEmail = "Email is required";
     } else if (!emailRegex.test(formData.userEmail)) {
-      newErrors.userEmail = "Please enter a valid email";
+      newErrors.userEmail = "<span style='font-family: Arial, sans-serif;'>Please enter a valid email</span>";
     }
 
     // Contact validation
@@ -42,7 +42,7 @@ function UserRegistrationFrom() {
     if (!formData.userContact) {
       newErrors.userContact = "Contact number is required";
     } else if (!phoneRegex.test(formData.userContact)) {
-      newErrors.userContact = "Please enter a valid 10-digit contact number";
+      newErrors.userContact = "<span style='font-family: Arial, sans-serif;'>Please enter a valid 10-digit contact number</span>";
     }
 
     // Password validation

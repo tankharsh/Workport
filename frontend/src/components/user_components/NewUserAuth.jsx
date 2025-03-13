@@ -100,7 +100,7 @@ const NewUserAuth = () => {
     if (!loginForm.userEmail) {
       newErrors.userEmail = "Email is required";
     } else if (!emailRegex.test(loginForm.userEmail)) {
-      newErrors.userEmail = "Please enter a valid email";
+      newErrors.userEmail = "<span style='font-family: Arial, sans-serif;'>Please enter a valid email</span>";
     }
     
     // Password validation
@@ -128,7 +128,7 @@ const NewUserAuth = () => {
     if (!registerForm.userEmail) {
       newErrors.userEmail = "Email is required";
     } else if (!emailRegex.test(registerForm.userEmail)) {
-      newErrors.userEmail = "Please enter a valid email";
+      newErrors.userEmail = "<span style='font-family: Arial, sans-serif;'>Please enter a valid email</span>";
     }
     
     // Contact validation
@@ -136,7 +136,7 @@ const NewUserAuth = () => {
     if (!registerForm.userContact) {
       newErrors.userContact = "Contact number is required";
     } else if (!phoneRegex.test(registerForm.userContact)) {
-      newErrors.userContact = "Please enter a valid 10-digit contact number";
+      newErrors.userContact = "<span style='font-family: Arial, sans-serif;'>Please enter a valid 10-digit contact number</span>";
     }
     
     // Password validation
