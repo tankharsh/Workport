@@ -4,7 +4,7 @@ import axios from "axios";
 import Navbar from "../../components/user_components/Navbar";
 import Footer from "../../components/user_components/Footer";
 import { FaRupeeSign, FaFilter, FaStar, FaMapMarkerAlt } from "react-icons/fa";
-import { MdPhone, MdSort } from "react-icons/md";
+import { MdPhone } from "react-icons/md";
 import { FaCheckCircle, FaWhatsapp } from "react-icons/fa";
 
 const User_Dashboard = () => {

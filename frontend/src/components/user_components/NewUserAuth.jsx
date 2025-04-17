@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Helmet } from 'react-helmet-async';
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser, FaPhone } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaUser, FaPhone, FaArrowRight } from 'react-icons/fa';
 import Navbar from './Navbar';
 
 const NewUserAuth = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { storeUserToken, showPopup } = useAuth();
-  
-  // Determine if we're on login or register page
   const isLoginPage = location.pathname === '/user-login-new';
-  
-  // Form states
+
   const [loginForm, setLoginForm] = useState({
     userEmail: '',
     password: '',
     showPassword: false
   });
-  
+
   const [registerForm, setRegisterForm] = useState({
     userName: '',
     userEmail: '',
@@ -29,14 +27,23 @@ const NewUserAuth = () => {
     showPassword: false,
     showConfirmPassword: false
   });
-  
+
+
+
+  const handleRegisterChange = (e) => {
+    const { name, value } = e.target;
+    setRegisterForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  
-  // API endpoints
+
   const USER_LOGIN_API_URI = "http://localhost:4000/api/users/login";
   const USER_REGISTER_API_URI = "http://localhost:4000/api/users/register";
-  
+
   // Handle login form changes
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
@@ -44,32 +51,8 @@ const NewUserAuth = () => {
       ...prev,
       [name]: value
     }));
-    
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
   };
   
-  // Handle register form changes
-  const handleRegisterChange = (e) => {
-    const { name, value } = e.target;
-    setRegisterForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    
-    // Clear error when user types
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  };
   
   // Toggle password visibility
   const togglePasswordVisibility = (formType) => {
@@ -257,287 +240,207 @@ const NewUserAuth = () => {
       setIsLoading(false);
     }
   };
-  
-  // Render login form
+
+  const InputField = ({ icon: Icon, error, ...props }) => (
+    <div className="relative">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-emerald-600">
+        <Icon className="text-lg" />
+      </div>
+      <input
+        {...props}
+        className={`w-full pl-12 pr-4 py-4 rounded-xl bg-white/10 border-2 ${
+          error ? 'border-red-400' : 'border-emerald-300/20'
+        } text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all`}
+      />
+      {error && (
+        <p className="text-red-400 text-sm mt-1 ml-1">{error}</p>
+      )}
+    </div>
+  );
+
   const renderLoginForm = () => (
-    <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Welcome Back</h2>
-      <p className="text-center text-gray-600 mb-8">Sign in to access your account</p>
-      
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="bg-gradient-to-br from-emerald-800/90 to-emerald-900/90 rounded-3xl shadow-2xl p-8 lg:p-12 w-full max-w-md backdrop-blur-lg"
+    >
+      <h2 className="text-3xl font-bold text-white mb-8">Welcome Back</h2>
       <form onSubmit={handleLoginSubmit} className="space-y-6">
-        {/* Email Field */}
-        <div>
-          <label htmlFor="userEmail" className="block text-sm font-medium text-gray-700 mb-1">
-            Email Address
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaEnvelope className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              id="userEmail"
-              name="userEmail"
-              type="email"
-              value={loginForm.userEmail}
-              onChange={handleLoginChange}
-              className={`block w-full pl-10 pr-3 py-3 border ${
-                errors.userEmail ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-              placeholder="Enter your email"
-            />
-          </div>
-          {errors.userEmail && (
-            <p className="mt-1 text-sm text-red-600">{errors.userEmail}</p>
-          )}
+        <InputField
+          icon={FaEnvelope}
+          type="email"
+          name="userEmail"
+          value={loginForm.userEmail}
+          onChange={handleLoginChange}
+          placeholder="Email address"
+          error={errors.userEmail}
+        />
+
+        <div className="relative">
+          <InputField
+            icon={FaLock}
+            type={loginForm.showPassword ? "text" : "password"}
+            name="password"
+            value={loginForm.password}
+            onChange={handleLoginChange}
+            placeholder="Password"
+            error={errors.password}
+          />
+          <button
+            type="button"
+            onClick={() => togglePasswordVisibility('login')}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+          >
+            {loginForm.showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
-        
-        {/* Password Field */}
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaLock className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              id="password"
-              name="password"
-              type={loginForm.showPassword ? "text" : "password"}
-              value={loginForm.password}
-              onChange={handleLoginChange}
-              className={`block w-full pl-10 pr-10 py-3 border ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-              placeholder="Enter your password"
-            />
-            <div 
-              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-              onClick={() => togglePasswordVisibility('login')}
-            >
-              {loginForm.showPassword ? (
-                <FaEyeSlash className="h-5 w-5 text-gray-400" />
-              ) : (
-                <FaEye className="h-5 w-5 text-gray-400" />
-              )}
-            </div>
-          </div>
-          {errors.password && (
-            <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-          )}
-        </div>
-        
-        {/* Submit Button */}
+
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-            isLoading ? 'opacity-70 cursor-not-allowed' : ''
-          }`}
+          className="w-full flex items-center justify-center py-4 px-6 rounded-xl bg-amber-400 text-emerald-900 hover:bg-amber-300 transition-all duration-300 transform hover:scale-105 font-medium disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
         >
-          {isLoading ? 'Signing in...' : 'Sign In'}
+          {isLoading ? (
+            <div className="flex items-center">
+              <div className="w-5 h-5 border-2 border-emerald-900 border-t-transparent rounded-full animate-spin mr-2"></div>
+              Signing in...
+            </div>
+          ) : (
+            <>
+              Sign In
+              <FaArrowRight className="ml-2" />
+            </>
+          )}
         </button>
       </form>
-      
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
+
+      <div className="mt-8 text-center">
+        <p className="text-white/80">
           Don't have an account?{' '}
           <button
             type="button"
             onClick={() => navigate('/user-register-new')}
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="text-amber-400 hover:text-amber-300 font-medium transition-colors hover:underline"
           >
             Sign up now
           </button>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
-  
-  // Render registration form
+
   const renderRegisterForm = () => (
-    <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Create Account</h2>
-      <p className="text-center text-gray-600 mb-8">Join WorkPort today</p>
-      
-      <form onSubmit={handleRegisterSubmit} className="space-y-5">
-        {/* Name Field */}
-        <div>
-          <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-1">
-            Full Name
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaUser className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              id="userName"
-              name="userName"
-              type="text"
-              value={registerForm.userName}
-              onChange={handleRegisterChange}
-              className={`block w-full pl-10 pr-3 py-3 border ${
-                errors.userName ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-              placeholder="Enter your full name"
-            />
-          </div>
-          {errors.userName && (
-            <p className="mt-1 text-sm text-red-600">{errors.userName}</p>
-          )}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      className="bg-gradient-to-br from-emerald-800/90 to-emerald-900/90 rounded-3xl shadow-2xl p-8 lg:p-12 w-full max-w-md backdrop-blur-lg"
+    >
+      <h2 className="text-3xl font-bold text-white mb-8">Create Account</h2>
+      <form onSubmit={handleRegisterSubmit} className="space-y-6">
+        <InputField
+          icon={FaUser}
+          type="text"
+          name="userName"
+          value={registerForm.userName}
+          onChange={handleRegisterChange}
+          placeholder="Full name"
+          error={errors.userName}
+        />
+
+        <InputField
+          icon={FaEnvelope}
+          type="email"
+          name="userEmail"
+          value={registerForm.userEmail}
+          onChange={handleRegisterChange}
+          placeholder="Email address"
+          error={errors.userEmail}
+        />
+
+        <InputField
+          icon={FaPhone}
+          type="tel"
+          name="userContact"
+          value={registerForm.userContact}
+          onChange={handleRegisterChange}
+          placeholder="Contact number"
+          error={errors.userContact}
+        />
+
+        <div className="relative">
+          <InputField
+            icon={FaLock}
+            type={registerForm.showPassword ? "text" : "password"}
+            name="password"
+            value={registerForm.password}
+            onChange={handleRegisterChange}
+            placeholder="Password"
+            error={errors.password}
+          />
+          <button
+            type="button"
+            onClick={() => togglePasswordVisibility('register')}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+          >
+            {registerForm.showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
-        
-        {/* Email Field */}
-        <div>
-          <label htmlFor="userEmail" className="block text-sm font-medium text-gray-700 mb-1">
-            Email Address
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaEnvelope className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              id="userEmail"
-              name="userEmail"
-              type="email"
-              value={registerForm.userEmail}
-              onChange={handleRegisterChange}
-              className={`block w-full pl-10 pr-3 py-3 border ${
-                errors.userEmail ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-              placeholder="Enter your email"
-            />
-          </div>
-          {errors.userEmail && (
-            <p className="mt-1 text-sm text-red-600">{errors.userEmail}</p>
-          )}
+
+        <div className="relative">
+          <InputField
+            icon={FaLock}
+            type={registerForm.showConfirmPassword ? "text" : "password"}
+            name="confirmPassword"
+            value={registerForm.confirmPassword}
+            onChange={handleRegisterChange}
+            placeholder="Confirm password"
+            error={errors.confirmPassword}
+          />
+          <button
+            type="button"
+            onClick={() => togglePasswordVisibility('confirmPassword')}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors"
+          >
+            {registerForm.showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
         </div>
-        
-        {/* Contact Field */}
-        <div>
-          <label htmlFor="userContact" className="block text-sm font-medium text-gray-700 mb-1">
-            Contact Number
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaPhone className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              id="userContact"
-              name="userContact"
-              type="tel"
-              value={registerForm.userContact}
-              onChange={handleRegisterChange}
-              className={`block w-full pl-10 pr-3 py-3 border ${
-                errors.userContact ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-              placeholder="Enter 10-digit mobile number"
-            />
-          </div>
-          {errors.userContact && (
-            <p className="mt-1 text-sm text-red-600">{errors.userContact}</p>
-          )}
-        </div>
-        
-        {/* Password Field */}
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaLock className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              id="password"
-              name="password"
-              type={registerForm.showPassword ? "text" : "password"}
-              value={registerForm.password}
-              onChange={handleRegisterChange}
-              className={`block w-full pl-10 pr-10 py-3 border ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-              placeholder="Create a strong password"
-            />
-            <div 
-              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-              onClick={() => togglePasswordVisibility('register')}
-            >
-              {registerForm.showPassword ? (
-                <FaEyeSlash className="h-5 w-5 text-gray-400" />
-              ) : (
-                <FaEye className="h-5 w-5 text-gray-400" />
-              )}
-            </div>
-          </div>
-          {errors.password && (
-            <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-          )}
-        </div>
-        
-        {/* Confirm Password Field */}
-        <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-            Confirm Password
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaLock className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type={registerForm.showConfirmPassword ? "text" : "password"}
-              value={registerForm.confirmPassword}
-              onChange={handleRegisterChange}
-              className={`block w-full pl-10 pr-10 py-3 border ${
-                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-              } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
-              placeholder="Confirm your password"
-            />
-            <div 
-              className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-              onClick={() => togglePasswordVisibility('confirmPassword')}
-            >
-              {registerForm.showConfirmPassword ? (
-                <FaEyeSlash className="h-5 w-5 text-gray-400" />
-              ) : (
-                <FaEye className="h-5 w-5 text-gray-400" />
-              )}
-            </div>
-          </div>
-          {errors.confirmPassword && (
-            <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
-          )}
-        </div>
-        
-        {/* Submit Button */}
+
         <button
           type="submit"
           disabled={isLoading}
-          className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
-            isLoading ? 'opacity-70 cursor-not-allowed' : ''
-          }`}
+          className="w-full flex items-center justify-center py-4 px-6 rounded-xl bg-amber-400 text-emerald-900 hover:bg-amber-300 transition-all duration-300 transform hover:scale-105 font-medium disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
         >
-          {isLoading ? 'Creating Account...' : 'Create Account'}
+          {isLoading ? (
+            <div className="flex items-center">
+              <div className="w-5 h-5 border-2 border-emerald-900 border-t-transparent rounded-full animate-spin mr-2"></div>
+              Creating Account...
+            </div>
+          ) : (
+            <>
+              Create Account
+              <FaArrowRight className="ml-2" />
+            </>
+          )}
         </button>
       </form>
-      
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
+
+      <div className="mt-8 text-center">
+        <p className="text-white/80">
           Already have an account?{' '}
           <button
             type="button"
             onClick={() => navigate('/user-login-new')}
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="text-amber-400 hover:text-amber-300 font-medium transition-colors hover:underline"
           >
             Sign in
           </button>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
-  
+
   return (
     <>
       <Helmet>
@@ -547,11 +450,18 @@ const NewUserAuth = () => {
           content={isLoginPage ? "Login to your WorkPort account" : "Create a new WorkPort account"} 
         />
       </Helmet>
-      
-      <Navbar />
-      
-      <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center px-4 py-12">
-        {isLoginPage ? renderLoginForm() : renderRegisterForm()}
+
+      <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-900 relative">
+        <div className="absolute inset-0 bg-[url('/path/to/your/pattern.svg')] opacity-10"></div>
+        <Navbar />
+        
+        <div className="container mx-auto px-4">
+          <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-12">
+            <AnimatePresence mode="wait">
+              {isLoginPage ? renderLoginForm() : renderRegisterForm()}
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
     </>
   );

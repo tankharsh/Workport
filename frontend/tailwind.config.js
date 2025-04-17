@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Roboto', 'sans-serif'], // Add your chosen font
+      },
       colors: {
         lightGray: "#f2f2f2",
       },

@@ -71,64 +71,94 @@ export default function LoginPopup() {
     return (
         <div className="relative">
             {showPopupp && !user && !serviceprovider && (
-                <div className="z-50 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4 sm:p-6 md:p-8">
-                    <div className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full max-w-sm sm:max-w-md md:max-w-lg animate-fade-in relative">
-                        <button onClick={closePopup} className="absolute top-3 right-3 text-gray-600 hover:text-gray-900">
-                            <IoMdCloseCircle className="text-2xl sm:text-3xl" />
-                        </button>
-                        <h2 className="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-center text-gray-700">Login</h2>
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="flex items-center">
-                                <FaEnvelope className="text-gray-500 mr-2 sm:mr-3" />
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={useremail}
-                                    onChange={(e) => setUseremail(e.target.value)}
-                                    placeholder="Enter your email"
-                                    autocomplete="current-password"
-                                    className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200"
-                                />
-                            </div>
-                            <div className="flex items-center relative">
-                                <FaLock className="text-gray-500 mr-2 sm:mr-3" />
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    id="password"
-                                    name="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Enter your password"
-                                    className="p-2 w-full border text-black border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 pr-10 transition-all duration-200"
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute right-3 text-gray-500"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                </button>
-                            </div>
-
-                            <button type="submit" className="w-full bg-purple-600 text-white p-2 rounded-md hover:bg-purple-700 transition-all duration-300">
-                                Login
+                <div className="z-50 fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100">
+                        <div className="relative p-6">
+                            <button 
+                                onClick={closePopup} 
+                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                            >
+                                <IoMdCloseCircle className="text-2xl" />
                             </button>
-                        </form>
+                            
+                            <div className="text-center mb-8">
+                                <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
+                                <p className="text-gray-600 mt-2">Sign in to continue your journey</p>
+                            </div>
 
-                        <div className="mt-4 text-center">
-                            <p className="text-gray-600 text-sm sm:text-base">
-                                Don't have an account? {" "}
-                                <NavLink to="/user-login" className="text-purple-600 hover:underline">
-                                    Register here
-                                </NavLink>
-                            </p>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-emerald-500">
+                                        <FaEnvelope className="transition-transform group-hover:scale-110" />
+                                    </div>
+                                    <input
+                                        type="email"
+                                        value={useremail}
+                                        onChange={(e) => setUseremail(e.target.value)}
+                                        placeholder="Email address"
+                                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all hover:border-emerald-200"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-emerald-500">
+                                        <FaLock className="transition-transform group-hover:scale-110" />
+                                    </div>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Password"
+                                        className="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all hover:border-emerald-200"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-emerald-600 transition-colors"
+                                    >
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </button>
+                                </div>
+
+                                <div className="flex items-center justify-between text-sm">
+                                    <label className="flex items-center space-x-2 text-gray-600 cursor-pointer group">
+                                        <input 
+                                            type="checkbox" 
+                                            className="form-checkbox h-4 w-4 text-emerald-500 rounded focus:ring-emerald-500 transition-colors"
+                                        />
+                                        <span className="group-hover:text-gray-900 transition-colors">Remember me</span>
+                                    </label>
+                                    <a href="#" className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors hover:underline">
+                                        Forgot password?
+                                    </a>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white py-3 rounded-xl hover:from-emerald-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all duration-300 relative overflow-hidden group transform hover:scale-[1.02]"
+                                >
+                                    <span className="absolute w-64 h-64 mt-12 group-hover:-rotate-45 transition-all duration-500 ease-out -translate-x-20 -translate-y-32 bg-white opacity-10 rounded-full"></span>
+                                    <span className="relative">Sign In</span>
+                                </button>
+                            </form>
+
+                            <div className="mt-6 text-center">
+                                <p className="text-gray-600">
+                                    Don't have an account?{" "}
+                                    <NavLink 
+                                        to="/user-login" 
+                                        className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline"
+                                    >
+                                        Register here
+                                    </NavLink>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
         </div>
-
     );
 }
