@@ -39,7 +39,10 @@ export default function LoginPopup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const credentials = { useremail, password };
+        // Fix: Use userEmail instead of useremail to match backend expectations
+        const credentials = { userEmail: useremail, password };
+        console.log("Sending login credentials:", credentials);
+
         try {
             const res = await fetch(USER_LOGIN_API_URI, {
                 method: 'POST',
@@ -48,6 +51,7 @@ export default function LoginPopup() {
             });
 
             const data = await res.json();
+            console.log("Login response:", { status: res.status, data });
 
             if (res.ok) {
                 console.log("Login successful:", data);
@@ -57,6 +61,11 @@ export default function LoginPopup() {
                 setPassword('');
                 navigate('/');
                 closePopup();
+            } else if (res.status === 403 && data.requiresVerification) {
+                // Handle email verification case
+                showPopup('Please verify your email to continue', 'info');
+                navigate(`/verify-email?email=${encodeURIComponent(useremail)}`);
+                closePopup();
             } else {
                 showPopup('Login Failed: ' + (data.message || "Unknown error"), 'error');
                 console.log("Login failed:", data.message || "Unknown error");
@@ -64,6 +73,7 @@ export default function LoginPopup() {
 
         } catch (error) {
             console.error("Unexpected error during login:", error);
+            showPopup("An error occurred. Please try again.", "error");
         }
     };
     // *** Login Logic Ends Here
@@ -74,13 +84,13 @@ export default function LoginPopup() {
                 <div className="z-50 fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100">
                         <div className="relative p-6">
-                            <button 
-                                onClick={closePopup} 
+                            <button
+                                onClick={closePopup}
                                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200"
                             >
                                 <IoMdCloseCircle className="text-2xl" />
                             </button>
-                            
+
                             <div className="text-center mb-8">
                                 <h2 className="text-3xl font-bold text-gray-800">Welcome Back</h2>
                                 <p className="text-gray-600 mt-2">Sign in to continue your journey</p>
@@ -124,8 +134,8 @@ export default function LoginPopup() {
 
                                 <div className="flex items-center justify-between text-sm">
                                     <label className="flex items-center space-x-2 text-gray-600 cursor-pointer group">
-                                        <input 
-                                            type="checkbox" 
+                                        <input
+                                            type="checkbox"
                                             className="form-checkbox h-4 w-4 text-emerald-500 rounded focus:ring-emerald-500 transition-colors"
                                         />
                                         <span className="group-hover:text-gray-900 transition-colors">Remember me</span>
@@ -147,8 +157,8 @@ export default function LoginPopup() {
                             <div className="mt-6 text-center">
                                 <p className="text-gray-600">
                                     Don't have an account?{" "}
-                                    <NavLink 
-                                        to="/user-login" 
+                                    <NavLink
+                                        to="/user-login"
                                         className="text-emerald-600 hover:text-emerald-700 font-medium hover:underline"
                                     >
                                         Register here

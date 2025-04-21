@@ -124,12 +124,12 @@ function App() {
             <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
             <Route path='/Admin-Dashboard/chatbot-faqs' element={<AdminChatbotFAQs />} />
 
-            {/* Universal routes  */}
-            <Route path="*" element={<Navigate to="/" />} />
-
             {/* New User Authentication routes */}
             <Route path='/user-login-new' element={<NewUserAuth />} />
             <Route path='/user-register-new' element={<NewUserAuth />} />
+
+            {/* Universal routes  */}
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>
       </HelmetProvider>
@@ -141,6 +141,6 @@ export default App;
 
 
 
-// muje ab asa karna he ki jab me contact button ke alava card me click karu to new page opne hona chahi a or usme all deatile hogi like provider ka pura information or all provides ki sari service dikhe gi mene statiac page bana diya he ab hame dynamically banana he a sab kuch 
+// muje ab asa karna he ki jab me contact button ke alava card me click karu to new page opne hona chahi a or usme all deatile hogi like provider ka pura information or all provides ki sari service dikhe gi mene statiac page bana diya he ab hame dynamically banana he a sab kuch
 
-// - or jis bhi provider ko clcik karenge sirf uska hio data ana chahi he to me tumko files dunga tumhe jo jo need ho uske abhi me frountend ka code de raha hu jisme user_dashboard me providers ke shop ki list a rahi he usme clcik karte hi redirect hona chahi a 
+// - or jis bhi provider ko clcik karenge sirf uska hio data ana chahi he to me tumko files dunga tumhe jo jo need ho uske abhi me frountend ka code de raha hu jisme user_dashboard me providers ke shop ki list a rahi he usme clcik karte hi redirect hona chahi a

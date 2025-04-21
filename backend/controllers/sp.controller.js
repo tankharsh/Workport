@@ -132,7 +132,7 @@ exports.registerSP = async (req, res) => {
 
         // Send verification email
         const verificationResult = await createVerification(spEmail, true);
-        
+
         if (!verificationResult.success) {
             // If email sending fails, still create the account but inform the user
             return res.status(201).json({
@@ -159,7 +159,8 @@ exports.registerSP = async (req, res) => {
         if (error.code === 11000) {
             return res.status(400).json({ message: "Email already exists" });
         }
-        next(error);
+        console.error("Registration error:", error);
+        return res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
@@ -188,8 +189,8 @@ module.exports.loginSP = async (req, res) => {
         if (!sp.isVerified) {
             // Send a new verification email
             await createVerification(spEmail, true);
-            
-            return res.status(403).json({ 
+
+            return res.status(403).json({
                 message: "Email not verified. A new verification email has been sent.",
                 requiresVerification: true,
                 spEmail: sp.spEmail
@@ -227,7 +228,7 @@ module.exports.loginSP = async (req, res) => {
 
 
 
-  
+
 
 // Get Service Provider Profile
 module.exports.getProfile = async (req, res) => {
@@ -322,7 +323,7 @@ exports.updateServiceProvider = async (req, res) => {
             if (updateData.spCategories) {
                 const parsedCategories = JSON.parse(updateData.spCategories);
                 // Ensure we have an array of ObjectIds
-                updateData.spCategories = parsedCategories.map(catId => 
+                updateData.spCategories = parsedCategories.map(catId =>
                     typeof catId === 'string' ? catId : catId.toString()
                 );
                 console.log("📌 Parsed Categories:", updateData.spCategories); // Debugging
@@ -336,10 +337,10 @@ exports.updateServiceProvider = async (req, res) => {
             }
         } catch (error) {
             console.error("❌ Error parsing JSON fields:", error);
-            return res.status(400).json({ 
-                success: false, 
-                message: "Error parsing JSON fields", 
-                error: error.message 
+            return res.status(400).json({
+                success: false,
+                message: "Error parsing JSON fields",
+                error: error.message
             });
         }
 
@@ -365,9 +366,9 @@ exports.updateServiceProvider = async (req, res) => {
 
         // 🔴 IMPORTANT: Update the service provider with proper category handling
         const updatedSP = await ServiceProvider.findByIdAndUpdate(
-            id, 
+            id,
             updateData,
-            { 
+            {
                 new: true,
                 runValidators: true // This ensures the update follows schema validation
             }
@@ -464,7 +465,7 @@ exports.getAllServiceProviders = async (req, res) => {
 };
 
 
-// Get particular service provider id with categories and services 
+// Get particular service provider id with categories and services
 exports.getServiceProviderById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -523,28 +524,28 @@ exports.getServiceProviderById = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
     try {
         const { email } = req.body;
-        
+
         if (!email) {
             return res.status(400).json({ message: "Email is required" });
         }
-        
+
         const sp = await ServiceProvider.findOne({ spEmail: email });
-        
+
         if (!sp) {
             return res.status(404).json({ message: "Service Provider not found" });
         }
-        
+
         // Update service provider verification status
         sp.isVerified = true;
         await sp.save();
-        
+
         // Generate JWT token
         const token = jwt.sign(
             { id: sp._id, spEmail: sp.spEmail },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
-        
+
         res.status(200).json({
             message: "Email verified successfully",
             token,
@@ -572,7 +573,7 @@ exports.verifyEmail = async (req, res) => {
 exports.getDashboardStats = async (req, res) => {
     try {
         const { spId } = req.params;
-        
+
         // Get the service provider
         const serviceProvider = await ServiceProvider.findById(spId);
         if (!serviceProvider) {
@@ -585,7 +586,7 @@ exports.getDashboardStats = async (req, res) => {
         // Get requests counts (you'll need to implement this based on your schema)
         const pendingRequests = 0; // Implement based on your schema
         const completedRequests = 0; // Implement based on your schema
-        
+
         // Get average rating (you'll need to implement this based on your schema)
         const rating = 0; // Implement based on your schema
 

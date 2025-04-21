@@ -52,6 +52,7 @@ function AdminGetAllUser() {
     setLoading(true);
     try {
       const response = await axios.get('http://localhost:4000/api/users');
+      console.log('Fetched users:', response.data);
       setUsers(response.data);
       setError(null);
     } catch (error) {
@@ -79,8 +80,9 @@ function AdminGetAllUser() {
 
   const handleSaveChanges = async () => {
     try {
-      await axios.put(`http://localhost:4000/api/users/${currentUser._id}`, currentUser);
-      setUsers(users.map(user => 
+      console.log('Updating user with data:', currentUser);
+      await axios.put(`http://localhost:4000/api/users/updateUser/${currentUser._id}`, currentUser);
+      setUsers(users.map(user =>
         user._id === currentUser._id ? currentUser : user
       ));
       Swal.fire({
@@ -113,7 +115,7 @@ function AdminGetAllUser() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:4000/api/users/${id}`);
+          await axios.delete(`http://localhost:4000/api/users/deleteUser/${id}`);
           setUsers(users.filter(user => user._id !== id));
           Swal.fire({
             icon: 'success',
@@ -160,7 +162,7 @@ function AdminGetAllUser() {
   return (
     <>
       <AdminSidebar />
-      <motion.main 
+      <motion.main
         className="flex-1 lg:ml-64 min-h-screen bg-gray-50"
         initial="hidden"
         animate="visible"
@@ -190,7 +192,7 @@ function AdminGetAllUser() {
           </div>
 
           {/* Users Table */}
-          <motion.div 
+          <motion.div
             className="bg-white rounded-xl shadow-sm overflow-hidden"
             variants={tableVariants}
           >
@@ -213,7 +215,7 @@ function AdminGetAllUser() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     <AnimatePresence>
                       {filteredUsers.map((user, index) => (
-                        <motion.tr 
+                        <motion.tr
                           key={user._id}
                           variants={rowVariants}
                           initial="hidden"
@@ -271,13 +273,13 @@ function AdminGetAllUser() {
         {/* Edit Modal */}
         <AnimatePresence>
           {isModalOpen && currentUser && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
             >
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
@@ -294,8 +296,8 @@ function AdminGetAllUser() {
                       </label>
                       <input
                         type="text"
-                        value={currentUser.username}
-                        onChange={(e) => setCurrentUser({ ...currentUser, username: e.target.value })}
+                        value={currentUser.userName}
+                        onChange={(e) => setCurrentUser({ ...currentUser, userName: e.target.value })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                       />
                     </div>
@@ -305,8 +307,8 @@ function AdminGetAllUser() {
                       </label>
                       <input
                         type="email"
-                        value={currentUser.useremail}
-                        onChange={(e) => setCurrentUser({ ...currentUser, useremail: e.target.value })}
+                        value={currentUser.userEmail}
+                        onChange={(e) => setCurrentUser({ ...currentUser, userEmail: e.target.value })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                       />
                     </div>
@@ -316,8 +318,8 @@ function AdminGetAllUser() {
                       </label>
                       <input
                         type="text"
-                        value={currentUser.usercontactno}
-                        onChange={(e) => setCurrentUser({ ...currentUser, usercontactno: e.target.value })}
+                        value={currentUser.userContact}
+                        onChange={(e) => setCurrentUser({ ...currentUser, userContact: e.target.value })}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                       />
                     </div>
@@ -341,7 +343,7 @@ function AdminGetAllUser() {
                     </motion.button>
                   </div>
                 </div>
-                
+
               </motion.div>
             </motion.div>
           )}

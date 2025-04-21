@@ -52,6 +52,7 @@ function AdminGetAllServiceProvider() {
     setLoading(true);
     try {
       const response = await axios.get('http://localhost:4000/api/sp');
+      console.log('Fetched service providers:', response.data);
       setServiceProviderData(response.data);
       setError(null);
     } catch (error) {
@@ -79,8 +80,9 @@ function AdminGetAllServiceProvider() {
 
   const handleSaveChanges = async () => {
     try {
-      await axios.put(`http://localhost:4000/api/sp/${currentUser._id}`, currentUser);
-      setServiceProviderData(serviceProviderData.map(sp => 
+      console.log('Updating service provider with data:', currentUser);
+      await axios.put(`http://localhost:4000/api/sp/updateSP/${currentUser._id}`, currentUser);
+      setServiceProviderData(serviceProviderData.map(sp =>
         sp._id === currentUser._id ? currentUser : sp
       ));
       Swal.fire({
@@ -113,7 +115,7 @@ function AdminGetAllServiceProvider() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete(`http://localhost:4000/api/sp/${id}`);
+          await axios.delete(`http://localhost:4000/api/sp/deleteSP/${id}`);
           setServiceProviderData(serviceProviderData.filter(sp => sp._id !== id));
           Swal.fire({
             icon: 'success',
@@ -160,7 +162,7 @@ function AdminGetAllServiceProvider() {
   return (
     <>
       <AdminSidebar />
-      <motion.main 
+      <motion.main
         className="flex-1 lg:ml-64 min-h-screen bg-gray-50"
         initial="hidden"
         animate="visible"
@@ -190,7 +192,7 @@ function AdminGetAllServiceProvider() {
           </div>
 
           {/* Service Providers Table */}
-          <motion.div 
+          <motion.div
             className="bg-white rounded-xl shadow-sm overflow-hidden"
             variants={tableVariants}
           >
@@ -216,7 +218,7 @@ function AdminGetAllServiceProvider() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     <AnimatePresence>
                       {filteredProviders.map((provider, index) => (
-                        <motion.tr 
+                        <motion.tr
                           key={provider._id}
                           variants={rowVariants}
                           initial="hidden"
@@ -239,7 +241,7 @@ function AdminGetAllServiceProvider() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800">
-                              {provider.spCategories && provider.spCategories.length > 0 
+                              {provider.spCategories && provider.spCategories.length > 0
                                 ? provider.spCategories.map(category => category.categoryName).join(", ")
                                 : "No categories"}
                             </span>
@@ -287,32 +289,36 @@ function AdminGetAllServiceProvider() {
         {/* Edit Modal */}
         <AnimatePresence>
           {isModalOpen && currentUser && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
             >
-              <motion.div 
+              <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden"
+                className="bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
               >
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">
+                <div className="p-6 border-b">
+                  <h3 className="text-lg font-bold text-gray-900">
                     Edit Service Provider
                   </h3>
+                </div>
+
+                {/* Scrollable content area */}
+                <div className="p-6 overflow-y-auto custom-scrollbar flex-grow">
                   <div className="grid gap-4">
                     {Object.entries(currentUser).map(([key, value]) => (
-                      key !== "_id" && key !== "__v" && (
+                      key !== "_id" && key !== "__v" && key !== "spCategories" && key !== "services" && (
                         <div key={key}>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            {key.replace('sp_', '').replace(/_/g, ' ').toUpperCase()}
+                            {key.replace('sp', '').replace(/([A-Z])/g, ' $1').replace('_', ' ').trim().toUpperCase()}
                           </label>
                           <input
                             type={key.includes('email') ? 'email' : 'text'}
-                            value={value}
+                            value={value || ''}
                             onChange={(e) =>
                               setCurrentUser({ ...currentUser, [key]: e.target.value })
                             }
@@ -322,12 +328,16 @@ function AdminGetAllServiceProvider() {
                       )
                     ))}
                   </div>
-                  <div className="flex gap-3 mt-6">
+                </div>
+
+                {/* Fixed footer with buttons */}
+                <div className="p-6 border-t bg-gray-50">
+                  <div className="flex gap-3">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={handleSaveChanges}
-                      className="flex-1 bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700 transition-colors"
+                      className="flex-1 bg-emerald-600 text-white py-3 rounded-lg hover:bg-emerald-700 transition-colors font-medium"
                     >
                       Save Changes
                     </motion.button>
@@ -335,7 +345,7 @@ function AdminGetAllServiceProvider() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={closeModal}
-                      className="flex-1 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                      className="flex-1 bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition-colors font-medium"
                     >
                       Cancel
                     </motion.button>

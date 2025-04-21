@@ -12,7 +12,7 @@ body {
 body {
     /* overflow-x: hidden; */
     overflow: auto;
-    font-family: 'Roboto', sans-serif; 
+    font-family: 'Roboto', sans-serif;
 }
 
 .main-txt {
@@ -51,4 +51,23 @@ body {
     font-family: "Tinos", serif;
     font-weight: 700;
     font-style: italic;
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #10B981;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #0e9f6e;
 }
