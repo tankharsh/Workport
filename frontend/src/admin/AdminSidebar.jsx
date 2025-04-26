@@ -4,7 +4,7 @@ import { GrServices } from "react-icons/gr";
 import { BsPersonWorkspace } from "react-icons/bs";
 import { HiOutlineLogout } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaEnvelope } from "react-icons/fa";
 import { BiCategory } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
 import Swal from "sweetalert2";
@@ -57,7 +57,7 @@ const AdminSidebar = () => {
             <div className="fixed inset-y-0 left-0 bg-gradient-to-b from-[#192B3C] to-[#0f1a24] text-white w-64 shadow-xl">
                 {/* Sidebar Header */}
                 <div className="flex items-center justify-center p-4 border-b border-gray-700">
-                    <motion.span 
+                    <motion.span
                         className="font-bold text-4xl bg-gradient-to-r from-emerald-400 to-blue-500 text-transparent bg-clip-text"
                         whileHover={{ scale: 1.05 }}
                     >
@@ -164,6 +164,20 @@ const AdminSidebar = () => {
                     >
                         <GrServices className="text-2xl" />
                         <span>Service Providers</span>
+                    </NavLink>
+
+                    <NavLink
+                        to="/Admin-Dashboard/contact-messages"
+                        className={({ isActive }) =>
+                            `flex items-center gap-3 px-4 py-3 mt-4 rounded-lg transition-all duration-200 ${
+                                isActive
+                                    ? "bg-emerald-500/20 text-emerald-400"
+                                    : "hover:bg-white/10 text-gray-300 hover:text-white"
+                            }`
+                        }
+                    >
+                        <FaEnvelope className="text-2xl" />
+                        <span>Contact Messages</span>
                     </NavLink>
 
                     <motion.button

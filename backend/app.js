@@ -15,6 +15,7 @@ const serviceRoutes = require('./routes/service.routes');
 const inquiryRoutes = require('./routes/inquiry.routes');
 const verificationRoutes = require('./routes/verification.routes');
 const chatbotRoutes = require('./routes/chatbot.routes');
+const contactRoutes = require('./routes/contact.routes');
 
 
 connectDB();
@@ -54,6 +55,7 @@ app.use('/api/services',serviceRoutes);
 app.use('/api/inquiries',inquiryRoutes);
 app.use('/api/verification', verificationRoutes);
 app.use('/api/chatbot', chatbotRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Static files for uploaded images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

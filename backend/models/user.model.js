@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema({
     userContact: {
         type: String,
         required: true,
+        unique: true,
     },
     userAddress: {
         type: String,

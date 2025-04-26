@@ -17,10 +17,16 @@ module.exports.registerUser = async (req, res, next) => {
     const { userName, userEmail, userContact, userAddress, password } = req.body;
 
     try {
-        // Check if user already exists
-        const existingUser = await userModel.findOne({ userEmail });
-        if (existingUser) {
-            return res.status(400).json({ message: "Email already exists" });
+        // Check if user already exists by email
+        const existingUserByEmail = await userModel.findOne({ userEmail });
+        if (existingUserByEmail) {
+            return res.status(400).json({ message: "Email already exists", field: "userEmail" });
+        }
+
+        // Check if user already exists by contact number
+        const existingUserByContact = await userModel.findOne({ userContact });
+        if (existingUserByContact) {
+            return res.status(400).json({ message: "Contact number already exists", field: "userContact" });
         }
 
         // Hash the password
@@ -39,7 +45,7 @@ module.exports.registerUser = async (req, res, next) => {
 
         // Send verification email
         const verificationResult = await createVerification(userEmail, false);
-        
+
         if (!verificationResult.success) {
             // If email sending fails, still create the account but inform the user
             return res.status(201).json({
@@ -69,8 +75,17 @@ module.exports.registerUser = async (req, res, next) => {
         });
     } catch (error) {
         if (error.code === 11000) {
-            return res.status(400).json({ message: "Email already exists" });
+            // Check which field caused the duplicate key error
+            const keyPattern = error.keyPattern;
+            if (keyPattern && keyPattern.userEmail) {
+                return res.status(400).json({ message: "Email already exists", field: "userEmail" });
+            } else if (keyPattern && keyPattern.userContact) {
+                return res.status(400).json({ message: "Contact number already exists", field: "userContact" });
+            } else {
+                return res.status(400).json({ message: "User with these details already exists" });
+            }
         }
+        console.error("Registration error:", error);
         next(error);
     }
 };
@@ -101,8 +116,8 @@ module.exports.loginUser = async (req, res, next) => {
         if (!user.isVerified) {
             // Send a new verification email
             await createVerification(userEmail, false);
-            
-            return res.status(403).json({ 
+
+            return res.status(403).json({
                 message: "Email not verified. A new verification email has been sent.",
                 requiresVerification: true,
                 userEmail: user.userEmail
@@ -222,28 +237,28 @@ exports.deleteUser = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
     try {
         const { email } = req.body;
-        
+
         if (!email) {
             return res.status(400).json({ message: "Email is required" });
         }
-        
+
         const user = await userModel.findOne({ userEmail: email });
-        
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        
+
         // Update user verification status
         user.isVerified = true;
         await user.save();
-        
+
         // Generate JWT token
         const token = jwt.sign(
             { id: user._id, userName: user.userName, userEmail: user.userEmail },
             JWT_SECRET,
             { expiresIn: "1h" }
         );
-        
+
         res.status(200).json({
             message: "Email verified successfully",
             token,

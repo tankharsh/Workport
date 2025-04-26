@@ -17,7 +17,8 @@ const Orders = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [bookedSlots, setBookedSlots] = useState([]);
-  
+  const [searchTerm, setSearchTerm] = useState("");
+
   // Get service provider data from localStorage
   const storedUser = localStorage.getItem("serviceProvider");
   const parsedUser = storedUser ? JSON.parse(storedUser) : null;
@@ -34,29 +35,29 @@ const Orders = () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         const apiUrl = `http://localhost:4000/api/inquiries/${serviceProviderId}`;
         const response = await fetch(apiUrl);
-        
+
         if (!response.ok) {
           throw new Error(`API responded with status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        
+
         // Check the structure of the response
         if (data && data.inquiries && Array.isArray(data.inquiries)) {
           // First, fetch user and service details if needed
           const populatedInquiries = await Promise.all(data.inquiries.map(async (inquiry) => {
             let updatedInquiry = { ...inquiry };
-            
+
             // If user is just an ID, fetch user details
             if (inquiry.user && typeof inquiry.user === 'string') {
               try {
                 const userResponse = await fetch(`http://localhost:4000/api/users/${inquiry.user}`);
                 if (userResponse.ok) {
                   const userData = await userResponse.json();
-                  
+
                   // Check if user data is in expected format
                   if (userData.user) {
                     updatedInquiry.user = userData.user;
@@ -68,14 +69,14 @@ const Orders = () => {
                 // Handle error silently
               }
             }
-            
+
             // If service is just an ID, fetch service details
             if (inquiry.service && typeof inquiry.service === 'string') {
               try {
                 const serviceResponse = await fetch(`http://localhost:4000/api/services/${inquiry.service}`);
                 if (serviceResponse.ok) {
                   const serviceData = await serviceResponse.json();
-                  
+
                   // Check if service data is in expected format
                   if (serviceData.service) {
                     updatedInquiry.service = serviceData.service;
@@ -87,10 +88,10 @@ const Orders = () => {
                 // Handle error silently
               }
             }
-            
+
             return updatedInquiry;
           }));
-          
+
           // Transform data to ensure proper structure
           const transformedData = populatedInquiries.map(inquiry => {
             // Extract service data properly
@@ -102,7 +103,7 @@ const Orders = () => {
                 serviceData = inquiry.service;
               }
             }
-            
+
             // Extract user data properly
             let userData = {};
             if (inquiry.user) {
@@ -112,7 +113,7 @@ const Orders = () => {
                 userData = inquiry.user;
               }
             }
-            
+
             return {
               ...inquiry,
               user: userData,
@@ -121,9 +122,9 @@ const Orders = () => {
               status: inquiry.status || "Pending"
             };
           });
-          
+
           setInquiries(transformedData);
-          
+
           // Extract booked slots from approved inquiries
           const approvedBookings = transformedData
             .filter(inq => inq.status === "Approved" && inq.date && inq.time)
@@ -134,7 +135,7 @@ const Orders = () => {
               serviceName: inq.service?.serviceName || "Unknown Service",
               inquiryId: inq._id
             }));
-            
+
           setBookedSlots(approvedBookings);
         } else if (data && Array.isArray(data)) {
           // Transform data to ensure proper structure
@@ -148,7 +149,7 @@ const Orders = () => {
                 serviceData = inquiry.service;
               }
             }
-            
+
             // Extract user data properly
             let userData = {};
             if (inquiry.user) {
@@ -158,7 +159,7 @@ const Orders = () => {
                 userData = inquiry.user;
               }
             }
-            
+
             return {
               ...inquiry,
               user: userData,
@@ -168,7 +169,7 @@ const Orders = () => {
             };
           });
           setInquiries(transformedData);
-          
+
           // Extract booked slots from approved inquiries
           const approvedBookings = transformedData
             .filter(inq => inq.status === "Approved" && inq.date && inq.time)
@@ -179,7 +180,7 @@ const Orders = () => {
               serviceName: inq.service?.serviceName || "Unknown Service",
               inquiryId: inq._id
             }));
-            
+
           setBookedSlots(approvedBookings);
         } else {
           setError("Invalid inquiries data format received from API");
@@ -192,7 +193,7 @@ const Orders = () => {
         setIsLoading(false);
       }
     };
-    
+
     fetchInquiries();
   }, [serviceProviderId]);
 
@@ -212,7 +213,7 @@ const Orders = () => {
 
   const handleConfirmOrder = async () => {
     if (!selectedUser) return;
-  
+
     // Validate that date and time are provided if status is Approved
     if (selectedStatus === "Approved" && (!date || !time)) {
       Swal.fire({
@@ -222,38 +223,38 @@ const Orders = () => {
       });
       return;
     }
-  
+
     try {
       const response = await fetch(`http://localhost:4000/api/inquiries/status/${selectedUser._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          date, 
-          time, 
-          message, 
+        body: JSON.stringify({
+          date,
+          time,
+          message,
           status: selectedStatus,
           serviceProvider: selectedUser.serviceProvider // Pass the service provider ID for conflict checking
         }),
       });
-  
+
       const data = await response.json();
-      
+
       if (response.ok) {
         Swal.fire({
           icon: "success",
           title: "Success",
           text: `Inquiry ${selectedStatus} successfully!`,
         });
-  
+
         // Update the inquiries state
-        const updatedInquiries = inquiries.map(inq => 
+        const updatedInquiries = inquiries.map(inq =>
           inq._id === selectedUser._id ? { ...inq, status: selectedStatus, date, time, message } : inq
         );
-        
+
         setInquiries(updatedInquiries);
-        
+
         // Update booked slots if status is Approved
         if (selectedStatus === "Approved") {
           const newBooking = {
@@ -263,13 +264,13 @@ const Orders = () => {
             serviceName: selectedUser.service?.serviceName || "Unknown Service",
             inquiryId: selectedUser._id
           };
-          
+
           setBookedSlots(prev => [...prev.filter(slot => slot.inquiryId !== selectedUser._id), newBooking]);
         } else {
           // Remove from booked slots if status is not Approved
           setBookedSlots(prev => prev.filter(slot => slot.inquiryId !== selectedUser._id));
         }
-        
+
         handleCloseModal();
       } else if (response.status === 409) {
         // Handle conflict - already booked time slot
@@ -297,7 +298,7 @@ const Orders = () => {
 
   const handleDeleteInquiry = async (id) => {
     if (!id) return;
-  
+
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "This inquiry will be permanently deleted!",
@@ -307,9 +308,9 @@ const Orders = () => {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!",
     });
-  
+
     if (!result.isConfirmed) return;
-  
+
     try {
       const response = await fetch(`http://localhost:4000/api/inquiries/${id}`, {
         method: "DELETE",
@@ -317,7 +318,7 @@ const Orders = () => {
           "Content-Type": "application/json",
         },
       });
-  
+
       if (response.ok) {
         Swal.fire("Deleted!", "Inquiry has been deleted.", "success");
         setInquiries((prev) => prev.filter((inquiry) => inquiry._id !== id));
@@ -331,15 +332,15 @@ const Orders = () => {
       Swal.fire("Error!", "Error deleting inquiry. Please try again.", "error");
     }
   };
-  
+
   const openCalendarModal = () => {
     setIsCalendarModalOpen(true);
   };
-  
+
   const closeCalendarModal = () => {
     setIsCalendarModalOpen(false);
   };
-  
+
   // Group booked slots by date for the calendar view
   const groupedBookings = bookedSlots.reduce((acc, slot) => {
     if (!acc[slot.date]) {
@@ -352,9 +353,9 @@ const Orders = () => {
   // Enhanced Animation Variants
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
-      transition: { 
+      transition: {
         duration: 0.5,
         when: "beforeChildren",
         staggerChildren: 0.1
@@ -363,12 +364,12 @@ const Orders = () => {
   };
 
   const tableRowVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
       x: -20,
       scale: 0.95
     },
-    visible: { 
+    visible: {
       opacity: 1,
       x: 0,
       scale: 1,
@@ -396,7 +397,7 @@ const Orders = () => {
   return (
     <>
       <Sidebar />
-      <motion.main 
+      <motion.main
         className="flex-1 lg:ml-64 min-h-screen bg-gray-50 pt-16"
         initial="hidden"
         animate="visible"
@@ -410,7 +411,7 @@ const Orders = () => {
                 <h1 className="text-2xl font-bold text-gray-900">Inquiry Management</h1>
                 <p className="text-sm text-gray-500 mt-1">Manage and track all your service inquiries</p>
               </div>
-              
+
               {/* Search Bar */}
               <div className="relative w-full sm:w-64">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -418,9 +419,22 @@ const Orders = () => {
                 </div>
                 <input
                   type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
-                  placeholder="Search inquiries..."
+                  placeholder="Search by name, email, or service..."
+                  autoComplete="off"
                 />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -435,12 +449,12 @@ const Orders = () => {
                 { status: "Approved", icon: MdCheckCircle, color: "bg-green-500" },
                 { status: "Rejected", icon: MdCancel, color: "bg-red-500" }
               ].map((item) => (
-                <motion.button 
+                <motion.button
                   key={item.status}
                   onClick={() => setStatus(item.status)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                    status === item.status 
-                      ? `${item.color} text-white shadow-lg` 
+                    status === item.status
+                      ? `${item.color} text-white shadow-lg`
                       : 'bg-white text-gray-600 hover:bg-gray-50'
                   }`}
                   whileHover="hover"
@@ -450,7 +464,7 @@ const Orders = () => {
                 >
                   <item.icon className={status === item.status ? "text-white" : "text-gray-500"} />
                   <span>{item.status}</span>
-                  <motion.span 
+                  <motion.span
                     className="ml-2 bg-white bg-opacity-20 px-2 py-0.5 rounded-full text-sm"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -461,8 +475,8 @@ const Orders = () => {
                 </motion.button>
               ))}
             </div>
-            
-            <motion.button 
+
+            <motion.button
               onClick={openCalendarModal}
               className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-200 shadow-sm hover:shadow"
               whileHover={{ scale: 1.05 }}
@@ -475,17 +489,17 @@ const Orders = () => {
         </div>
 
         {/* Table Section with Enhanced Animations */}
-        <motion.div 
+        <motion.div
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8"
           layout
         >
-          <motion.div 
+          <motion.div
             className="bg-white rounded-xl shadow-sm overflow-hidden"
             layout
           >
             <div className="overflow-x-auto">
               {isLoading ? (
-                <motion.div 
+                <motion.div
                   className="flex items-center justify-center h-64"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -494,14 +508,14 @@ const Orders = () => {
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
                 </motion.div>
               ) : error ? (
-                <motion.div 
+                <motion.div
                   className="flex flex-col items-center justify-center h-64 text-red-500"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                 >
                   <p className="text-lg mb-4">{error}</p>
-                  <button 
+                  <button
                     onClick={() => window.location.reload()}
                     className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-200"
                   >
@@ -524,6 +538,34 @@ const Orders = () => {
                     <AnimatePresence mode="popLayout">
                       {inquiries
                         .filter(inquiry => inquiry && (inquiry.status === status || (status === "Pending" && !inquiry.status)))
+                        .filter(inquiry => {
+                          if (!searchTerm) return true;
+
+                          const searchLower = searchTerm.toLowerCase();
+
+                          // Search in user name
+                          if (inquiry.user?.userName && inquiry.user.userName.toLowerCase().includes(searchLower)) {
+                            return true;
+                          }
+
+                          // Search in user email
+                          if (inquiry.user?.userEmail && inquiry.user.userEmail.toLowerCase().includes(searchLower)) {
+                            return true;
+                          }
+
+                          // Search in service name
+                          if (inquiry.service?.serviceName && inquiry.service.serviceName.toLowerCase().includes(searchLower)) {
+                            return true;
+                          }
+
+                          // Search in address
+                          const address = inquiry.userAddress || inquiry.user?.userAddress || "";
+                          if (address.toLowerCase().includes(searchLower)) {
+                            return true;
+                          }
+
+                          return false;
+                        })
                         .map((inquiry, index) => (
                           <motion.tr
                             key={inquiry._id || index}
@@ -583,6 +625,48 @@ const Orders = () => {
                           </motion.tr>
                         ))}
                     </AnimatePresence>
+                    {inquiries
+                      .filter(inquiry => inquiry && (inquiry.status === status || (status === "Pending" && !inquiry.status)))
+                      .filter(inquiry => {
+                        if (!searchTerm) return true;
+
+                        const searchLower = searchTerm.toLowerCase();
+
+                        // Search in user name
+                        if (inquiry.user?.userName && inquiry.user.userName.toLowerCase().includes(searchLower)) {
+                          return true;
+                        }
+
+                        // Search in user email
+                        if (inquiry.user?.userEmail && inquiry.user.userEmail.toLowerCase().includes(searchLower)) {
+                          return true;
+                        }
+
+                        // Search in service name
+                        if (inquiry.service?.serviceName && inquiry.service.serviceName.toLowerCase().includes(searchLower)) {
+                          return true;
+                        }
+
+                        // Search in address
+                        const address = inquiry.userAddress || inquiry.user?.userAddress || "";
+                        if (address.toLowerCase().includes(searchLower)) {
+                          return true;
+                        }
+
+                        return false;
+                      }).length === 0 && (
+                      <tr>
+                        <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                          {searchTerm ? (
+                            <>
+                              No inquiries found matching <span className="font-medium">"{searchTerm}"</span>
+                            </>
+                          ) : (
+                            <>No inquiries found with {status} status</>
+                          )}
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               )}
@@ -600,7 +684,7 @@ const Orders = () => {
               <div className="bg-emerald-600 text-white p-4 rounded-t-xl">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-bold">Inquiry Details</h2>
-                  <button 
+                  <button
                     onClick={handleCloseModal}
                     className="text-white hover:text-gray-200 transition-colors"
                   >
@@ -635,10 +719,10 @@ const Orders = () => {
                       <span className="font-medium">Additional Info:</span> {selectedUser.additionalInfo || "None provided"}
                     </p>
                     <p className="text-gray-800">
-                      <span className="font-medium">Current Status:</span> 
+                      <span className="font-medium">Current Status:</span>
                       <span className={`ml-2 px-2 py-1 rounded-full text-sm font-medium ${
-                        selectedUser.status === "Approved" ? "bg-green-100 text-green-800" : 
-                        selectedUser.status === "Rejected" ? "bg-red-100 text-red-800" : 
+                        selectedUser.status === "Approved" ? "bg-green-100 text-green-800" :
+                        selectedUser.status === "Rejected" ? "bg-red-100 text-red-800" :
                         "bg-yellow-100 text-yellow-800"
                       }`}>
                         {selectedUser.status || "Pending"}
@@ -657,40 +741,40 @@ const Orders = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                    <input 
-                      type="date" 
-                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
-                      value={date} 
-                      onChange={(e) => setDate(e.target.value)} 
+                    <input
+                      type="date"
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
-                    <input 
-                      type="time" 
-                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
-                      value={time} 
-                      onChange={(e) => setTime(e.target.value)} 
+                    <input
+                      type="time"
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
                     />
                   </div>
                 </div>
 
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                  <textarea 
-                    rows={3} 
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
-                    value={message} 
-                    onChange={(e) => setMessage(e.target.value)} 
+                  <textarea
+                    rows={3}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     placeholder="Enter a message for the user"
                   />
                 </div>
 
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                  <select 
-                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
-                    value={selectedStatus} 
+                  <select
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
                   >
                     <option value="Pending">Pending</option>
@@ -704,14 +788,14 @@ const Orders = () => {
             {/* Modal Footer - Sticky */}
             <div className="sticky bottom-0 bg-white p-6 border-t rounded-b-xl">
               <div className="flex justify-end gap-4">
-                <button 
-                  className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200" 
+                <button
+                  className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                   onClick={handleCloseModal}
                 >
                   Cancel
                 </button>
-                <button 
-                  className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200" 
+                <button
+                  className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200"
                   onClick={handleConfirmOrder}
                 >
                   Update Inquiry
@@ -721,7 +805,7 @@ const Orders = () => {
           </div>
         </div>
       )}
-      
+
       {/* Calendar Modal */}
       {isCalendarModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm p-4 overflow-y-auto">
@@ -731,7 +815,7 @@ const Orders = () => {
               <div className="bg-emerald-600 text-white p-4 rounded-t-xl">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-bold">Booking Calendar</h2>
-                  <button 
+                  <button
                     onClick={closeCalendarModal}
                     className="text-white hover:text-gray-200 transition-colors"
                   >
@@ -747,7 +831,7 @@ const Orders = () => {
                 <p className="text-sm text-gray-600 mb-4">
                   This calendar shows all your approved bookings. Use this to avoid scheduling conflicts.
                 </p>
-                
+
                 {Object.keys(groupedBookings).length > 0 ? (
                   <div className="space-y-6">
                     {Object.entries(groupedBookings)
@@ -756,11 +840,11 @@ const Orders = () => {
                         <div key={date} className="bg-white rounded-xl shadow-sm overflow-hidden">
                           <div className="bg-emerald-600 text-white px-6 py-3">
                             <h3 className="font-bold">
-                              {new Date(date).toLocaleDateString('en-US', { 
-                                weekday: 'long', 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric' 
+                              {new Date(date).toLocaleDateString('en-US', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
                               })}
                             </h3>
                           </div>
@@ -800,7 +884,7 @@ const Orders = () => {
             {/* Calendar Modal Footer - Sticky */}
             <div className="sticky bottom-0 bg-white p-6 border-t rounded-b-xl">
               <div className="flex justify-end">
-                <button 
+                <button
                   onClick={closeCalendarModal}
                   className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors duration-200"
                 >

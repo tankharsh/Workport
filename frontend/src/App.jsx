@@ -20,6 +20,7 @@ import Shop_Dashboard from './pages/user_pages/Shop_Dashboard';
 import AdminAddCategory from './admin/AdminAddCategory';
 import AdminAllCategory from './admin/AdminAllCategory';
 import AdminChatbotFAQs from './admin/AdminChatbotFAQs';
+import AdminContact from './admin/AdminContact';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import SPProtectedRoute from './pages/Protected';
 import Cartpage from './components/user_components/Cartpage';
@@ -123,6 +124,7 @@ function App() {
             <Route path='/Admin-Dashboard/add-category' element={<AdminAddCategory />} />
             <Route path='/Admin-Dashboard/all-categories' element={<AdminAllCategory />} />
             <Route path='/Admin-Dashboard/chatbot-faqs' element={<AdminChatbotFAQs />} />
+            <Route path='/Admin-Dashboard/contact-messages' element={<AdminContact />} />
 
             {/* New User Authentication routes */}
             <Route path='/user-login-new' element={<NewUserAuth />} />

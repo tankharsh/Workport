@@ -20,9 +20,24 @@ export default function UserLogin() {
   const navigate = useNavigate();
   const { showPopup } = useAuth();
 
+  const [fieldErrors, setFieldErrors] = useState({
+    userName: '',
+    userEmail: '',
+    userContact: '',
+    password: ''
+  });
+
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+
+    // Reset field errors
+    setFieldErrors({
+      userName: '',
+      userEmail: '',
+      userContact: '',
+      password: ''
+    });
 
     const details = ({ userName, userEmail, userContact, password });
 
@@ -34,6 +49,7 @@ export default function UserLogin() {
       });
 
       const data = await res.json();
+      console.log('Registration response:', data);
 
       if (res.ok) {
         if (data.requiresVerification) {
@@ -48,9 +64,27 @@ export default function UserLogin() {
           navigate('/');
         }
       } else {
-        showPopup(data.message || "Please enter all required details", 'error');
+        // Handle specific field errors
+        if (data.field) {
+          setFieldErrors(prev => ({
+            ...prev,
+            [data.field]: data.message
+          }));
+          showPopup(`${data.message}. Please use a different ${data.field === 'userEmail' ? 'email address' : 'contact number'}.`, 'error');
+        } else if (data.errors && Array.isArray(data.errors)) {
+          // Handle validation errors from express-validator
+          const newFieldErrors = {};
+          data.errors.forEach(err => {
+            newFieldErrors[err.param] = err.msg;
+          });
+          setFieldErrors(prev => ({ ...prev, ...newFieldErrors }));
+          showPopup('Please fix the errors in the form.', 'error');
+        } else {
+          showPopup(data.message || "Please enter all required details", 'error');
+        }
       }
     } catch (error) {
+      console.error('Registration error:', error);
       showPopup('Registration failed. Please try again.', 'error');
     } finally {
       setIsLoading(false);
@@ -74,7 +108,7 @@ export default function UserLogin() {
           >
             <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
               <div className="h-2 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600"></div>
-              
+
               <div className="w-full bg-gradient-to-br from-emerald-600 to-emerald-700 p-8 lg:p-12 text-white">
                 <div className="max-w-md mx-auto">
                   <h2 className="text-3xl font-bold mb-2">Create Account</h2>
@@ -91,9 +125,12 @@ export default function UserLogin() {
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
                         placeholder="Full name"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all"
+                        className={`w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border ${fieldErrors.userName ? 'border-red-400' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all`}
                         required
                       />
+                      {fieldErrors.userName && (
+                        <p className="mt-1 text-sm text-red-400">{fieldErrors.userName}</p>
+                      )}
                     </div>
 
                     {/* Email Input */}
@@ -106,9 +143,12 @@ export default function UserLogin() {
                         value={userEmail}
                         onChange={(e) => setUserEmail(e.target.value)}
                         placeholder="Email address"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all"
+                        className={`w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border ${fieldErrors.userEmail ? 'border-red-400' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all`}
                         required
                       />
+                      {fieldErrors.userEmail && (
+                        <p className="mt-1 text-sm text-red-400">{fieldErrors.userEmail}</p>
+                      )}
                     </div>
 
                     {/* Contact Input */}
@@ -121,9 +161,12 @@ export default function UserLogin() {
                         value={userContact}
                         onChange={(e) => setUserContact(e.target.value)}
                         placeholder="Contact number"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all"
+                        className={`w-full pl-10 pr-4 py-3 rounded-xl bg-white/10 border ${fieldErrors.userContact ? 'border-red-400' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all`}
                         required
                       />
+                      {fieldErrors.userContact && (
+                        <p className="mt-1 text-sm text-red-400">{fieldErrors.userContact}</p>
+                      )}
                     </div>
 
                     {/* Password Input */}
@@ -136,9 +179,12 @@ export default function UserLogin() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
-                        className="w-full pl-10 pr-12 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all"
+                        className={`w-full pl-10 pr-12 py-3 rounded-xl bg-white/10 border ${fieldErrors.password ? 'border-red-400' : 'border-white/20'} text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all`}
                         required
                       />
+                      {fieldErrors.password && (
+                        <p className="mt-1 text-sm text-red-400">{fieldErrors.password}</p>
+                      )}
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}

@@ -38,10 +38,14 @@ const User_Dashboard = () => {
     }
 
     setIsLoading(true);
+    console.log("🔍 Fetching providers for category:", selectedCategory);
+
     axios
       .get(`http://localhost:4000/api/sp/providers?category=${selectedCategory}`)
       .then((response) => {
         const providers = response.data.providers || [];
+        console.log("📊 Fetched providers:", providers.length, providers);
+
         setAllServiceProviders(providers); // Store all providers for filtering
         setServiceProviders(providers); // Display all initially
         setIsLoading(false);
@@ -73,6 +77,9 @@ const User_Dashboard = () => {
 
   // Apply filters to service providers
   const applyFilters = () => {
+    console.log("Applying filters:", filters);
+    console.log("All service providers:", allServiceProviders.length);
+
     let filteredProviders = [...allServiceProviders];
 
     // Filter by search term (shop name or service name)
@@ -80,42 +87,59 @@ const User_Dashboard = () => {
       const searchLower = filters.searchTerm.toLowerCase();
       filteredProviders = filteredProviders.filter(provider => {
         // Check if shop name matches
-        if (provider.spShopName.toLowerCase().includes(searchLower)) {
+        if (provider.spShopName && provider.spShopName.toLowerCase().includes(searchLower)) {
           return true;
         }
 
         // Check if any service name matches
-        return provider.services.some(service =>
-          service.serviceName.toLowerCase().includes(searchLower)
-        );
+        if (provider.services && provider.services.length > 0) {
+          return provider.services.some(service =>
+            service.serviceName && service.serviceName.toLowerCase().includes(searchLower)
+          );
+        }
+
+        return false;
       });
+      console.log("After search filter:", filteredProviders.length);
     }
 
     // Filter by category
     if (filters.category) {
       filteredProviders = filteredProviders.filter(provider => {
+        // If the category is the same as the selected category from URL, keep all providers
+        if (filters.category === selectedCategory) {
+          return true;
+        }
+
         // Check if provider has the selected category
         if (provider.spCategories && provider.spCategories.length > 0) {
           return provider.spCategories.some(cat =>
-            cat.categoryName.toLowerCase() === filters.category.toLowerCase()
+            cat.categoryName && cat.categoryName.toLowerCase() === filters.category.toLowerCase()
           );
         }
         return false;
       });
+      console.log("After category filter:", filteredProviders.length);
     }
 
     // Filter by price range
     if (filters.priceMin || filters.priceMax) {
       filteredProviders = filteredProviders.filter(provider => {
         // Check if any service falls within the price range
-        return provider.services.some(service => {
-          const price = parseFloat(service.servicePrice);
-          const min = filters.priceMin ? parseFloat(filters.priceMin) : 0;
-          const max = filters.priceMax ? parseFloat(filters.priceMax) : Infinity;
+        if (provider.services && provider.services.length > 0) {
+          return provider.services.some(service => {
+            if (!service.servicePrice) return false;
 
-          return price >= min && price <= max;
-        });
+            const price = parseFloat(service.servicePrice);
+            const min = filters.priceMin ? parseFloat(filters.priceMin) : 0;
+            const max = filters.priceMax ? parseFloat(filters.priceMax) : Infinity;
+
+            return price >= min && price <= max;
+          });
+        }
+        return false;
       });
+      console.log("After price filter:", filteredProviders.length);
     }
 
     // Sort providers based on selected option
@@ -124,29 +148,41 @@ const User_Dashboard = () => {
         case 'priceAsc':
           // Sort by lowest service price
           filteredProviders.sort((a, b) => {
+            if (!a.services || a.services.length === 0) return 1;
+            if (!b.services || b.services.length === 0) return -1;
+
             const aMinPrice = Math.min(...a.services.map(s => parseFloat(s.servicePrice) || 0));
             const bMinPrice = Math.min(...b.services.map(s => parseFloat(s.servicePrice) || 0));
             return aMinPrice - bMinPrice;
           });
+          console.log("Sorted by price (low to high)");
           break;
         case 'priceDesc':
           // Sort by highest service price
           filteredProviders.sort((a, b) => {
+            if (!a.services || a.services.length === 0) return 1;
+            if (!b.services || b.services.length === 0) return -1;
+
             const aMaxPrice = Math.max(...a.services.map(s => parseFloat(s.servicePrice) || 0));
             const bMaxPrice = Math.max(...b.services.map(s => parseFloat(s.servicePrice) || 0));
             return bMaxPrice - aMaxPrice;
           });
+          console.log("Sorted by price (high to low)");
           break;
         case 'newest':
           // Sort by newest (assuming _id is somewhat chronological)
           filteredProviders.sort((a, b) => b._id.localeCompare(a._id));
+          console.log("Sorted by newest");
           break;
         case 'rating':
         default:
           // Sort by rating (placeholder - would need actual rating data)
+          console.log("Sorted by rating (default)");
           break;
       }
     }
+
+    console.log("Final filtered providers:", filteredProviders.length);
 
     setServiceProviders(filteredProviders);
   };
@@ -238,6 +274,7 @@ const User_Dashboard = () => {
                   }}
                   placeholder="Search by service or shop name..."
                   className="w-full p-3 pl-10 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  autoComplete="off"
                 />
                 <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               </div>
